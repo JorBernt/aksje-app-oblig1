@@ -2,6 +2,7 @@ import React from 'react';
 import Card from "../UI/Card/Card";
 import Navbar from "../Navbar/Navbar";
 import Chart from "../UI/Chart/Chart";
+import StockContainer from "../StockContainer";
 
 const LandingPage = () => {
     return (
@@ -20,10 +21,10 @@ const LandingPage = () => {
                 <div className="basis-1">
                     <div className="flex flex-col">
                         <Card color="default">
-                            <p className="text-5xl">Card 2</p>
+                            <StockContainer text = "Dagens vinnere"/>
                         </Card>
                         <Card color="default">
-                            <p className="text-5xl">Card 3</p>
+                            <StockContainer text = {"Dagens tapere"}/>
                         </Card>
 
                     </div>

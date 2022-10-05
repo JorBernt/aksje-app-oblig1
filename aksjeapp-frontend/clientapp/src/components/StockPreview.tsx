@@ -15,11 +15,11 @@ type Props = {
 const StockPreview : FC<Props> = (props: Props) => {
 
     return(
-        <div className="flex justify-between">
-            <p className="px-5 py-1">{props.items.name}</p>
-            <p className="px-5 py-1">{props.items.chart}</p>
-            <p className="px-5 py-1">{props.items.difference}</p>
-            <p className="px-5 py-1">{props.items.value}</p>
+        <div className="grid grid-cols-4 w-96 ">
+            <p className="py-1 pl-4">{props.items.name}</p>
+            <p className="py-1">{props.items.chart}</p>
+            <p className="py-1">{props.items.difference}</p>
+            <p className="py-1 pr-4">{props.items.value}</p>
         </div>
     );
 }

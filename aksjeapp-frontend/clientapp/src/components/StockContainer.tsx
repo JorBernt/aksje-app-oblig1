@@ -18,14 +18,15 @@ const StockContainer = (props: Props) => {
     return(
         <>
             <div className="justify-center flex-row px-0">
-                <div className="flex justify-center text-black mb-4">
+                <div className="flex justify-center text-black pb-2">
                     <h1 className="font-bold">{props.text}</h1>
                 </div>
+                <hr className="pb-1 border-black"/>
                 <div className="w-max">
                     {data.map((val) => {
-                            if (val.id % 2 === 0) return  <div className="bg-gray-800 text-white "><StockPreview items={val}/></div>
-
-                            return <div className="bg-gray-500 text-black"><StockPreview items={val}/></div>
+                            return val.id % 2 === 0 ?
+                                <div className="bg-gray-500 text-black"><StockPreview items={val}/></div> :
+                                <div className="bg-gray-800 text-white"><StockPreview items={val}/></div>
                         }
 
                     )}

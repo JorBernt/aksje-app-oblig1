@@ -6,8 +6,8 @@ import Divider from "./Divider";
 function Navbar() {
     return (
         <>
-            <nav className="flex items-center justify-between bg-gray-500 p-6">
-                <a href="/" className="text-5xl">
+            <nav className="flex items-center justify-between bg-gray-500 overflow-hidden">
+                <a href="/" className="text-2xl ml-10">
                     Aksjehandel
                 </a>
                 <SearchBar/>

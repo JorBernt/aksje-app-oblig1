@@ -15,7 +15,6 @@ const LandingPage = () => {
                             <p className="text-5xl text-center pb-5">Aksje</p>
                             <Chart/>
                         </Card>
-
                     </div>
                 </div>
                 <div className="basis-1">
@@ -26,7 +25,6 @@ const LandingPage = () => {
                         <Card color="default">
                             <StockContainer text = {"Dagens tapere"}/>
                         </Card>
-
                     </div>
                 </div>
             </div>

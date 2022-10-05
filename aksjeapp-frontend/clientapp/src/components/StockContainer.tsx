@@ -18,6 +18,7 @@ const StockContainer = (props: Props) => {
     return(
         <>
             <div className="justify-center flex-row px-0">
+                {/*TODO: Legge til tittel over hver kolonne */}
                 <div className="flex justify-center text-black pb-2">
                     <h1 className="font-bold">{props.text}</h1>
                 </div>

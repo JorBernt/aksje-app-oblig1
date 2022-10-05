@@ -23,7 +23,7 @@ namespace test_backend.DAL
                     var url = new Uri($"https://api.polygon.io/v2/aggs/ticker/{symbol}/range/1/day/{fromDate}/{toDate}?adjusted=true&sort=asc&limit=120&apiKey={polygonKey}");
 
                     var responce = await client.GetAsync(url);
-                    string json = " ";
+                    string json = "";
                     using (var content = responce.Content)
                     {
                         json = await content.ReadAsStringAsync();

@@ -1,7 +1,7 @@
 import React from 'react';
 import Card from "../UI/Card/Card";
 import Navbar from "../Navbar/Navbar";
-
+import Chart from "../UI/Chart/Chart";
 const LandingPage = () => {
     return (
         <>
@@ -10,7 +10,8 @@ const LandingPage = () => {
                 <div className="basis-1">
                     <div className="flex flex-auto">
                         <Card color={"default"}>
-                            <p className="text-5xl">Hello World!</p>
+                            <p className="text-5xl text-center pb-5">Aksje</p>
+                        <Chart/>
                         </Card>
 
                     </div>

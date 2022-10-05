@@ -1,8 +1,11 @@
 import StockPreview from "./StockPreview";
 import React from "react";
 
+type Props = {
+    text:String
+}
 
-const StockContainer = (props: any) => {
+const StockContainer = (props: Props) => {
 
     const data = [{id: 0, name: "AAPL", chart: "chart", difference: 2.56, value: 100.45},
                 {id: 1, name: "AMZN", chart: "chart", difference: 2.56, value: 100.45},
@@ -16,13 +19,13 @@ const StockContainer = (props: any) => {
         <>
             <div className="justify-center flex-row px-0">
                 <div className="flex justify-center text-black mb-4">
-                    <h1>{props.text}</h1>
+                    <h1 className="font-bold">{props.text}</h1>
                 </div>
                 <div className="w-max">
                     {data.map((val) => {
                             if (val.id % 2 === 0) return  <div className="bg-gray-800 text-white "><StockPreview items={val}/></div>
 
-                            return <div className="bg-gray-500 text-black "><StockPreview items={val}/></div>
+                            return <div className="bg-gray-500 text-black"><StockPreview items={val}/></div>
                         }
 
                     )}

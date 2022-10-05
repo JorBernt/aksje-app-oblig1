@@ -1,8 +1,8 @@
 import React from 'react';
 import './App.css';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import LandingPage from "./components/pages/LandingPage";
-import ProfilePage from "./components/pages/ProfilePage";
+import LandingPage from "./components/Pages/LandingPage";
+import ProfilePage from "./components/Pages/ProfilePage";
 
 function App() {
 

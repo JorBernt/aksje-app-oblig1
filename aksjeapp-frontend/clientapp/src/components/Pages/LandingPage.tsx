@@ -14,7 +14,6 @@ const LandingPage = () => {
                             <p className="text-5xl text-center pb-5">Aksje</p>
                             <Chart/>
                         </Card>
-
                     </div>
                 </div>
                 <div className="basis-1">
@@ -25,7 +24,6 @@ const LandingPage = () => {
                         <Card color="default">
                             <p className="text-5xl">Card 3</p>
                         </Card>
-
                     </div>
                 </div>
             </div>

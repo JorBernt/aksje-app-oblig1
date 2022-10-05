@@ -1,4 +1,4 @@
-﻿using AksjeAPI.Models;
+﻿using test_backend.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -8,14 +8,14 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AksjeAPI.DAL
+namespace test_backend.DAL
 {
     public class InitDb
     {
         public static void Initialize(IApplicationBuilder app)
         {
             using var serviceScope = app.ApplicationServices.CreateScope();
-            var context = serviceScope.ServiceProvider.GetService<AksjeContext>();
+            var context = serviceScope.ServiceProvider.GetService<StockContext>();
 
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
@@ -25,11 +25,11 @@ namespace AksjeAPI.DAL
             {
                 ;
                 string json = r.ReadToEnd();
-                List<Aksje> aksjeListe = JsonConvert.DeserializeObject<List<Aksje>>(json);
+                List<Stock> stockList = JsonConvert.DeserializeObject<List<Stock>>(json);
 
-                foreach (var aksje in aksjeListe) {
+                foreach (var stock in stockList) {
 
-                    context.Aksjer.Add(aksje);
+                    context.Stocks.Add(stock);
                     context.SaveChanges();
                          }
 

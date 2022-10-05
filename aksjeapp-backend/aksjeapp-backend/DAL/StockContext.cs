@@ -1,4 +1,4 @@
-﻿using AksjeAPI.Models;
+﻿using test_backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
@@ -7,17 +7,17 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace AksjeAPI.DAL
+namespace test_backend.DAL
 {
-    public class AksjeContext : DbContext
+    public class StockContext : DbContext
     {
-        public AksjeContext (DbContextOptions<AksjeContext> options) : base(options)
+        public StockContext (DbContextOptions<StockContext> options) : base(options)
         {
             Database.EnsureCreated();
 
 
         }
-        public DbSet<Aksje> Aksjer { get; set; }
+        public DbSet<Stock> Stocks { get; set; }
 
 
 

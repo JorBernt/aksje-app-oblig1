@@ -1,5 +1,10 @@
+using Microsoft.EntityFrameworkCore;
+using test_backend.DAL;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
+builder.Services.AddDbContext<StockContext>(options => options.UseSqlite("Data source=myDb.db"));
+builder.Services.AddScoped<IStockRepository, StockRepository>();
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 
@@ -19,6 +24,7 @@ app.UseRouting();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
+InitDb.Initialize(app);
 
 
 app.Run();

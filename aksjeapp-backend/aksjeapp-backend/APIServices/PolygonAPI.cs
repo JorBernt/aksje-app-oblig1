@@ -1,4 +1,4 @@
-﻿using AksjeAPI.Models;
+﻿using test_backend.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -7,12 +7,12 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace AksjeAPI.DAL
+namespace test_backend.DAL
 {
     public class PolygonAPI
     {
 
-        public static async Task<AksjePriser> HentAksjePriser(string symbol, string fraDato, string tilDato)
+        public static async Task<StockPrices> GetStockPrices(string symbol, string fromDate, string toDate)
         {
             const string polygonKey = "C1cckwJuZuvEgVJbCmv42HuUZnJSgjeJ";
 
@@ -20,7 +20,7 @@ namespace AksjeAPI.DAL
             {
                 using (var client = new HttpClient())
                 {
-                    var url = new Uri($"https://api.polygon.io/v2/aggs/ticker/{symbol}/range/1/day/2021-07-22/2022-07-22?adjusted=true&sort=asc&limit=120&apiKey={polygonKey}");
+                    var url = new Uri($"https://api.polygon.io/v2/aggs/ticker/{symbol}/range/1/day/{fromDate}/{toDate}?adjusted=true&sort=asc&limit=120&apiKey={polygonKey}");
 
                     var responce = await client.GetAsync(url);
                     string json = " ";
@@ -32,14 +32,14 @@ namespace AksjeAPI.DAL
                     }
                     Console.WriteLine(json);
 
-                    return JsonConvert.DeserializeObject<AksjePriser>(json);
+                    return JsonConvert.DeserializeObject<StockPrices>(json);
 
                 }
 
             }
             catch
             {
-                Console.WriteLine("Feil i hentAksjePriser metoden");
+                Console.WriteLine("Cannot getStockPrices");
                 return null;
             }
         }

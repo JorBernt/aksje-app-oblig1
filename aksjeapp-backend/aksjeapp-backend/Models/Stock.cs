@@ -6,26 +6,26 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
-namespace AksjeAPI.Models
+namespace test_backend.Models
 {
     
-    public class Aksje
+    public class Stock
     {
         [Key]
         [JsonProperty("Symbol")]
-        public string Symbol { get; set; }
+        public string Symbol { get; set; } = "";
 
         [JsonProperty("Name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = "";
 
         [JsonProperty("Country")]
-        public string Country { get; set; }
+        public string Country { get; set; } = "";
 
         [JsonProperty("IPO Year Year")]
         public int IPO_Year { get; set; } = 0;
 
         [JsonProperty("Sector")]
-        public string Sector { get; set; }
+        public string Sector { get; set; } = "";
 
 
 

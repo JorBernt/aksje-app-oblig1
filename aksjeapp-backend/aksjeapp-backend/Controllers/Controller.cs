@@ -2,9 +2,9 @@
 
 namespace test_backend.Controllers
 {
-
+    /*
     [Route("[controller]/[action]")]
-    public class ExampleController : Controller
+    public class ExampleController : ControllerBase
     {
         [HttpGet]
         public JsonResult Example()
@@ -12,4 +12,5 @@ namespace test_backend.Controllers
             return Json("Default action...");
         }
     }
+    */
 }

@@ -25,7 +25,7 @@ const StockContainer = (props: Props) => {
                     {data.map((val) => {
                             return val.id % 2 === 0 ?
                                 <div className="bg-gray-500 text-black"><StockPreview items={val}/></div> :
-                                <div className="bg-gray-800 text-white"><StockPreview items={val}/></div>
+                                <div className="bg-gray-600 text-black"><StockPreview items={val}/></div>
                         }
                     )}
                 </div>

@@ -5,10 +5,11 @@ import Chart from "../UI/Chart/Chart";
 import StockContainer from "../StockContainer";
 
 const LandingPage = () => {
+    document.body.style.backgroundColor = "black"
     return (
         <>
             <Navbar/>
-            <div className="flex flex-row justify-between">
+            <div className="flex flex-row justify-center mt-5">
                 <div className="basis-1">
                     <div className="flex flex-auto">
                         <Card color={"default"}>

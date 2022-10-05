@@ -23,7 +23,7 @@ const LandingPage = () => {
                             <StockContainer text = "Dagens vinnere"/>
                         </Card>
                         <Card color="default">
-                            <StockContainer text = {"Dagens tapere"}/>
+                            <StockContainer text = "Dagens tapere"/>
                         </Card>
                     </div>
                 </div>

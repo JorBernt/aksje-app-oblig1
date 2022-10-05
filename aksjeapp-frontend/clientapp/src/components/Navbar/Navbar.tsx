@@ -1,6 +1,7 @@
 import React from 'react';
 import NavbarLink from "./NavbarLink";
 import SearchBar from "../UI/SearchBar/SearchBar";
+import Divider from "./Divider";
 
 function Navbar() {
     return (
@@ -11,12 +12,11 @@ function Navbar() {
                 </a>
                 <SearchBar/>
                 <div className="flex items-center justify-between">
-                    <NavbarLink link={"/aksjer"}>
-                        <p>Aksjer</p>
-                    </NavbarLink>
-                    <NavbarLink link={"/profile"}>
-                        <p>Profil</p>
-                    </NavbarLink>
+                    <NavbarLink link={"/"} text={"Hjem"}/>
+                    <Divider/>
+                    <NavbarLink link={"/stocks"} text={"Aksjer"}/>
+                    <Divider/>
+                    <NavbarLink link={"/profile"} text={"Profil"}/>
                 </div>
             </nav>
         </>

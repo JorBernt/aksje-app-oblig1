@@ -1,10 +1,30 @@
 import React from 'react';
 import Card from "../UI/Card/Card";
 import Navbar from "../Navbar/Navbar";
-import Chart from "../UI/Chart/Chart";
-import StockContainer from "../StockContainer";
+import StockContainer from "../StockViews/StockContainer";
+import SingleStockView from "../StockViews/SingleStockView";
 
 const LandingPage = () => {
+    const stockData = {
+        "name": "Porsche AG",
+        "last": 90.78,
+        "todayPercent": "+3.25%",
+        "todayDifference": "+2.86",
+        "buy": 90.78,
+        "sell": 90.80,
+        "high": 93.70,
+        "low": 89.50,
+        "turnover": 1386098
+    };
+    let rowNames = new Map([
+        ["Last", "last"],
+        ["Today %", "todayPercent"],
+        ["Today +/-", "todayDifference"],
+        ["Buy", "buy"],
+        ["Sell", "sell"],
+        ["High", "high"],
+        ["Low", "low"],
+        ["Turnover", "turnover"]]);
     return (
         <>
             <div className="bg-background">
@@ -12,10 +32,7 @@ const LandingPage = () => {
                 <div className="flex flex-row justify-center mt-5">
                     <div className="basis-1">
                         <div className="flex flex-auto">
-                            <Card color={"default"}>
-                                <p className="text-5xl text-center pb-5 text-black">Aksje</p>
-                                <Chart/>
-                            </Card>
+                            <SingleStockView stockData={stockData} rowNames={rowNames}/>
                         </div>
                     </div>
                     <div className="basis-1">

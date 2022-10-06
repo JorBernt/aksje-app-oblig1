@@ -5,7 +5,6 @@ import LandingPage from "./components/Pages/LandingPage";
 import ProfilePage from "./components/Pages/ProfilePage";
 
 function App() {
-
     return (
         <Router>
             <Routes>

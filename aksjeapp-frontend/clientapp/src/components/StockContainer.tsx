@@ -31,7 +31,7 @@ const StockContainer = (props: Props) => {
                     <h1 className="font-bold">{props.text}</h1>
                 </div>
                 <hr className="pb-1 border-black"/>
-                <div className="w-max">
+                <div className="w-max h-96 scroll max-h-screen overflow-y-auto">
                     {data.map((val) => {
                             return val.id % 2 === 0 ?
                                 <div className="text-black"><StockPreview items={val} showAmount={props.showAmount}/>

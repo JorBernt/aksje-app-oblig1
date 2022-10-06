@@ -23,16 +23,20 @@ namespace aksjeapp_backend.DAL
             return aksjeListe;
 
         }
-        public async Task<StockPrices> GetStockPrices(string symbol, string fraDato, string tilDato) // dato skal skrives som "YYYY-MM-DD"
+        public async Task<StockPrices> GetStockPrices(string symbol, string fromDate, string toDate) // dato skal skrives som "YYYY-MM-DD"
         {
-            var aksje = await PolygonAPI.HentAksjePriser(symbol, fraDato, tilDato);
+            var aksje = await PolygonAPI.GetStockPrices(symbol, toDate, fromDate);
 
             return aksje;
         }
 
-        public async Task<bool> BuyStock(string symbol, int antall, string dato)
+        public async Task<bool> BuyStock(string symbol, int amount, string date)
         {
-           //Get todays price and and set the todays date 
+            //Get todays price and and set the todays date
+            var stockPrice = await PolygonAPI.GetOpenClosePrice(symbol, date);
+
+            var stockTransaction = new Transaction(); 
+
             return true;
         }
     }

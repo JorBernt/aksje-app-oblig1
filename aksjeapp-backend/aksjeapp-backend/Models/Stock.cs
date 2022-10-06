@@ -21,9 +21,6 @@ namespace aksjeapp_backend.Models
         [JsonProperty("Country")]
         public string Country { get; set; } = "";
 
-        [JsonProperty("IPO Year Year")]
-        public int IPO_Year { get; set; } = 0;
-
         [JsonProperty("Sector")]
         public string Sector { get; set; } = "";
 

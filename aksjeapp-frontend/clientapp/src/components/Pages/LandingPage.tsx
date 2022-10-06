@@ -1,7 +1,7 @@
 import React from 'react';
 import Card from "../UI/Card/Card";
 import Navbar from "../Navbar/Navbar";
-import StockContainer from "../StockContainer";
+import StockContainer from "../StockViews/StockContainer";
 import SingleStockView from "../StockViews/SingleStockView";
 
 const LandingPage = () => {

@@ -5,7 +5,6 @@ import StockContainer from "../StockViews/StockContainer";
 import SingleStockView from "../StockViews/SingleStockView";
 
 const LandingPage = () => {
-    document.body.style.backgroundColor = "black"
     const stockData = {
         "name": "Porsche AG",
         "last": 90.78,
@@ -28,21 +27,23 @@ const LandingPage = () => {
         ["Turnover", "turnover"]]);
     return (
         <>
-            <Navbar/>
-            <div className="flex flex-row justify-center mt-5">
-                <div className="basis-1">
-                    <div className="flex flex-auto">
-                        <SingleStockView stockData={stockData} rowNames={rowNames}/>
+            <div className="bg-background">
+                <Navbar/>
+                <div className="flex flex-row justify-center mt-5">
+                    <div className="basis-1">
+                        <div className="flex flex-auto">
+                            <SingleStockView stockData={stockData} rowNames={rowNames}/>
+                        </div>
                     </div>
-                </div>
-                <div className="basis-1">
-                    <div className="flex flex-col">
-                        <Card color="default">
-                            <StockContainer text = "Dagens vinnere"/>
-                        </Card>
-                        <Card color="default">
-                            <StockContainer text = "Dagens tapere"/>
-                        </Card>
+                    <div className="basis-1">
+                        <div className="flex flex-col">
+                            <Card color="default">
+                                <StockContainer text="Dagens vinnere" showAmount={false} sorted="nameAsc"/>
+                            </Card>
+                            <Card color="default">
+                                <StockContainer text="Dagens tapere" showAmount={false} sorted={"valAsc"}/>
+                            </Card>
+                        </div>
                     </div>
                 </div>
             </div>

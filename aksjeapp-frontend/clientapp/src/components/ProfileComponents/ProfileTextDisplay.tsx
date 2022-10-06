@@ -7,7 +7,7 @@ const ProfileTextDisplay = (props: Props) => {
 
     return (
         <>
-            <div className="pt-5">
+            <div className="pt-2.5 pb-2.5">
                 <h2 className="text-center font-semibold">{props.title}</h2>
                 <p className="text-center">{props.content}</p>
             </div>

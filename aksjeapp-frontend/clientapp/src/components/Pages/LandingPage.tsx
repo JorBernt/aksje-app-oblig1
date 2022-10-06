@@ -38,10 +38,10 @@ const LandingPage = () => {
                     <div className="basis-1">
                         <div className="flex flex-col">
                             <Card color="default">
-                                <StockContainer text="Dagens vinnere" showAmount={false}/>
+                                <StockContainer text="Dagens vinnere" showAmount={false} sorted="nameAsc"/>
                             </Card>
                             <Card color="default">
-                                <StockContainer text="Dagens tapere" showAmount={false}/>
+                                <StockContainer text="Dagens tapere" showAmount={false} sorted={"valAsc"}/>
                             </Card>
                         </div>
                     </div>

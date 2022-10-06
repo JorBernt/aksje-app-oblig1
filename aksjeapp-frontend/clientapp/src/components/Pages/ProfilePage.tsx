@@ -2,7 +2,7 @@ import React from "react";
 import Navbar from "../Navbar/Navbar";
 import Card from "../UI/Card/Card";
 import ProfileInfoContainer from "../ProfileComponents/ProfileInfoContainer";
-import StockContainer from "../StockContainer";
+import StockContainer from "../StockViews/StockContainer";
 
 const ProfilePage = () => {
     return (
@@ -18,7 +18,7 @@ const ProfilePage = () => {
                     </div>
                     <div>
                         <Card color={"default"}>
-                            <StockContainer text="Your stocks" showAmount={true}/>
+                            <StockContainer text="Your stocks" showAmount={true} sorted="valAsc"/>
                         </Card>
                     </div>
                 </div>

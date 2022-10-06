@@ -1,7 +1,6 @@
 import React, {FC} from 'react';
 
 interface PropsObject {
-    id: number;
     amount?: number;
     name: string;
     chart: string;

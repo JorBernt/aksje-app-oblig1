@@ -1,10 +1,10 @@
-﻿using test_backend.Models;
+﻿using aksjeapp_backend.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace test_backend.DAL
+namespace aksjeapp_backend.DAL
 {
     public interface IStockRepository
     {

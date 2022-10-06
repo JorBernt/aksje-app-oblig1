@@ -1,4 +1,4 @@
-﻿using test_backend.Models;
+﻿using aksjeapp_backend.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
@@ -8,7 +8,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace test_backend.DAL
+namespace aksjeapp_backend.DAL
 {
     public class InitDb
     {

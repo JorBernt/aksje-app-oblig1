@@ -1,11 +1,11 @@
-﻿using test_backend.Models;
+﻿using aksjeapp_backend.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace test_backend.DAL
+namespace aksjeapp_backend.DAL
 {
     public class StockRepository : IStockRepository
     {
@@ -32,7 +32,7 @@ namespace test_backend.DAL
 
         public async Task<bool> BuyStock(string symbol, int antall, string dato)
         {
-           
+           //Get todays price and and set the todays date 
             return true;
         }
     }

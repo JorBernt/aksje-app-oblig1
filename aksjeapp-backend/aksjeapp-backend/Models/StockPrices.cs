@@ -5,16 +5,16 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
-namespace test_backend.Models
+namespace aksjeapp_backend.Models
 {
     
     public class StockPrices
     {
         
         [JsonProperty("ticker")]
-        public string Ticker { get; set; }
+        public string Symbol { get; set; }
 
         [JsonProperty("results")]
-        public List<Results> resultater { get; set; }
+        public List<Results> results { get; set; }
     }
 }

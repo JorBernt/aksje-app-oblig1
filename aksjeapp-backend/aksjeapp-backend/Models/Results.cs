@@ -6,7 +6,7 @@ using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
 
-namespace test_backend.Models
+namespace aksjeapp_backend.Models
 {
     public class Results
     {

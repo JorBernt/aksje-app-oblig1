@@ -1,5 +1,5 @@
-﻿using test_backend.DAL;
-using test_backend.Models;
+﻿using aksjeapp_backend.DAL;
+using aksjeapp_backend.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
@@ -7,7 +7,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace test_backend.Controller
+namespace aksjeapp_backend.Controller
 {
    [Route("[controller]/[action]")]
     public class StockController : ControllerBase

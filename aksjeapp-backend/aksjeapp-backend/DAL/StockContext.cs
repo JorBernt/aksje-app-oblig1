@@ -1,4 +1,4 @@
-﻿using test_backend.Models;
+﻿using aksjeapp_backend.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
@@ -6,9 +6,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
-using test_backend.DAL;
+using aksjeapp_backend.DAL;
 
-namespace test_backend.DAL
+namespace aksjeapp_backend.DAL
 {
     public class Customers {
         public int SocialSecurityNumber { get; set; }

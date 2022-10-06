@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using test_backend.DAL;
+using aksjeapp_backend.DAL;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();

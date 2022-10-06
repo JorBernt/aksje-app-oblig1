@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace test_backend.Controllers
+namespace aksjeapp_backend.Controllers
 {
     /*
     [Route("[controller]/[action]")]

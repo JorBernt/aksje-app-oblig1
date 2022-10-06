@@ -1,4 +1,4 @@
-﻿using test_backend.Models;
+﻿using aksjeapp_backend.Models;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 
-namespace test_backend.DAL
+namespace aksjeapp_backend.DAL
 {
     public class PolygonAPI
     {
@@ -43,5 +43,7 @@ namespace test_backend.DAL
                 return null;
             }
         }
+
+        public static async Task<Stock>
     }
 }

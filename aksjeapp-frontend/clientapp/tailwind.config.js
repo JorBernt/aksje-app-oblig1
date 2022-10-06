@@ -17,7 +17,7 @@ module.exports = {
       'bubble-gum': '#ff77e9',
       'bermuda': '#78dcca',
       'card': '#ffffff',
-      'navbar': '#ffffff',
+      'navbar': '#4a81b1',
       'background': "#eeeeee",
       'gray': colors.gray,
       'black': colors.black,

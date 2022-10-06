@@ -69,19 +69,20 @@ const StockContainer = (props: Props) => {
         <>
             <div className="justify-center flex-row px-0">
                 {/*TODO: Legge til tittel over hver kolonne */}
-                <div className="flex justify-center text-black pb-2">
+                <div className="flex justify-center text-stock-preview-text-1 pb-2">
                     <h1 className="font-bold">{props.text}</h1>
                 </div>
-                <hr className="pb-1 border-black"/>
+                <hr className="pb-1 border-stock-preview-text-1"/>
                 <div className="w-max h-96 scroll max-h-screen overflow-y-auto">
                     {sorted.map((val) => {
-                            counter++;
-                            return counter % 2 === 0 ?
-                                <div className="text-black"><StockPreview items={val} showAmount={props.showAmount}/>
-                                </div> :
-                                <div className="bg-stock-preview-line text-white"><StockPreview items={val}
-                                                                                                showAmount={props.showAmount}/>
-                                </div>
+                        counter++;
+                        return counter % 2 === 0 ?
+                            <div className="text-stock-preview-text-1 font-semibold">
+                                <StockPreview items={val} showAmount={props.showAmount}/>
+                            </div> :
+                            <div className="bg-stock-preview-line text-stock-preview-text-2 font-semibold">
+                                <StockPreview items={val} showAmount={props.showAmount}/>
+                            </div>
                         }
                     )}
                 </div>

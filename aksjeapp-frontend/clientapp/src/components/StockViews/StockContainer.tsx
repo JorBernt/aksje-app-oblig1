@@ -73,16 +73,17 @@ const StockContainer = (props: Props) => {
                     <h1 className="font-bold">{props.text}</h1>
                 </div>
                 <hr className="pb-1 border-stock-preview-text-1"/>
-                <div className="w-max h-96 scroll max-h-screen overflow-y-auto">
+                <div className="w-max h-96 scroll max-h-screen overflow-y-auto
+                scrollbar scrollbar-track-black scrollbar-thin scrollbar-thumb-white scrollbar">
                     {sorted.map((val) => {
-                        counter++;
-                        return counter % 2 === 0 ?
-                            <div className="text-stock-preview-text-1 font-semibold">
-                                <StockPreview items={val} showAmount={props.showAmount}/>
-                            </div> :
-                            <div className="bg-stock-preview-line text-stock-preview-text-2 font-semibold">
-                                <StockPreview items={val} showAmount={props.showAmount}/>
-                            </div>
+                            counter++;
+                            return counter % 2 === 0 ?
+                                <div className="text-stock-preview-text-1 font-semibold">
+                                    <StockPreview items={val} showAmount={props.showAmount}/>
+                                </div> :
+                                <div className="bg-stock-preview-line text-stock-preview-text-2 font-semibold">
+                                    <StockPreview items={val} showAmount={props.showAmount}/>
+                                </div>
                         }
                     )}
                 </div>

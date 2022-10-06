@@ -1,0 +1,17 @@
+type Props = {
+    title: string;
+    content: string
+}
+
+const ProfileTextDisplay = (props: Props) => {
+
+    return (
+        <>
+            <div className="pt-5">
+                <h2 className="text-center font-semibold">{props.title}</h2>
+                <p className="text-center">{props.content}</p>
+            </div>
+        </>
+    )
+}
+export default ProfileTextDisplay;

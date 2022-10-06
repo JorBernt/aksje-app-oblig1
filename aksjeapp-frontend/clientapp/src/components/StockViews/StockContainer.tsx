@@ -65,6 +65,7 @@ const StockContainer = (props: Props) => {
     }
 
     let counter: number = -1;
+    const headers = "text-stock-preview-text-1 grid " + (props.showAmount ? "grid-cols-5" : "grid-cols-4");
     return (
         <>
             <div className="justify-center flex-row px-0">
@@ -72,16 +73,23 @@ const StockContainer = (props: Props) => {
                 <div className="flex justify-center text-stock-preview-text-1 pb-2">
                     <h1 className="font-bold">{props.text}</h1>
                 </div>
+                <div className={headers}>
+                    <p className="text-center">Name</p>
+                    {props.showAmount ? <p className="text-center">Amount</p> : null}
+                    <p className="text-center">Chart</p>
+                    <p className="text-center">Change</p>
+                    <p className="text-center">Value</p>
+                </div>
                 <hr className="pb-1 border-stock-preview-text-1"/>
                 <div className="w-max h-96 scroll max-h-screen overflow-y-auto
                 scrollbar scrollbar-track-black scrollbar-thin scrollbar-thumb-white scrollbar">
                     {sorted.map((val) => {
-                            counter++;
-                            return counter % 2 === 0 ?
-                                <div className="text-stock-preview-text-1 font-semibold">
-                                    <StockPreview items={val} showAmount={props.showAmount}/>
-                                </div> :
-                                <div className="bg-stock-preview-line text-stock-preview-text-2 font-semibold">
+                        counter++;
+                        return counter % 2 === 0 ?
+                            <div className="text-stock-preview-text-1 font-semibold">
+                                <StockPreview items={val} showAmount={props.showAmount}/>
+                            </div> :
+                            <div className="bg-stock-preview-line text-stock-preview-text-2 font-semibold">
                                     <StockPreview items={val} showAmount={props.showAmount}/>
                                 </div>
                         }

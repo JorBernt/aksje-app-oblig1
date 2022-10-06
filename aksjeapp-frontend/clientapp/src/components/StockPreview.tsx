@@ -2,6 +2,7 @@ import React, {FC} from 'react';
 
 interface PropsObject {
     id: number;
+    amount?: number;
     name: string;
     chart: string;
     difference: number;
@@ -10,6 +11,7 @@ interface PropsObject {
 
 type Props = {
     items: PropsObject;
+    showAmount: boolean;
 }
 
 const StockPreview : FC<Props> = (props: Props) => {

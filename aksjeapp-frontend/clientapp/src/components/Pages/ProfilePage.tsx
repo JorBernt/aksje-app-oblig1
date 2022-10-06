@@ -2,7 +2,7 @@ import React from "react";
 import Navbar from "../Navbar/Navbar";
 import Card from "../UI/Card/Card";
 import ProfileInfoContainer from "../ProfileComponents/ProfileInfoContainer";
-import Chart from "../UI/Chart/Chart";
+import StockContainer from "../StockContainer";
 
 const ProfilePage = () => {
     return (
@@ -15,12 +15,10 @@ const ProfilePage = () => {
                         <Card color={"default"}>
                             <ProfileInfoContainer/>
                         </Card>
-
                     </div>
                     <div>
                         <Card color={"default"}>
-                            <p className="text-3xl text-center pb-5 text-black">Your best stock this week!</p>
-                            <Chart/>
+                            <StockContainer text="Your stocks" showAmount={true}/>
                         </Card>
                     </div>
                 </div>

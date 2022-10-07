@@ -151,7 +151,6 @@ const StockContainer = (props: Props) => {
     return (
         <>
             <div className="justify-center flex-row px-0">
-                {/*TODO: Legge til tittel over hver kolonne */}
                 <div className="flex justify-center text-stock-preview-text-1 pb-2">
                     <h1 className="font-bold">{props.text}</h1>
                 </div>
@@ -164,17 +163,17 @@ const StockContainer = (props: Props) => {
                 </div>
                 <hr className="pb-1 border-stock-preview-text-1"/>
                 <div className="w-max px-5 h-96 scroll max-h-screen overflow-y-auto
-                scrollbar scrollbar-track-white scrollbar-thin scrollbar-thumb-black scrollbar">
+                scrollbar scrollbar-track-white scrollbar-thumb-rounded-3xl scrollbar-thin scrollbar-thumb-blue-700 scrollbar">
                     {sorted.map((val) => {
-                            counter++;
-                            return counter % 2 === 0 ?
-                                <div
-                                    className="hover:scale-105 hover:bg-gradient-to-br hover:from-white hover:to-gray-200 hover:rounded-lg rounded-lg transition duration-150 ease-in-out text-stock-preview-text-1 font-semibold">
-                                    <StockPreview items={val} showAmount={props.showAmount}/>
-                                </div> :
-                                <div
-                                    className="hover:scale-105 transition duration-150 ease-in-out bg-gradient-to-tl rounded-lg from-green-500 to-blue-700 text-stock-preview-text-2 font-semibold">
-                                    <StockPreview items={val} showAmount={props.showAmount}/>
+                        counter++;
+                        return counter % 2 === 0 ?
+                            <div
+                                className="hover:scale-105 hover:bg-gradient-to-br hover:from-white hover:to-gray-200 hover:rounded-lg rounded-lg transition duration-150 ease-in-out text-stock-preview-text-1 font-semibold">
+                                <StockPreview items={val} showAmount={props.showAmount}/>
+                            </div> :
+                            <div
+                                className="hover:scale-105 transition duration-150 ease-in-out bg-gradient-to-tl rounded-lg from-green-500 to-blue-700 text-stock-preview-text-2 font-semibold">
+                                <StockPreview items={val} showAmount={props.showAmount}/>
                                 </div>
                         }
                     )}

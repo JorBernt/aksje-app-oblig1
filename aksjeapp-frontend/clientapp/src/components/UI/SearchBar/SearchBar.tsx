@@ -8,10 +8,11 @@ const SearchBar: React.FC<Props> = () => {
     return (
         <>
             <div
-                className="flex justify-between bg-white rounded-2xl drop-shadow-2xl shadow-inner pl-5 overflow-hidden">
-                <input className="w-80" style={{outline: "none"}} type="text"/>
+                className="flex justify-between bg-white rounded-2xl shadow-inner shadow-gray-400 overflow-hidden">
+                <input className="w-80 bg-transparent focus:border focus:border-pink-500 rounded-l-2xl pl-4"
+                       style={{outline: "none"}} type="text"/>
                 <button
-                    className="bg-transparent hover:bg-gray-300 bg-gradient-to-tl from-purple-700 to-pink-500 text-black font-semibold py-2 px-4 hover:text-black transition duration-300 ease-in-out">
+                    className="bg-transparent bg-gray-300 hover:bg-gradient-to-tl hover:from-purple-700 hover:to-purple-700 text-black font-semibold py-2 px-4 hover:text-white transition duration-300 ease-in-out">
                     Search
                 </button>
             </div>

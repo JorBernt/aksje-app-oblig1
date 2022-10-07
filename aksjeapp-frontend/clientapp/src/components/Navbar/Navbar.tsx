@@ -6,7 +6,7 @@ import Divider from "./Divider";
 function Navbar() {
     return (
         <>
-            <nav className="flex items-center justify-between bg-navbar overflow-hidden border-b-2 border-black">
+            <nav className="flex items-center justify-between bg-navbar border-b-2 border-black p-1">
                 <a href="/" className="text-2xl ml-10">
                     Aksjehandel
                 </a>

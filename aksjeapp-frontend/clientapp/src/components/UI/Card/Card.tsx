@@ -7,10 +7,10 @@ type Props = {
 }
 
 const Card : FC<Props> = (props ) => {
-    const className = props.customCss + " drop-shadow-md  border-2 border-black rounded-2xl p-5 m-5 " + (props.color === "default" ? "bg-card" : props.color);
+    //const className = props.customCss + " drop-shadow-2xl rounded-2xl p-5 m-5 bg-card";
     return (
         <>
-            <div className={className}>
+            <div className="shadow-2xl rounded-2xl p-5 m-5 bg-card">
                 {props.children}
             </div>
             <div className=""></div>

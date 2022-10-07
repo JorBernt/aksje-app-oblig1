@@ -3,7 +3,7 @@ type Props = {
     content: string
 }
 
-const ProfileTextDisplay = (props: Props) => {
+const TextDisplay = (props: Props) => {
 
     return (
         <>
@@ -14,4 +14,4 @@ const ProfileTextDisplay = (props: Props) => {
         </>
     )
 }
-export default ProfileTextDisplay;
+export default TextDisplay;

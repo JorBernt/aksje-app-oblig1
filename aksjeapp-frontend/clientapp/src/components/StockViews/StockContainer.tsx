@@ -173,7 +173,7 @@ const StockContainer = (props: Props) => {
                                     <StockPreview items={val} showAmount={props.showAmount}/>
                                 </div> :
                                 <div
-                                    className="hover:scale-105 transition duration-150 ease-in-out bg-gradient-to-tl rounded-lg from-purple-700 to-pink-500 text-stock-preview-text-2 font-semibold">
+                                    className="hover:scale-105 transition duration-150 ease-in-out bg-gradient-to-tl rounded-lg from-green-500 to-blue-700 text-stock-preview-text-2 font-semibold">
                                     <StockPreview items={val} showAmount={props.showAmount}/>
                                 </div>
                         }

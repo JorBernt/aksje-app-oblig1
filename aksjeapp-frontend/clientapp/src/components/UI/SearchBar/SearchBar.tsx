@@ -16,7 +16,6 @@ const SearchBar: React.FC<Props> = () => {
                     Search
                 </button>
             </div>
-
         </>
     );
 }

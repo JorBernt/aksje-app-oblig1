@@ -9,22 +9,13 @@ const LandingPage = () => {
         "name": "Porsche AG",
         "last": 90.78,
         "todayPercent": "+3.25%",
-        "todayDifference": "+2.86",
+        "todayDifference": "-1.86",
         "buy": 90.78,
         "sell": 90.80,
         "high": 93.70,
         "low": 89.50,
         "turnover": 1386098
     };
-    let rowNames = new Map([
-        ["Last", "last"],
-        ["Today %", "todayPercent"],
-        ["Today +/-", "todayDifference"],
-        ["Buy", "buy"],
-        ["Sell", "sell"],
-        ["High", "high"],
-        ["Low", "low"],
-        ["Turnover", "turnover"]]);
     return (
         <>
             <div className="bg-background">
@@ -32,7 +23,7 @@ const LandingPage = () => {
                 <div className="flex flex-row justify-center mt-5">
                     <div className="basis-1">
                         <div className="flex flex-auto">
-                            <SingleStockView stockData={stockData} rowNames={rowNames}/>
+                            <SingleStockView stockData={stockData}/>
                         </div>
                     </div>
                     <div className="basis-1">

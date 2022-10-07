@@ -17,7 +17,7 @@ const Chart = () => {
         {name: '3', uv: 400, pv: 1800, amt: 1200}];
     return (
         <>
-            <div className="bg-gray-800 p-5 rounded-2xl">
+            <div className="bg-gradient-to-tl from-green-500 to-blue-700 p-5 rounded-2xl">
                 <LineChart width={600} height={300} data={data}>
                     <Line type="monotone" dataKey="uv" stroke="#8884d8"/>
                     <CartesianGrid stroke="#ccc"/>

@@ -1,15 +1,10 @@
 ﻿using aksjeapp_backend.DAL;
 using aksjeapp_backend.Models;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace aksjeapp_backend.Controller
 {
-   [Route("[controller]/[action]")]
+    [Route("[controller]/[action]")]
     public class StockController : ControllerBase
     {
         private readonly IStockRepository _db;
@@ -19,19 +14,24 @@ namespace aksjeapp_backend.Controller
             _db = db;
         }
 
-      
+
         public async Task<List<Stock>> GetAllStocks()
         {
-            return await _db.GetStockPrices();
+            return await _db.GetAllStocks();
         }
         public async Task<StockPrices> GetStockPrices(string symbol, string fromDate, string toDate) // dato skal skrives som "YYYY-MM-DD"
         {
             return await _db.GetStockPrices(symbol, fromDate, toDate);
         }
-        
-        public async Task<bool> BuyStock(string symbol, int antall, string dato)
+
+        public async Task<bool> BuyStock(string socialSecurityNumber, string symbol, int number)
         {
-            return await _db.BuyStock(symbol, antall, dato);
+            return await _db.BuyStock(socialSecurityNumber, symbol, number);
+        }
+
+        public bool SellStock()
+        {
+            return true;
         }
     }
 }

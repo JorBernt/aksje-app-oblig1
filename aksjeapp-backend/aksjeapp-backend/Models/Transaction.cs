@@ -1,23 +1,20 @@
-﻿namespace aksjeapp_backend.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace aksjeapp_backend.Models
 {
     public class Transaction
     {
-        public string Id { get; set; } // Lage et tilfeldig nummer
+
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; } // Lage et tilfeldig nummer
+
+        public string SocialSecurityNumber { get; set; }
         public string Date { get; set; }
         public string Symbol { get; set; }
-        public int Number {get; set; }
-        public double PricePrStock { get; set; } // Mulig vi ikke trenger denne
-
+        public int Number { get; set; }
         public double TotalPrice { get; set; }
 
-        public Transaction(string id, string date, string symbol, int number, double pricePrStock, double totalPrice)
-        {
-            Id = id;
-            Date = date;
-            Symbol = symbol;
-            Number = number;
-            PricePrStock = pricePrStock;
-            TotalPrice = totalPrice;
-        }
     }
 }

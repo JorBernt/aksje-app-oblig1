@@ -1,5 +1,5 @@
-using Microsoft.EntityFrameworkCore;
 using aksjeapp_backend.DAL;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
@@ -11,7 +11,7 @@ var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
-        policy  =>
+        policy =>
         {
             policy.WithOrigins("http://localhost:3000");
         });

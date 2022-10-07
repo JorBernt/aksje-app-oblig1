@@ -1,8 +1,4 @@
 ﻿using aksjeapp_backend.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace aksjeapp_backend.DAL
 {
@@ -11,6 +7,6 @@ namespace aksjeapp_backend.DAL
         Task<List<Stock>> GetAllStocks();
         Task<StockPrices> GetStockPrices(string symbol, string fromDate, string toDate);
 
-        Task<bool> BuyStock(string symbol, int antall, string dato);
+        Task<bool> BuyStock(string socialSecurityNumber, string symbol, int number);
     }
 }

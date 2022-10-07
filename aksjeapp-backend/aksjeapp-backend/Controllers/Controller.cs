@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace aksjeapp_backend.Controllers
+﻿namespace aksjeapp_backend.Controllers
 {
     /*
     [Route("[controller]/[action]")]

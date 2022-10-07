@@ -1,12 +1,5 @@
 ﻿using aksjeapp_backend.Models;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace aksjeapp_backend.DAL
 {
@@ -27,15 +20,33 @@ namespace aksjeapp_backend.DAL
                 string json = r.ReadToEnd();
                 List<Stock> stockList = JsonConvert.DeserializeObject<List<Stock>>(json);
 
-                foreach (var stock in stockList) {
+                foreach (var stock in stockList)
+                {
 
                     context.Stocks.Add(stock);
                     context.SaveChanges();
-                         }
+                }
 
+                // Adding customers
+                var postalArea1 = new PostalAreas
+                {
+                    PostalCode = "0134",
+                    PostCity = "Oslo"
+                };
+
+
+                var customer1 = new Customers
+                {
+                    SocialSecurityNumber = "12345678910",
+                    FirstName = "Line",
+                    LastName = "Jensen",
+                    Address = "Karl Johansgate 3",
+                    PostalArea = postalArea1
+                };
+                context.Customers.Add(customer1);
             }
             context.SaveChanges();
-           
+
         }
     }
 }

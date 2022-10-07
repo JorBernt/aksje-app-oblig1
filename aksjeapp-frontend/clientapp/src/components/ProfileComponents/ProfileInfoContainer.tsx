@@ -1,4 +1,4 @@
-import TextDisplay from "./TextDisplay";
+import TextDisplay from "../UI/TextDisplay/TextDisplay";
 
 const ProfileInfoContainer = () => {
     return (

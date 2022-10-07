@@ -22,6 +22,8 @@ module.exports = {
       'stock-preview-text-1': "#000000",
       'stock-preview-text-2': "#ffffff",
       'text-display': "#000000",
+      'gradient-start': "#22C55E",
+      'gradient-end': "#1D4ED8",
       'gray': colors.gray,
       'black': colors.black,
       'red': colors.red,

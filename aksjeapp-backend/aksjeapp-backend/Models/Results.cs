@@ -4,14 +4,6 @@ namespace aksjeapp_backend.Models
 {
     public class Results
     {
-        /*
-                [JsonProperty("t")]
-                public long Index
-                {
-                    get { return Index; }
-                    set { Index = (value / 1000 / 3600 / 24) - 1; } // From Millis to day
-                }*/
-
         [JsonProperty("c")]
         public double ClosePrice { get; set; }
 

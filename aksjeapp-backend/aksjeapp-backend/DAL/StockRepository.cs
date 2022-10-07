@@ -30,35 +30,32 @@ namespace aksjeapp_backend.DAL
         {
             // Gets todays date
             DateTime date1 = DateTime.Now;
-            string date = date1.Year + "-" + date1.Month + "-" + date1.Day;
+            string date = date1.Year + "-" + date1.Month.ToString("D2") + "-" + date1.Day.ToString("D2");
             Console.WriteLine(date);
-
-            //Get todays price and and set the todays date
-            var stockPrice = await PolygonAPI.GetOpenClosePrice(symbol, date);
-
-            double totalPrice = stockPrice.OpenPrice * number;
-            //Creates transaction
-            var stockTransaction = new Transaction
-            {
-                Date = date,
-                SocialSecurityNumber = socialSecurityNumber,
-                Symbol = symbol,
-                Number = number,
-                TotalPrice = totalPrice
-            };
-            Console.WriteLine("Buying stock");
             try
             {
+                //Get todays price and and set the todays date
+                var stockPrice = await PolygonAPI.GetOpenClosePrice(symbol, date);
 
+                double totalPrice = stockPrice.OpenPrice * number;
+                //Creates transaction
+                var stockTransaction = new Transaction
+                {
+                    Date = date,
+                    SocialSecurityNumber = socialSecurityNumber,
+                    Symbol = symbol,
+                    Number = number,
+                    TotalPrice = totalPrice
+                };
+                Console.WriteLine("Buying stock");
                 var customer = await _db.Customers.FindAsync(socialSecurityNumber);
-                Console.WriteLine(customer);
 
                 if (customer == null)
                 {
                     return false;
                 }
                 customer.Transactions.Add(stockTransaction);
-                Console.WriteLine("Buying stock");
+
                 await _db.SaveChangesAsync();
 
                 return true;
@@ -71,5 +68,58 @@ namespace aksjeapp_backend.DAL
 
         }
 
+        public async Task<bool> SellStock(string socialSecurityNumber, string symbol, int number)
+        {
+            try {
+            var customer = await _db.Customers.FindAsync(socialSecurityNumber);
+            if (customer == null)
+            {
+                return false;
+            }
+            // Finds transaction
+            List<Transaction> transactions = customer.Transactions.Where(k => k.Symbol != symbol && k.IsActive == true).ToList();
+
+            for (int i = 0; i < transactions.Count; i++)
+            {
+                if (transactions[i].Number > number)
+                {
+                    // Need to split transaction since we are not selling the same amount we bought.
+                    var transaction = transactions[i];
+                    transaction.Number -= number;
+                    transactions[i].IsActive = false;
+                    break;
+                }
+                else if (transactions[i].Number < number)
+                {
+                    var transaction = transactions[i];
+                    number -= transaction.Number;
+                    transactions[i].IsActive = false;
+                    customer.Transactions.Add(transaction);
+
+                }
+                else if (transactions[i].Number == number)
+                {
+                    transactions[i].IsActive = false;
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Fault in sell stock method");
+                    return false;
+                }
+
+            }
+
+
+                await _db.SaveChangesAsync();
+
+                return true;
+            }
+            catch {
+                return false;
+            }
+        }
     }
+
+
 }

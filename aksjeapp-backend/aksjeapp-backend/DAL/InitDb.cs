@@ -20,12 +20,8 @@ namespace aksjeapp_backend.DAL
                 string json = r.ReadToEnd();
                 List<Stock> stockList = JsonConvert.DeserializeObject<List<Stock>>(json);
 
-                foreach (var stock in stockList)
-                {
+                context.Stocks.AddRange(stockList);
 
-                    context.Stocks.Add(stock);
-                    context.SaveChanges();
-                }
 
                 // Adding customers
                 var postalArea1 = new PostalAreas

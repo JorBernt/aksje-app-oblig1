@@ -29,9 +29,9 @@ namespace aksjeapp_backend.Controller
             return await _db.BuyStock(socialSecurityNumber, symbol, number);
         }
 
-        public bool SellStock()
+        public async Task<bool> SellStock(string socialSecurityNumber, string symbol, int number)
         {
-            return true;
+            return await _db.SellStock(socialSecurityNumber, symbol, number);
         }
     }
 }

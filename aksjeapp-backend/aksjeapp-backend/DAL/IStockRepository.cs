@@ -8,5 +8,6 @@ namespace aksjeapp_backend.DAL
         Task<StockPrices> GetStockPrices(string symbol, string fromDate, string toDate);
 
         Task<bool> BuyStock(string socialSecurityNumber, string symbol, int number);
+        Task<bool> SellStock(string socialSecurityNumber, string symbol, int number);
     }
 }

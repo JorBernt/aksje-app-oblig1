@@ -21,17 +21,17 @@ namespace aksjeapp_backend.Controller
         }
         public async Task<StockPrices> GetStockPrices(string symbol, string fromDate, string toDate) // dato skal skrives som "YYYY-MM-DD"
         {
-            return await _db.GetStockPrices(symbol, fromDate, toDate);
+            return await _db.GetStockPrices(symbol.ToUpper(), fromDate, toDate);
         }
 
         public async Task<bool> BuyStock(string socialSecurityNumber, string symbol, int number)
         {
-            return await _db.BuyStock(socialSecurityNumber, symbol, number);
+            return await _db.BuyStock(socialSecurityNumber, symbol.ToUpper(), number);
         }
 
         public async Task<bool> SellStock(string socialSecurityNumber, string symbol, int number)
         {
-            return await _db.SellStock(socialSecurityNumber, symbol, number);
+            return await _db.SellStock(socialSecurityNumber, symbol.ToUpper(), number);
         }
     }
 }

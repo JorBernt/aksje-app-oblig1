@@ -29,8 +29,7 @@ namespace aksjeapp_backend.DAL
         public async Task<bool> BuyStock(string socialSecurityNumber, string symbol, int number)
         {
             // Gets todays date
-            DateTime date1 = DateTime.Now;
-            string date = date1.Year + "-" + date1.Month.ToString("D2") + "-" + date1.Day.ToString("D2");
+            string date = GetTodaysDate();
             Console.WriteLine(date);
             try
             {
@@ -70,54 +69,78 @@ namespace aksjeapp_backend.DAL
 
         public async Task<bool> SellStock(string socialSecurityNumber, string symbol, int number)
         {
-            try {
-            var customer = await _db.Customers.FindAsync(socialSecurityNumber);
-            if (customer == null)
+            try
             {
-                return false;
-            }
-            // Finds transaction
-            List<Transaction> transactions = customer.Transactions.Where(k => k.Symbol != symbol && k.IsActive == true).ToList();
-
-            for (int i = 0; i < transactions.Count; i++)
-            {
-                if (transactions[i].Number > number)
+                var customer = await _db.Customers.FindAsync(socialSecurityNumber);
+                if (customer == null)
                 {
-                    // Need to split transaction since we are not selling the same amount we bought.
-                    var transaction = transactions[i];
-                    transaction.Number -= number;
-                    transactions[i].IsActive = false;
-                    break;
-                }
-                else if (transactions[i].Number < number)
-                {
-                    var transaction = transactions[i];
-                    number -= transaction.Number;
-                    transactions[i].IsActive = false;
-                    customer.Transactions.Add(transaction);
-
-                }
-                else if (transactions[i].Number == number)
-                {
-                    transactions[i].IsActive = false;
-                    break;
-                }
-                else
-                {
-                    Console.WriteLine("Fault in sell stock method");
                     return false;
                 }
+                // Finds transactions
+                List<Transaction> transactions = customer.Transactions.Where(k => k.Symbol == symbol && k.IsActive == true).ToList();
 
+                for (int i = 0; i < transactions.Count; i++)
+                {
+                    if (transactions[i].Number > number)
+                    {
+                        var stockPrice = await PolygonAPI.GetOpenClosePrice(symbol, GetTodaysDate());
+                        // Need to split transaction since we are not selling the same amount we bought.
+                        var transaction = new Transaction()
+                        {
+                            SocialSecurityNumber = transactions[i].SocialSecurityNumber,
+                            Date = GetTodaysDate(),
+                            Symbol = transactions[i].Symbol,
+                            Number = transactions[i].Number - number
+                        };
+                        transaction.TotalPrice = stockPrice.OpenPrice * transaction.Number; // Updates after since we need stock number to be updated
+
+                        transactions[i].IsActive = false;
+                        
+                        customer.Transactions.Add(transaction);
+                        number = 0;
+                        break;
+                    }
+                    else if (transactions[i].Number < number)
+                    {
+                        var transaction = transactions[i];
+                        number -= transaction.Number;
+                        transactions[i].IsActive = false;
+                        //customer.Transactions.Add(transaction);
+
+                    }
+                    else if (transactions[i].Number == number)
+                    {
+                        transactions[i].IsActive = false;
+                        number = 0;
+                        break;
+                    }
+                    else
+                    {
+                        Console.WriteLine("Fault in sell stock method");
+                        return false;
+                    }
+
+                }
+
+                if (number == 0)
+                {
+                    await _db.SaveChangesAsync();
+
+                    return true;
+                }
+                else { return false; }
             }
-
-
-                await _db.SaveChangesAsync();
-
-                return true;
-            }
-            catch {
+            catch
+            {
                 return false;
             }
+        }
+        public static string GetTodaysDate()
+        {
+            DateTime date1 = DateTime.Now;
+            int month = date1.Month - 1; //Uses one month old data since polygon cant get todays prices
+            string date = date1.Year + "-" + month.ToString("D2") + "-" + date1.Day.ToString("D2");
+            return date;
         }
     }
 

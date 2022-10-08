@@ -33,5 +33,10 @@ namespace aksjeapp_backend.Controller
         {
             return await _db.SellStock(socialSecurityNumber, symbol.ToUpper(), number);
         }
+
+        public async Task<List<Stock>> SearchResults(string keyPhrase)
+        {
+            return await _db.ReturnSearchResults(keyPhrase.ToUpper());
+        }
     }
 }

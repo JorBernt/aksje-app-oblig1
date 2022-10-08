@@ -1,4 +1,5 @@
 ﻿using aksjeapp_backend.Models;
+using Castle.Core.Internal;
 using Microsoft.EntityFrameworkCore;
 
 namespace aksjeapp_backend.DAL
@@ -30,7 +31,7 @@ namespace aksjeapp_backend.DAL
         {
             // Gets todays date
             string date = GetTodaysDate();
-            
+
             try
             {
                 //Get todays price and and set the todays date
@@ -46,7 +47,7 @@ namespace aksjeapp_backend.DAL
                     Number = number,
                     TotalPrice = totalPrice
                 };
-                
+
                 var customer = await _db.Customers.FindAsync(socialSecurityNumber);
 
                 if (customer == null)
@@ -88,11 +89,11 @@ namespace aksjeapp_backend.DAL
 
                 for (int i = 0; i < transactions.Count; i++)
                 {
-                    
+
                     if (transactions[i].Number > number)
                     {
-                        
-                        
+
+
                         // Need to split transaction since we are not selling the same amount we bought.
                         var transaction = new Transaction()
                         {
@@ -104,7 +105,7 @@ namespace aksjeapp_backend.DAL
                         transaction.TotalPrice = stockPrice.ClosePrice * transaction.Number; // Updates after since we need stock number to be updated
 
                         transactions[i].IsActive = false;
-                        
+
                         customer.Transactions.Add(transaction);
                         number = 0;
                         break;
@@ -130,8 +131,9 @@ namespace aksjeapp_backend.DAL
 
                 }
 
-                if (number == 0){
-                    customer.Balance -= stockPrice.ClosePrice * (double) number1;
+                if (number == 0)
+                {
+                    customer.Balance -= stockPrice.ClosePrice * (double)number1;
                     await _db.SaveChangesAsync();
 
                     return true;
@@ -143,6 +145,19 @@ namespace aksjeapp_backend.DAL
                 return false;
             }
         }
+
+        public async Task<List<Stock>> ReturnSearchResults(string keyPhrase)
+        {
+            if (keyPhrase != "") {
+                var stocks = await _db.Stocks.Where(k => k.Symbol.Contains(keyPhrase) || k.Name.ToUpper().Contains(keyPhrase) || k.Country.ToUpper().Contains(keyPhrase) || k.Sector.ToUpper().Contains(keyPhrase)).OrderBy(k => k.Name).ToListAsync();
+                return stocks;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
         public static string GetTodaysDate()
         {
             DateTime date1 = DateTime.Now;
@@ -150,7 +165,8 @@ namespace aksjeapp_backend.DAL
             string date = date1.Year + "-" + month.ToString("D2") + "-" + date1.Day.ToString("D2");
             return date;
         }
-    }
 
+        
+    }
 
 }

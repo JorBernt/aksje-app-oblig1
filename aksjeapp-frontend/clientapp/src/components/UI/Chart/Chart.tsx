@@ -21,8 +21,8 @@ const Chart = () => {
                 <LineChart width={600} height={300} data={data}>
                     <Line type="monotone" dataKey="uv" stroke="#000000"/>
                     <CartesianGrid stroke="#ccc"/>
-                    <XAxis dataKey="name"/>
-                    <YAxis/>
+                    <XAxis dataKey="name" stroke="black"/>
+                    <YAxis stroke="black"/>
                 </LineChart>
             </div>
         </>

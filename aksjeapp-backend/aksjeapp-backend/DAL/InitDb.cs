@@ -1,21 +1,14 @@
-﻿using AksjeAPI.Models;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.DependencyInjection;
+﻿using aksjeapp_backend.Models;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
-namespace AksjeAPI.DAL
+namespace aksjeapp_backend.DAL
 {
     public class InitDb
     {
         public static void Initialize(IApplicationBuilder app)
         {
             using var serviceScope = app.ApplicationServices.CreateScope();
-            var context = serviceScope.ServiceProvider.GetService<AksjeContext>();
+            var context = serviceScope.ServiceProvider.GetService<StockContext>();
 
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
@@ -25,17 +18,31 @@ namespace AksjeAPI.DAL
             {
                 ;
                 string json = r.ReadToEnd();
-                List<Aksje> aksjeListe = JsonConvert.DeserializeObject<List<Aksje>>(json);
+                List<Stock> stockList = JsonConvert.DeserializeObject<List<Stock>>(json);
 
-                foreach (var aksje in aksjeListe) {
+                context.Stocks.AddRange(stockList);
 
-                    context.Aksjer.Add(aksje);
-                    context.SaveChanges();
-                         }
 
+                // Adding customers
+                var postalArea1 = new PostalAreas
+                {
+                    PostalCode = "0134",
+                    PostCity = "Oslo"
+                };
+
+
+                var customer1 = new Customers
+                {
+                    SocialSecurityNumber = "12345678910",
+                    FirstName = "Line",
+                    LastName = "Jensen",
+                    Address = "Karl Johansgate 3",
+                    PostalArea = postalArea1
+                };
+                context.Customers.Add(customer1);
             }
             context.SaveChanges();
-           
+
         }
     }
 }

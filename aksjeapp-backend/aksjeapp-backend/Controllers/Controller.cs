@@ -1,10 +1,8 @@
-﻿using Microsoft.AspNetCore.Mvc;
-
-namespace test_backend.Controllers
+﻿namespace aksjeapp_backend.Controllers
 {
-
+    /*
     [Route("[controller]/[action]")]
-    public class ExampleController : Controller
+    public class ExampleController : ControllerBase
     {
         [HttpGet]
         public JsonResult Example()
@@ -12,4 +10,5 @@ namespace test_backend.Controllers
             return Json("Default action...");
         }
     }
+    */
 }

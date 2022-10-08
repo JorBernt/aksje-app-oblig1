@@ -10,9 +10,9 @@ namespace aksjeapp_backend.Models
         [JsonProperty("open")]
         public double OpenPrice { get; set; } // Bruker kun åpnings pris
 
-        /*[JsonProperty("close")]
+        [JsonProperty("close")]
         public double ClosePrice { get; set; }   
 
-        */
+        
     }
 }

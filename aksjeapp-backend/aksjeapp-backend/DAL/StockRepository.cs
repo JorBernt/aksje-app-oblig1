@@ -30,7 +30,7 @@ namespace aksjeapp_backend.DAL
         {
             // Gets todays date
             string date = GetTodaysDate();
-            Console.WriteLine(date);
+            
             try
             {
                 //Get todays price and and set the todays date
@@ -46,7 +46,7 @@ namespace aksjeapp_backend.DAL
                     Number = number,
                     TotalPrice = totalPrice
                 };
-                Console.WriteLine("Buying stock");
+                
                 var customer = await _db.Customers.FindAsync(socialSecurityNumber);
 
                 if (customer == null)
@@ -54,7 +54,7 @@ namespace aksjeapp_backend.DAL
                     return false;
                 }
                 customer.Transactions.Add(stockTransaction);
-
+                customer.Balance -= stockTransaction.TotalPrice;
                 await _db.SaveChangesAsync();
 
                 return true;
@@ -69,21 +69,30 @@ namespace aksjeapp_backend.DAL
 
         public async Task<bool> SellStock(string socialSecurityNumber, string symbol, int number)
         {
+            OpenCloseStockPrice stockPrice;
+            int number1 = number;
             try
             {
                 var customer = await _db.Customers.FindAsync(socialSecurityNumber);
+
+                //Breaks if we cant find customer
                 if (customer == null)
                 {
                     return false;
                 }
+
                 // Finds transactions
                 List<Transaction> transactions = customer.Transactions.Where(k => k.Symbol == symbol && k.IsActive == true).ToList();
 
+                stockPrice = await PolygonAPI.GetOpenClosePrice(symbol, GetTodaysDate());
+
                 for (int i = 0; i < transactions.Count; i++)
                 {
+                    
                     if (transactions[i].Number > number)
                     {
-                        var stockPrice = await PolygonAPI.GetOpenClosePrice(symbol, GetTodaysDate());
+                        
+                        
                         // Need to split transaction since we are not selling the same amount we bought.
                         var transaction = new Transaction()
                         {
@@ -92,7 +101,7 @@ namespace aksjeapp_backend.DAL
                             Symbol = transactions[i].Symbol,
                             Number = transactions[i].Number - number
                         };
-                        transaction.TotalPrice = stockPrice.OpenPrice * transaction.Number; // Updates after since we need stock number to be updated
+                        transaction.TotalPrice = stockPrice.ClosePrice * transaction.Number; // Updates after since we need stock number to be updated
 
                         transactions[i].IsActive = false;
                         
@@ -105,7 +114,6 @@ namespace aksjeapp_backend.DAL
                         var transaction = transactions[i];
                         number -= transaction.Number;
                         transactions[i].IsActive = false;
-                        //customer.Transactions.Add(transaction);
 
                     }
                     else if (transactions[i].Number == number)
@@ -122,8 +130,8 @@ namespace aksjeapp_backend.DAL
 
                 }
 
-                if (number == 0)
-                {
+                if (number == 0){
+                    customer.Balance -= stockPrice.ClosePrice * (double) number1;
                     await _db.SaveChangesAsync();
 
                     return true;

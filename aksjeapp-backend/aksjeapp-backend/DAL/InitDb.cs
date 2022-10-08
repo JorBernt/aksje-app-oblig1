@@ -37,6 +37,7 @@ namespace aksjeapp_backend.DAL
                     FirstName = "Line",
                     LastName = "Jensen",
                     Address = "Karl Johansgate 3",
+                    Balance = 100_000,
                     PostalArea = postalArea1
                 };
                 context.Customers.Add(customer1);

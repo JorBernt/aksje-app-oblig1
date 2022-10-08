@@ -3,7 +3,8 @@ import './App.css';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import LandingPage from "./components/Pages/LandingPage";
 import ProfilePage from "./components/Pages/ProfilePage";
-import StockPage from "./components/Pages/StockPage";
+import SingleStockPage from "./components/Pages/SingleStockPage";
+import Stocks from "./components/Pages/Stocks";
 
 function App() {
     return (
@@ -11,7 +12,8 @@ function App() {
             <Routes>
                 <Route path="/" element={<LandingPage/>}/>
                 <Route path="/profile" element={<ProfilePage/>}/>
-                <Route path="/stocks" element={<StockPage/>}/>
+                <Route path="/singleStock" element={<SingleStockPage/>}/>
+                <Route path="/stocks" element={<Stocks/>}/>
             </Routes>
         </Router>
     );

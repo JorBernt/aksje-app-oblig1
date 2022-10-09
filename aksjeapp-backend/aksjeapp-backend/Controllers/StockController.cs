@@ -33,5 +33,29 @@ namespace aksjeapp_backend.Controller
         {
             return await _db.SellStock(socialSecurityNumber, symbol.ToUpper(), number);
         }
+
+        public async Task<List<Stock>> SearchResults(string keyPhrase)
+        {
+            return await _db.ReturnSearchResults(keyPhrase.ToUpper());
+        }
+
+        public async Task<List<Transaction>> GetAllTransactions(string socialSecurityNumber)
+        {
+            return await _db.GetAllTransactions(socialSecurityNumber);
+        }
+
+        public async Task<Transaction> GetTransaction(string socialSecurityNumber, int id)
+        {
+            return await _db.GetTransaction(socialSecurityNumber, id);
+        }
+        public async Task<bool> UpdateTransaction(Transaction transaction)
+        {
+            return await _db.UpdateTransaction(transaction);
+        }
+        public async Task<bool> DeleteTransaction(string socialSecurityNumber, int id)
+        {
+            return await _db.DeleteTransaction(socialSecurityNumber, id);
+        }
+
     }
 }

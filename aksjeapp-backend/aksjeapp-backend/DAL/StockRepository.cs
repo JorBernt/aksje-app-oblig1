@@ -30,7 +30,7 @@ namespace aksjeapp_backend.DAL
         {
             // Gets todays date
             string date = GetTodaysDate();
-            
+
             try
             {
                 //Get todays price and and set the todays date
@@ -43,10 +43,10 @@ namespace aksjeapp_backend.DAL
                     Date = date,
                     SocialSecurityNumber = socialSecurityNumber,
                     Symbol = symbol,
-                    Number = number,
+                    Amount = number,
                     TotalPrice = totalPrice
                 };
-                
+
                 var customer = await _db.Customers.FindAsync(socialSecurityNumber);
 
                 if (customer == null)
@@ -88,35 +88,35 @@ namespace aksjeapp_backend.DAL
 
                 for (int i = 0; i < transactions.Count; i++)
                 {
-                    
-                    if (transactions[i].Number > number)
+
+                    if (transactions[i].Amount > number)
                     {
-                        
-                        
+
+
                         // Need to split transaction since we are not selling the same amount we bought.
                         var transaction = new Transaction()
                         {
                             SocialSecurityNumber = transactions[i].SocialSecurityNumber,
                             Date = GetTodaysDate(),
                             Symbol = transactions[i].Symbol,
-                            Number = transactions[i].Number - number
+                            Amount = transactions[i].Amount - number
                         };
-                        transaction.TotalPrice = stockPrice.ClosePrice * transaction.Number; // Updates after since we need stock number to be updated
+                        transaction.TotalPrice = stockPrice.ClosePrice * transaction.Amount; // Updates after since we need stock number to be updated
 
                         transactions[i].IsActive = false;
-                        
+
                         customer.Transactions.Add(transaction);
                         number = 0;
                         break;
                     }
-                    else if (transactions[i].Number < number)
+                    else if (transactions[i].Amount < number)
                     {
                         var transaction = transactions[i];
-                        number -= transaction.Number;
+                        number -= transaction.Amount;
                         transactions[i].IsActive = false;
 
                     }
-                    else if (transactions[i].Number == number)
+                    else if (transactions[i].Amount == number)
                     {
                         transactions[i].IsActive = false;
                         number = 0;
@@ -130,8 +130,9 @@ namespace aksjeapp_backend.DAL
 
                 }
 
-                if (number == 0){
-                    customer.Balance -= stockPrice.ClosePrice * (double) number1;
+                if (number == 0)
+                {
+                    customer.Balance -= stockPrice.ClosePrice * (double)number1;
                     await _db.SaveChangesAsync();
 
                     return true;
@@ -143,6 +144,116 @@ namespace aksjeapp_backend.DAL
                 return false;
             }
         }
+
+        public async Task<List<Stock>> ReturnSearchResults(string keyPhrase)
+        {
+            if (keyPhrase != "")
+            {
+                var stocks = await _db.Stocks.Where(k => k.Symbol.Contains(keyPhrase) || k.Name.ToUpper().Contains(keyPhrase) || k.Country.ToUpper().Contains(keyPhrase) || k.Sector.ToUpper().Contains(keyPhrase)).OrderBy(k => k.Name).ToListAsync();
+                return stocks;
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+        public async Task<List<Transaction>> GetAllTransactions(string socialSecurityNumber)
+        {
+            // Checks if socialSecuritynumber is correct
+            var customer = await _db.Customers.FindAsync(socialSecurityNumber);
+
+            if (customer != null)
+            {
+                // Lists all transactions that belongs to the owner
+                var transactions = customer.Transactions.Where(k => k.IsActive == true).ToList();
+                return transactions;
+            }
+            return null;
+        }
+
+        public async Task<Transaction> GetTransaction(string socialSecurityNumber, int id)
+        {
+            // Checks if socialSecuritynumber is correct
+            var customer = await _db.Customers.FindAsync(socialSecurityNumber);
+            if (customer != null)
+            {
+                Transaction transaction = _db.Transactions.Find(id);
+                return transaction;
+            }
+            return null;
+        }
+
+        // It is only possible to change transaction after you have bought it, you cannot change it if you sold
+        public async Task<bool> UpdateTransaction(Transaction changeTransaction)
+        {
+            try
+            {
+                var customer = await _db.Customers.FindAsync(changeTransaction.SocialSecurityNumber);
+                if (customer != null)
+                {
+                    Transaction transaction = await _db.Transactions.FindAsync(changeTransaction.Id);
+                    if (GetTodaysDate() == transaction.Date && transaction.IsActive == true)
+                    {
+                        //Removes transaction price from customers balance
+                        customer.Balance += transaction.TotalPrice;
+
+                        // Gets todays price for the new stock
+                        var stockPrice = await PolygonAPI.GetOpenClosePrice(changeTransaction.Symbol, GetTodaysDate());
+
+                        transaction.Symbol = changeTransaction.Symbol;
+                        transaction.Amount = changeTransaction.Amount;
+                        transaction.TotalPrice = stockPrice.ClosePrice * changeTransaction.Amount;
+
+                        customer.Balance -= transaction.TotalPrice;
+                        await _db.SaveChangesAsync();
+                        return true;
+                    }
+                    Console.WriteLine("Transaction is too old to change, you could sell it and buy it again");
+                }
+                return false;
+            }
+            catch
+            {
+                Console.Write("Could not update stock");
+                return false;
+            }
+        }
+        public async Task<bool> DeleteTransaction(string socialSecurityNumber, int id)
+        {
+            try
+            {
+                var customer = await _db.Customers.FindAsync(socialSecurityNumber);
+                if (customer != null)
+                {
+                    Transaction transaction = _db.Transactions.Find(id);
+
+                    // Deletes transaction that is still active
+                    if (GetTodaysDate() == transaction.Date && transaction.IsActive == true)
+                    {
+                        _db.Transactions.Remove(transaction);
+                        customer.Balance += transaction.TotalPrice; //Updates balance for customer
+                        await _db.SaveChangesAsync();
+                        return true;
+
+                    }
+                    else
+                    {
+                        _db.Transactions.Remove(transaction);
+                        await _db.SaveChangesAsync();
+                        return true;
+                    }
+                }
+                // If the customer is not in the database
+                return false;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+
         public static string GetTodaysDate()
         {
             DateTime date1 = DateTime.Now;
@@ -150,7 +261,8 @@ namespace aksjeapp_backend.DAL
             string date = date1.Year + "-" + month.ToString("D2") + "-" + date1.Day.ToString("D2");
             return date;
         }
-    }
 
+
+    }
 
 }

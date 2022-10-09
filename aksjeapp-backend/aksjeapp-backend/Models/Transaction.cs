@@ -13,7 +13,7 @@ namespace aksjeapp_backend.Models
         public string SocialSecurityNumber { get; set; }
         public string Date { get; set; }
         public string Symbol { get; set; }
-        public int Number { get; set; }
+        public int Amount { get; set; }
         public double TotalPrice { get; set; }
         public bool IsActive { get; set; } = true; //This will be false if we sell stocks and we sell the amount this transaction is for
 

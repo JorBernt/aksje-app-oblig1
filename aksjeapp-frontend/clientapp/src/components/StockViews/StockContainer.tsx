@@ -162,7 +162,7 @@ const StockContainer = (props: Props) => {
                     <p className="text-center">Value</p>
                 </div>
                 <hr className="pb-1 border-stock-preview-text-1"/>
-                <div className="w-max px-5 h-96 scroll max-h-screen overflow-y-auto
+                <div className="w-max px-5 h-[28.5rem] scroll max-h-screen overflow-y-auto
                 scrollbar scrollbar-track-white scrollbar-thumb-rounded-3xl scrollbar-thin scrollbar-thumb-blue-700 scrollbar">
                     {sorted.map((val) => {
                         counter++;

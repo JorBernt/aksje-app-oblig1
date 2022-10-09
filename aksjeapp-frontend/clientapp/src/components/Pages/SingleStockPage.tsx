@@ -14,12 +14,12 @@ const stockData = {
     "turnover": 1386098
 };
 
-const StockPage = () => {
+const SingleStockPage = () => {
     return (
         <>
             <div>
                 <Navbar/>
-                <h1 className="text-center font-semi text-5xl bold py-10">Stocks</h1>
+                <h1 className="text-center font-semi text-5xl bold py-10">{stockData.name}</h1>
                 <div className="flex justify-center">
                     <SingleStockView stockData={stockData}/>
                 </div>
@@ -33,4 +33,4 @@ const StockPage = () => {
     )
 }
 
-export default StockPage;
+export default SingleStockPage;

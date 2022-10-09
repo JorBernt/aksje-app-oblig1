@@ -4,7 +4,7 @@ type Props = {
     color?: string
 }
 
-const TextDisplay = (props: Props) => {
+const DataDisplay = (props: Props) => {
     return (
         <>
             <div className="pt-2.5 pb-2.5 text-text-display bg-transparent">
@@ -14,4 +14,4 @@ const TextDisplay = (props: Props) => {
         </>
     )
 }
-export default TextDisplay;
+export default DataDisplay;

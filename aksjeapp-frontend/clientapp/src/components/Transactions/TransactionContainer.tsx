@@ -1,7 +1,7 @@
 import React from "react";
 import TransactionPreview from "./TransactionPreview";
 
-const TransactionHistory = () => {
+const TransactionContainer = () => {
     const testTransaction = [
         {time: "09-10-2022 17:02", price: 105.20, amount: 4800},
         {time: "09-10-2022 17:02", price: 105.20, amount: 4800},
@@ -57,4 +57,4 @@ const TransactionHistory = () => {
         </>
     )
 }
-export default TransactionHistory;
+export default TransactionContainer;

@@ -1,7 +1,7 @@
 import Navbar from "../Navbar/Navbar";
 import SingleStockView from "../StockViews/SingleStockView";
 import Card from "../UI/Card/Card";
-import TransactionHistory from "../Transactions/TransactionHistory";
+import TransactionContainer from "../Transactions/TransactionContainer";
 
 const stockData = {
     "name": "Porsche AG",
@@ -26,7 +26,7 @@ const SingleStockPage = () => {
                         <SingleStockView stockData={stockData}/>
                     </div>
                     <Card customCss="h-1/2 p-5 m-5">
-                        <TransactionHistory/>
+                        <TransactionContainer/>
                     </Card>
                 </div>
                 <div className="flex justify-center">

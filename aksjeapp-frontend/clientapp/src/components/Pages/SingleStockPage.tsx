@@ -1,6 +1,7 @@
 import Navbar from "../Navbar/Navbar";
 import SingleStockView from "../StockViews/SingleStockView";
 import Card from "../UI/Card/Card";
+import TransactionHistory from "../Transactions/TransactionHistory";
 
 const stockData = {
     "name": "Porsche AG",
@@ -20,8 +21,13 @@ const SingleStockPage = () => {
             <div>
                 <Navbar/>
                 <h1 className="text-center font-semi text-5xl bold py-10">{stockData.name}</h1>
-                <div className="flex justify-center">
-                    <SingleStockView stockData={stockData}/>
+                <div className="flex flex-row justify-center">
+                    <div className="flex justify-center">
+                        <SingleStockView stockData={stockData}/>
+                    </div>
+                    <Card>
+                        <TransactionHistory/>
+                    </Card>
                 </div>
                 <div className="flex justify-center">
                     <Card>

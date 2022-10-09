@@ -151,7 +151,7 @@ const StockContainer = (props: Props) => {
     return (
         <>
             <div className="justify-center flex-row px-0">
-                <div className="flex justify-center text-stock-preview-text-1 pb-2">
+                <div className="flex justify-center text-black pb-2">
                     <h1 className="font-bold">{props.text}</h1>
                 </div>
                 <div className={headers}>
@@ -161,9 +161,9 @@ const StockContainer = (props: Props) => {
                     <p className="text-center">Change</p>
                     <p className="text-center">Value</p>
                 </div>
-                <hr className="pb-1 border-stock-preview-text-1"/>
+                <hr className="pb-1 border-black"/>
                 <div className="w-max px-5 h-[28.5rem] scroll max-h-screen overflow-y-auto
-                scrollbar scrollbar-track-white scrollbar-thumb-rounded-3xl scrollbar-thin scrollbar-thumb-blue-700 scrollbar">
+                scrollbar scrollbar-track-white scrollbar-thumb-rounded-3xl scrollbar-thin scrollbar-thumb-blue-700">
                     {sorted.map((val) => {
                         counter++;
                         return counter % 2 === 0 ?

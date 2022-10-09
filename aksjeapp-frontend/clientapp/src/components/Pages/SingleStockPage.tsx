@@ -25,7 +25,7 @@ const SingleStockPage = () => {
                     <div className="flex justify-center">
                         <SingleStockView stockData={stockData}/>
                     </div>
-                    <Card>
+                    <Card customCss="h-1/2 p-5 m-5">
                         <TransactionHistory/>
                     </Card>
                 </div>

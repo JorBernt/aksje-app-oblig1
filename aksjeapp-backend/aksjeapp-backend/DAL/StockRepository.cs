@@ -158,6 +158,33 @@ namespace aksjeapp_backend.DAL
             }
         }
 
+        public async Task<List<Transaction>> GetAllTransactions(string socialSecurityNumber)
+        {
+            // Lists all transactions that belongs to the owner
+            List<Transaction> transactions = await _db.Transactions.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
+            return transactions;
+        }
+        public async Task<List<Transaction>> GetAllActiveTransactions(string socialSecurityNumber)
+        {
+            // Lists all transactions that belongs to the owner that is active
+            List<Transaction> transactions = await _db.Transactions.Where(k => k.SocialSecurityNumber == socialSecurityNumber && k.IsActive == true).ToListAsync();
+            return transactions;
+        }
+
+        public async Task<Transaction> GetTransaction(string socialSecurityNumber, int id)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<bool> UpdateTransaction(Transaction transaction)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<bool> DeleteTransaction(string socialSecurityNumber, int id)
+        {
+            throw new NotImplementedException();
+        }
+
+
         public static string GetTodaysDate()
         {
             DateTime date1 = DateTime.Now;

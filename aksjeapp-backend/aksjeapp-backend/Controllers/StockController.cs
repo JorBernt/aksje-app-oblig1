@@ -41,7 +41,12 @@ namespace aksjeapp_backend.Controller
 
         public async Task<List<Transaction>> GetAllTransactions(string socialSecurityNumber)
         {
-            throw new NotImplementedException();
+            return await _db.GetAllTransactions(socialSecurityNumber);
+        }
+        public async Task<List<Transaction>> GetAllActiveTransactions(string socialSecurityNumber)
+        {
+            // Lists all transactions that belongs to the owner that is active
+            return await _db.GetAllActiveTransactions(socialSecurityNumber);
         }
 
         public async Task<Transaction> GetTransaction(string socialSecurityNumber, int id)

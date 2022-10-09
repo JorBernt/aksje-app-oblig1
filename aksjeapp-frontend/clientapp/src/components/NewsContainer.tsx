@@ -14,7 +14,7 @@ const NewsContainer = () => {
                 </div>
                 <hr className="border-text-display mb-1"/>
                 <div
-                    className="scroll h-[28.5rem] overflow-y-auto scrollbar scrollbar-track-white scrollbar-thumb-rounded-3xl scrollbar-thin scrollbar-thumb-gray-300 scrollbar">
+                    className="scroll h-[28.5rem] overflow-y-auto pr-0.5 scrollbar scrollbar-track-white scrollbar-thumb-rounded-3xl scrollbar-thin scrollbar-thumb-gray-300 scrollbar">
                     <NewsDisplay title={"Another red day on the market"} date="08-10-2022 08:32"
                                  content={"Market remains under pressure as..."}
                                  affectedStocks="AAPL, AMZN, MSFT, GOOGL, SHOP, TSLA, META"/>

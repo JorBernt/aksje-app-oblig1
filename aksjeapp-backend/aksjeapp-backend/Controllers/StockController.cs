@@ -38,5 +38,24 @@ namespace aksjeapp_backend.Controller
         {
             return await _db.ReturnSearchResults(keyPhrase.ToUpper());
         }
+
+        public async Task<List<Transaction>> GetAllTransactions(string socialSecurityNumber)
+        {
+            throw new NotImplementedException();
+        }
+
+        public async Task<Transaction> GetTransaction(string socialSecurityNumber, int id)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<bool> UpdateTransaction(Transaction transaction)
+        {
+            throw new NotImplementedException();
+        }
+        public async Task<bool> DeleteTransaction(string socialSecurityNumber, int id)
+        {
+            throw new NotImplementedException();
+        }
+        
     }
 }

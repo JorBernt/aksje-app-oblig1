@@ -2,6 +2,7 @@ import Navbar from "../Navbar/Navbar";
 import SingleStockView from "../StockViews/SingleStockView";
 import Card from "../UI/Card/Card";
 import TransactionContainer from "../Transactions/TransactionContainer";
+import StockBuySell from "../StockViews/StockBuySell";
 
 const stockData = {
     "name": "Porsche AG",
@@ -25,14 +26,19 @@ const SingleStockPage = () => {
                     <div className="flex justify-center">
                         <SingleStockView stockData={stockData}/>
                     </div>
-                    <Card customCss="h-1/2 p-5 m-5">
-                        <TransactionContainer/>
-                    </Card>
+                    <div className="flex flex-col">
+                        <Card customCss="h-1/2 p-5 m-5">
+                            <TransactionContainer/>
+                        </Card>
+                        <Card >
+                            <div className="flex flex-col justify-between">
+                                <StockBuySell/>
+                            </div>
+                        </Card>
+                    </div>
                 </div>
                 <div className="flex justify-center">
-                    <Card>
-                        <h1 className="text-center font-semibold">Buy and Sell buttons</h1>
-                    </Card>
+
                 </div>
             </div>
         </>

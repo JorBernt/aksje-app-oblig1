@@ -8,8 +8,8 @@ const LandingPage = () => {
     const stockData = {
         "name": "Porsche AG",
         "last": 90.78,
-        "todayPercent": "+3.25%",
-        "todayDifference": "-1.86",
+        "todayPercent": 3.25,
+        "todayDifference": -1.86,
         "buy": 90.78,
         "sell": 90.80,
         "high": 93.70,

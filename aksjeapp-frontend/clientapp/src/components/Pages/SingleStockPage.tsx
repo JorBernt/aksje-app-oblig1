@@ -37,12 +37,12 @@ const SingleStockPage = () => {
                         </Card>
                         <Card>
                             <div className="flex flex-col justify-between">
-                                <StockBuySell data={"Buy"} className="bg-green-500"/>
+                                <StockBuySell data={"Buy"} className="bg-green-500 hover:shadow-green-300"/>
                             </div>
                         </Card>
                         <Card >
                             <div className="flex flex-col justify-between">
-                                <StockBuySell data={"Sell"} className="bg-red-500"/>
+                                <StockBuySell data={"Sell"} className="bg-red-500 hover:shadow-red-300"/>
                             </div>
                         </Card>
                     </div>

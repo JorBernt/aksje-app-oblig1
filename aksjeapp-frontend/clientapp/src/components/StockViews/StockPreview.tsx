@@ -1,4 +1,5 @@
 import React, {FC} from 'react';
+import {colorHandler} from "./SingleStockView";
 
 interface PropsObject {
     amount?: number;
@@ -14,9 +15,7 @@ type Props = {
 }
 
 const StockPreview : FC<Props> = (props: Props) => {
-    const redOrGreen = props.items.difference > 0 ?
-        <p className="py-1 text-green-500 text-center">{"+" + props.items.difference + "%"}</p> :
-        <p className="py-1 text-red-500 text-center">{props.items.difference + "%"}</p>
+    const redOrGreen = "py-1 text-center " + colorHandler(props.items.difference);
     const ifAmount = props.showAmount ? <p className="py-1 text-center">{props.items.amount}</p> : null
 
     const cols = "grid w-96 " + (props.showAmount ? "grid-cols-5" : "grid-cols-4")
@@ -25,7 +24,7 @@ const StockPreview : FC<Props> = (props: Props) => {
             <p className="py-1 pl-4 text-center">{props.items.name}</p>
             {ifAmount}
             <p className="py-1 text-center">{props.items.chart}</p>
-            {redOrGreen}
+            <p className={redOrGreen}>{"+" + props.items.difference + "%"}</p>
             <p className="py-1 pr-4 text-center">{"$" + props.items.value}</p>
         </div>
     );

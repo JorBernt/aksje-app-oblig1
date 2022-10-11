@@ -7,14 +7,15 @@ type Props = {
 
 const StockBuySell = (props: Props) => {
 
-    const className = "hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full m-4 hover:shadow-xl hover:shadow-red-300 w-40 transition duration-300 " + props.className;
+    const className = "text-white font-bold py-2 px-4 rounded-full m-4 hover:shadow-xl w-40 transition duration-300 " + props.className;
+    const antall = "Antall";
 
     return (
         <>
 
             <div className="flex flex-col">
                 <div className="flex flex-col justify-center">
-                    <p className="flex flex-row justify-center text-2xl">Antall</p>
+                    <p className="flex flex-row justify-center text-2xl">{antall}</p>
                     <input
                         className="w-200 bg-transparent focus:border focus:border-pink-500 rounded pl-4 border border-black"
                         type="number"/>

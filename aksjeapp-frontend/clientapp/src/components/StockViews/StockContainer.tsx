@@ -33,11 +33,6 @@ const StockContainer = (props: Props) => {
                     console.log(e.message)
                 }))
     }, [])
-    useEffect(() => {
-        if (!showLoading && view.current != null)
-            console.log(view.current?.className)
-
-    }, [showLoading])
     let counter: number = -1;
     const headers = "text-stock-preview-text-1 grid px-5 " + (props.showAmount ? "grid-cols-5" : "grid-cols-4");
     return (

@@ -17,6 +17,7 @@ namespace aksjeapp_backend.Controller
 
         public async Task<List<Stock>> GetAllStocks()
         {
+            Thread.Sleep(1000);
             return await _db.GetAllStocks();
         }
         public async Task<StockPrices> GetStockPrices(string symbol, string fromDate, string toDate) // dato skal skrives som "YYYY-MM-DD"

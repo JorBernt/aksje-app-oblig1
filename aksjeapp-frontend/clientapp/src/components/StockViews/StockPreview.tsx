@@ -1,4 +1,5 @@
 import React, {FC} from 'react';
+import {colorHandler} from "./SingleStockView";
 import {Stock} from "./StockContainer";
 
 interface PropsObject {

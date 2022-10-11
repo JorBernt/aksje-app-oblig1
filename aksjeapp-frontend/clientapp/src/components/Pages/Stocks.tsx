@@ -12,7 +12,7 @@ const Stocks = () => {
                 <div className="flex flex-row justify-center">
                     <div className="flex justify-center">
                         <Card>
-                            <StockContainer text="All stocks" showAmount={false} sorted="valAsc"/>
+                            <StockContainer text="All stocks" showAmount={false} sorted="valAsc" height="h-[28.5rem]"/>
                         </Card>
                     </div>
                     <div>

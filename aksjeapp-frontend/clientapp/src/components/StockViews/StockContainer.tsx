@@ -1,5 +1,5 @@
 import StockPreview from "./StockPreview";
-import React from "react";
+import React, {useEffect, useRef, useState} from "react";
 
 type Props = {
     text: String;
@@ -7,152 +7,44 @@ type Props = {
     sorted: string;
 }
 
+export interface Stock {
+    country : string;
+    name : string;
+    sector : string;
+    symbol : string;
+}
+
 const StockContainer = (props: Props) => {
-    const data = [{id: 0, name: "TCEHY", amount: 950, chart: "chart", difference: 4.01, value: 60.29},
-        {name: "AMZN", amount: 120, chart: "chart", difference: -1.09, value: 80.10},
-        {name: "TSLA", amount: 100000, chart: "chart", difference: 3.48, value: 90.81},
-        {name: "MSFT", amount: 50, chart: "chart", difference: 30.91, value: 211.21},
-        {name: "GOOGL", amount: 1500, chart: "chart", difference: 2.45, value: 82.45},
-        {name: "BRK-B", amount: 1700, chart: "chart", difference: -1.80, value: 89.92},
-        {name: "NVDA", amount: 800, chart: "chart", difference: 2.10, value: 34.90},
-        {name: "TSM", amount: 500, chart: "chart", difference: 12.22, value: 12.60},
-        {name: "AAPL", amount: 200, chart: "chart", difference: 2.56, value: 100.45},
-        {name: "2222.SR", amount: 500, chart: "chart", difference: -2.08, value: 80.10},
-        {name: "UNH", amount: 900, chart: "chart", difference: -2.48, value: 90.81},
-        {name: "JNJ", amount: 1000, chart: "chart", difference: -4.72, value: 211.21},
-        {name: "XOM", amount: 1000, chart: "chart", difference: 2.28, value: 82.45},
-        {name: "V", amount: 10000, chart: "chart", difference: -9.30, value: 89.92},
-        {name: "META", amount: 83000, chart: "chart", difference: 2.90, value: 34.90},
-        {name: "WMT", amount: 9000, chart: "chart", difference: 15.32, value: 12.60},
-        {name: "AMZN", amount: 120, chart: "chart", difference: -1.09, value: 80.10},
-        {name: "TSLA", amount: 100000, chart: "chart", difference: 3.48, value: 90.81},
-        {name: "MSFT", amount: 50, chart: "chart", difference: 30.91, value: 211.21},
-        {name: "GOOGL", amount: 1500, chart: "chart", difference: 2.45, value: 82.45},
-        {name: "BRK-B", amount: 1700, chart: "chart", difference: -1.80, value: 89.92},
-        {name: "NVDA", amount: 800, chart: "chart", difference: 2.10, value: 34.90},
-        {name: "TSM", amount: 500, chart: "chart", difference: 12.22, value: 12.60},
-        {name: "AAPL", amount: 200, chart: "chart", difference: 2.56, value: 100.45},
-        {name: "2222.SR", amount: 500, chart: "chart", difference: -2.08, value: 80.10},
-        {name: "UNH", amount: 900, chart: "chart", difference: -2.48, value: 90.81},
-        {name: "JNJ", amount: 1000, chart: "chart", difference: -4.72, value: 211.21},
-        {name: "XOM", amount: 1000, chart: "chart", difference: 2.28, value: 82.45},
-        {name: "V", amount: 10000, chart: "chart", difference: -9.30, value: 89.92},
-        {name: "META", amount: 83000, chart: "chart", difference: 2.90, value: 34.90},
-        {name: "WMT", amount: 9000, chart: "chart", difference: 15.32, value: 12.60},
-        {name: "AMZN", amount: 120, chart: "chart", difference: -1.09, value: 80.10},
-        {name: "TSLA", amount: 100000, chart: "chart", difference: 3.48, value: 90.81},
-        {name: "MSFT", amount: 50, chart: "chart", difference: 30.91, value: 211.21},
-        {name: "GOOGL", amount: 1500, chart: "chart", difference: 2.45, value: 82.45},
-        {name: "BRK-B", amount: 1700, chart: "chart", difference: -1.80, value: 89.92},
-        {name: "NVDA", amount: 800, chart: "chart", difference: 2.10, value: 34.90},
-        {name: "TSM", amount: 500, chart: "chart", difference: 12.22, value: 12.60},
-        {name: "AAPL", amount: 200, chart: "chart", difference: 2.56, value: 100.45},
-        {name: "2222.SR", amount: 500, chart: "chart", difference: -2.08, value: 80.10},
-        {name: "UNH", amount: 900, chart: "chart", difference: -2.48, value: 90.81},
-        {name: "JNJ", amount: 1000, chart: "chart", difference: -4.72, value: 211.21},
-        {name: "XOM", amount: 1000, chart: "chart", difference: 2.28, value: 82.45},
-        {name: "V", amount: 10000, chart: "chart", difference: -9.30, value: 89.92},
-        {name: "META", amount: 83000, chart: "chart", difference: 2.90, value: 34.90},
-        {name: "WMT", amount: 9000, chart: "chart", difference: 15.32, value: 12.60},
-        {name: "MSFT", amount: 50, chart: "chart", difference: 30.91, value: 211.21},
-        {name: "GOOGL", amount: 1500, chart: "chart", difference: 2.45, value: 82.45},
-        {name: "BRK-B", amount: 1700, chart: "chart", difference: -1.80, value: 89.92},
-        {name: "NVDA", amount: 800, chart: "chart", difference: 2.10, value: 34.90},
-        {name: "TSM", amount: 500, chart: "chart", difference: 12.22, value: 12.60},
-        {name: "AAPL", amount: 200, chart: "chart", difference: 2.56, value: 100.45},
-        {name: "2222.SR", amount: 500, chart: "chart", difference: -2.08, value: 80.10},
-        {name: "UNH", amount: 900, chart: "chart", difference: -2.48, value: 90.81},
-        {name: "JNJ", amount: 1000, chart: "chart", difference: -4.72, value: 211.21},
-        {name: "XOM", amount: 1000, chart: "chart", difference: 2.28, value: 82.45},
-        {name: "V", amount: 10000, chart: "chart", difference: -9.30, value: 89.92},
-        {name: "META", amount: 83000, chart: "chart", difference: 2.90, value: 34.90},
-        {name: "WMT", amount: 9000, chart: "chart", difference: 15.32, value: 12.60},
-        {name: "MSFT", amount: 50, chart: "chart", difference: 30.91, value: 211.21},
-        {name: "GOOGL", amount: 1500, chart: "chart", difference: 2.45, value: 82.45},
-        {name: "BRK-B", amount: 1700, chart: "chart", difference: -1.80, value: 89.92},
-        {name: "NVDA", amount: 800, chart: "chart", difference: 2.10, value: 34.90},
-        {name: "TSM", amount: 500, chart: "chart", difference: 12.22, value: 12.60},
-        {name: "AAPL", amount: 200, chart: "chart", difference: 2.56, value: 100.45},
-        {name: "2222.SR", amount: 500, chart: "chart", difference: -2.08, value: 80.10},
-        {name: "UNH", amount: 900, chart: "chart", difference: -2.48, value: 90.81},
-        {name: "JNJ", amount: 1000, chart: "chart", difference: -4.72, value: 211.21},
-        {name: "XOM", amount: 1000, chart: "chart", difference: 2.28, value: 82.45},
-        {name: "V", amount: 10000, chart: "chart", difference: -9.30, value: 89.92},
-        {name: "META", amount: 83000, chart: "chart", difference: 2.90, value: 34.90},
-        {name: "WMT", amount: 9000, chart: "chart", difference: 15.32, value: 12.60},
-        {name: "MSFT", amount: 50, chart: "chart", difference: 30.91, value: 211.21},
-        {name: "GOOGL", amount: 1500, chart: "chart", difference: 2.45, value: 82.45},
-        {name: "BRK-B", amount: 1700, chart: "chart", difference: -1.80, value: 89.92},
-        {name: "NVDA", amount: 800, chart: "chart", difference: 2.10, value: 34.90},
-        {name: "TSM", amount: 500, chart: "chart", difference: 12.22, value: 12.60},
-        {name: "AAPL", amount: 200, chart: "chart", difference: 2.56, value: 100.45},
-        {name: "2222.SR", amount: 500, chart: "chart", difference: -2.08, value: 80.10},
-        {name: "UNH", amount: 900, chart: "chart", difference: -2.48, value: 90.81},
-        {name: "JNJ", amount: 1000, chart: "chart", difference: -4.72, value: 211.21},
-        {name: "XOM", amount: 1000, chart: "chart", difference: 2.28, value: 82.45},
-        {name: "V", amount: 10000, chart: "chart", difference: -9.30, value: 89.92},
-        {name: "META", amount: 83000, chart: "chart", difference: 2.90, value: 34.90},
-        {name: "WMT", amount: 9000, chart: "chart", difference: 15.32, value: 12.60},
-        {name: "MSFT", amount: 50, chart: "chart", difference: 30.91, value: 211.21},
-        {name: "GOOGL", amount: 1500, chart: "chart", difference: 2.45, value: 82.45},
-        {name: "BRK-B", amount: 1700, chart: "chart", difference: -1.80, value: 89.92},
-        {name: "NVDA", amount: 800, chart: "chart", difference: 2.10, value: 34.90},
-        {name: "TSM", amount: 500, chart: "chart", difference: 12.22, value: 12.60},
-        {name: "AAPL", amount: 200, chart: "chart", difference: 2.56, value: 100.45},
-        {name: "2222.SR", amount: 500, chart: "chart", difference: -2.08, value: 80.10},
-        {name: "UNH", amount: 900, chart: "chart", difference: -2.48, value: 90.81},
-        {name: "JNJ", amount: 1000, chart: "chart", difference: -4.72, value: 211.21},
-        {name: "XOM", amount: 1000, chart: "chart", difference: 2.28, value: 82.45},
-        {name: "V", amount: 10000, chart: "chart", difference: -9.30, value: 89.92},
-        {name: "META", amount: 83000, chart: "chart", difference: 2.90, value: 34.90},
-        {name: "WMT", amount: 9000, chart: "chart", difference: 15.32, value: 12.60}];
+    let data : Stock[] = [{country:"",name:"",symbol:"Waiting",sector:""}]
+    let view = React.createRef<HTMLDivElement>();
+    const [stockView, setStockView] = useState(data);
+    const [showLoading, setShowLoading] = useState(true);
+    const [error, setError] = useState(false)
+    useEffect(() => {
+        fetch("https://localhost:7187/Stock/GetAllStocks")
+            .then(response => response.json()
+                .then(response => {
+                setStockView(p => [...response])
+                setShowLoading(false)
 
+            }).catch(e => {
+                setShowLoading(false)
+                setError(true)
+                console.log(e.message)
+            }))
+    },[])
+    useEffect(() => {
+            if(!showLoading && view.current != null)
+            console.log(view.current?.className)
 
-    let sorted;
-    switch (props.sorted) {
-        case "valAsc": {
-            sorted = [...data].sort((a, b) => a.value - b.value);
-            break;
-        }
-        case "valDsc": {
-            sorted = [...data].sort((a, b) => b.value - a.value);
-            break;
-        }
-        case "diffAsc": {
-            sorted = [...data].sort((a, b) => a.difference - b.difference);
-            break;
-        }
-        case "diffDsc": {
-            sorted = [...data].sort((a, b) => b.difference - a.difference);
-            break;
-        }
-        case "nameAsc": {
-            sorted = [...data].sort((a, b) => a.name > b.name ? 1 : -1);
-            break;
-        }
-        case "nameDsc": {
-            sorted = [...data].sort((a, b) => a.name > b.name ? -1 : 1);
-            break;
-        }
-        case "amountAsc": {
-            sorted = [...data].sort((a, b) => a.name > b.name ? 1 : -1);
-            break;
-        }
-        case "amountDsc": {
-            sorted = [...data].sort((a, b) => a.amount - b.amount);
-            break;
-        }
-        default:
-            sorted = [...data].sort((a, b) => b.amount - a.amount);
-    }
-
+    },[showLoading])
     let counter: number = -1;
     const headers = "text-stock-preview-text-1 grid px-5 " + (props.showAmount ? "grid-cols-5" : "grid-cols-4");
     return (
         <>
-            <div className="justify-center flex-row px-0">
+            <div className="justify-center flex-row px-0" >
                 <div className="flex justify-center text-black pb-2">
-                    <h1 className="font-bold">{props.text}</h1>
+                    <h1 className="font-bold" >{props.text} </h1>
                 </div>
                 <div className={headers}>
                     <p className="text-center">Name</p>
@@ -164,19 +56,40 @@ const StockContainer = (props: Props) => {
                 <hr className="pb-1 border-black"/>
                 <div className="w-max px-5 h-[28.5rem] scroll max-h-screen overflow-y-auto
                 scrollbar scrollbar-track-white scrollbar-thumb-rounded-3xl scrollbar-thin scrollbar-thumb-blue-700">
-                    {sorted.map((val) => {
-                        counter++;
-                        return counter % 2 === 0 ?
-                            <div
-                                className="hover:scale-105 hover:bg-gradient-to-br hover:from-white hover:to-gray-200 hover:rounded-lg rounded-lg transition duration-150 ease-in-out text-stock-preview-text-1 font-semibold">
-                                <StockPreview items={val} showAmount={props.showAmount}/>
-                            </div> :
-                            <div
-                                className="hover:scale-105 transition duration-150 ease-in-out bg-gradient-to-tl rounded-lg from-green-500 to-blue-700 text-stock-preview-text-2 font-semibold">
-                                <StockPreview items={val} showAmount={props.showAmount}/>
-                                </div>
-                        }
-                    )}
+                    {error &&
+                        <p className={"w-96 flex justify-center mt-48 text-6xl"}>ERROR!</p>
+                    }
+                    {showLoading && !error &&
+                        <div role="status" className={"w-96 flex justify-center mt-52"}>
+                            <svg
+                                className="inline mr-2 w-10 h-10 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
+                                viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path
+                                    d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                                    fill="currentColor"/>
+                                <path
+                                    d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                                    fill="currentFill"/>
+                            </svg>
+                            <span className="sr-only">Loading...</span>
+                        </div>}
+                    {!showLoading && !error &&
+                        <>
+                            {stockView.map((val) => {
+                                    counter++;
+                                    return counter % 2 === 0 ?
+                                        <div
+                                            className="hover:scale-105 hover:bg-gradient-to-br hover:from-white hover:to-gray-200 hover:rounded-lg rounded-lg transition duration-150 ease-in-out text-stock-preview-text-1 font-semibold" ref={view}>
+                                            <StockPreview key={counter} items={val} showAmount={props.showAmount}/>
+                                        </div> :
+                                        <div
+                                            className="hover:scale-105 transition duration-150 ease-in-out bg-gradient-to-tl rounded-lg from-green-500 to-blue-700 text-stock-preview-text-2 font-semibold">
+                                            <StockPreview key={counter} items={val} showAmount={props.showAmount}/>
+                                        </div>
+                                }
+                            )}
+                        </>
+                    }
                 </div>
             </div>
         </>

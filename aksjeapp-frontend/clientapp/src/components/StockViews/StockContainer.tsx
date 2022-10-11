@@ -1,17 +1,11 @@
 import StockPreview from "./StockPreview";
 import React, {useEffect, useState} from "react";
+import {Stock} from "../models";
 
 type Props = {
     text: String;
     showAmount: boolean;
     sorted: string;
-}
-
-export interface Stock {
-    country: string;
-    name: string;
-    sector: string;
-    symbol: string;
 }
 
 const StockContainer = (props: Props) => {

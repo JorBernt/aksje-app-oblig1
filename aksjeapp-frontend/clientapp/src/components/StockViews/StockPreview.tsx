@@ -1,14 +1,5 @@
 import React, {FC} from 'react';
-import {colorHandler} from "./SingleStockView";
-import {Stock} from "./StockContainer";
-
-interface PropsObject {
-    amount?: number;
-    name: string;
-    chart: string;
-    difference: number;
-    value: number;
-}
+import {Stock} from "../models";
 
 type Props = {
     items: Stock;

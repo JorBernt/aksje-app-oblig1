@@ -1,14 +1,6 @@
 import React, {FC} from 'react';
 import {Stock} from "../models";
 
-interface PropsObject {
-    amount?: number;
-    name: string;
-    chart: string;
-    difference: number;
-    value: number;
-}
-
 type Props = {
     items: Stock;
     showAmount: boolean;

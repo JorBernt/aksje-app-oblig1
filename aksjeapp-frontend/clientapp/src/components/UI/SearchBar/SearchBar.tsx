@@ -23,7 +23,7 @@ const SearchBar: React.FC<Props> = () => {
         <>
             <div
                 className="flex justify-between bg-white rounded-2xl shadow-inner shadow-gray-400 overflow-hidden">
-                <input className="w-80 bg-transparent focus:border focus:border-pink-500 rounded-l-2xl pl-4"
+                <input className="w-[32rem] bg-transparent focus:border focus:border-pink-500 rounded-l-2xl pl-4"
                        style={{outline: "none"}} type="text" placeholder="Search stocks..." ref={input}
                        onChange={search}/>
                 <button
@@ -31,7 +31,7 @@ const SearchBar: React.FC<Props> = () => {
                     Search
                 </button>
                 <div
-                    className={"absolute top-16 z-10 origin-bottom rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none w-80 px-5 scroll overflow-y-auto max-h-96 scrollbar scrollbar-track-white scrollbar-thumb-rounded-3xl scrollbar-thin scrollbar-thumb-blue-700 " + (hidden ? "hidden" : "")}
+                    className={"absolute top-16 z-10 origin-bottom rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none w-[32rem] px-5 scroll overflow-y-auto max-h-96 scrollbar scrollbar-track-white scrollbar-thumb-rounded-3xl scrollbar-thin scrollbar-thumb-blue-700 " + (hidden ? "hidden" : "")}
                     role="menu" aria-orientation="vertical" aria-labelledby="menu-button">
                     {searchResult.length !== 0 &&
                         <div className="py-1" role="none">
@@ -40,7 +40,7 @@ const SearchBar: React.FC<Props> = () => {
                                     <div
                                         className={"flex flex-row justify-between hover:bg-gradient-to-br hover:from-white hover:to-gray-200 hover:rounded-lg transition duration-150 ease-in-out group hover:animate-pulse"}>
                                         <a href="#"
-                                           className="text-gray-700 block px-4 py-2 text-sm hover:scale-105 truncate w-64 group-hover:font-bold"
+                                           className="text-gray-700 block px-4 py-2 text-sm hover:scale-105 truncate w-96 group-hover:font-bold"
                                            role="menuitem"
                                            id="menu-item-0">{data.name}</a>
                                         <a href="#"

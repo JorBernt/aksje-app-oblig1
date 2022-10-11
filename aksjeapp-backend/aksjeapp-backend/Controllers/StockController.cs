@@ -56,6 +56,10 @@ namespace aksjeapp_backend.Controller
         {
             return await _db.DeleteTransaction(socialSecurityNumber, id);
         }
+        public async Task<StockChangeValue> StockChange(string symbol, string fromDate)
+        {
+            return await _db.StockChange(symbol, fromDate);
+        }
 
     }
 }

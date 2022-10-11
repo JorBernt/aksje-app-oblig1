@@ -20,6 +20,5 @@ namespace aksjeapp_backend.Models
         public string Sector { get; set; } = "";
 
 
-
     }
 }

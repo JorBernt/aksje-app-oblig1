@@ -21,7 +21,7 @@ namespace aksjeapp_backend.DAL
         }
         public async Task<StockPrices> GetStockPrices(string symbol, string fromDate, string toDate) // dato skal skrives som "YYYY-MM-DD"
         {
-            var stock = await PolygonAPI.GetStockPrices(symbol, fromDate, toDate);
+            var stock = await PolygonAPI.GetStockPrices(symbol, fromDate, toDate,1);
 
             return stock;
         }
@@ -178,7 +178,7 @@ namespace aksjeapp_backend.DAL
             var customer = await _db.Customers.FindAsync(socialSecurityNumber);
             if (customer != null)
             {
-                Transaction transaction = _db.Transactions.Find(id);
+                Transaction transaction = await _db.Transactions.FindAsync(id);
                 return transaction;
             }
             return null;
@@ -226,7 +226,13 @@ namespace aksjeapp_backend.DAL
                 var customer = await _db.Customers.FindAsync(socialSecurityNumber);
                 if (customer != null)
                 {
-                    Transaction transaction = _db.Transactions.Find(id);
+                    var transaction = _db.Transactions.Find(id);
+
+                    //Returns if the transaction does not exist
+                    if (transaction == null)
+                    {
+                        return false;
+                    }
 
                     // Deletes transaction that is still active
                     if (GetTodaysDate() == transaction.Date && transaction.IsActive == true)
@@ -250,6 +256,38 @@ namespace aksjeapp_backend.DAL
             catch
             {
                 return false;
+            }
+        }
+
+        // Might save to DB to save API calls to polygon
+        public async Task<StockChangeValue> StockChange(string symbol, string fromDate)
+        {
+            try
+            {
+                var stockPrice1 = await PolygonAPI.GetStockPrices(symbol, fromDate, GetTodaysDate(), 1);
+                
+                if (stockPrice1.results != null)
+                {
+                    List<Models.Results> results = stockPrice1.results;
+                
+                    Console.WriteLine(stockPrice1.results);
+                double change = ((results.Last().ClosePrice - results.First().ClosePrice) / results.Last().ClosePrice ) * 100;
+
+                var stockChange = new StockChangeValue()
+                {
+                    Symbol = symbol,
+                    Change = change,
+                    Value = results.Last().ClosePrice
+                };
+                Console.WriteLine(change);
+
+                return stockChange;
+                }
+                return null;
+            }
+            catch
+            {
+                return null;
             }
         }
 

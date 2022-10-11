@@ -10,6 +10,6 @@ namespace aksjeapp_backend.Models
         public string Symbol { get; set; }
 
         [JsonProperty("results")]
-        public List<Results> results { get; set; }
+        public List<Results>? results { get; set; }
     }
 }

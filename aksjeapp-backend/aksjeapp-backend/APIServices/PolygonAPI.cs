@@ -6,7 +6,7 @@ namespace aksjeapp_backend.DAL
     public class PolygonAPI
     {
 
-        public static async Task<StockPrices> GetStockPrices(string symbol, string fromDate, string toDate)
+        public static async Task<StockPrices> GetStockPrices(string symbol, string fromDate, string toDate, int interval)
         {
             const string polygonKey = "C1cckwJuZuvEgVJbCmv42HuUZnJSgjeJ";
 
@@ -14,7 +14,7 @@ namespace aksjeapp_backend.DAL
             {
                 using (var client = new HttpClient())
                 {
-                    var url = new Uri($"https://api.polygon.io/v2/aggs/ticker/{symbol}/range/1/day/{fromDate}/{toDate}?adjusted=true&sort=asc&limit=120&apiKey={polygonKey}");
+                    var url = new Uri($"https://api.polygon.io/v2/aggs/ticker/{symbol}/range/{interval}/day/{fromDate}/{toDate}?adjusted=true&sort=asc&limit=120&apiKey={polygonKey}");
 
                     var responce = await client.GetAsync(url);
                     string json;

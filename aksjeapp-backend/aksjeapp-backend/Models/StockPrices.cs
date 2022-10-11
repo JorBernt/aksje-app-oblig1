@@ -9,7 +9,7 @@ namespace aksjeapp_backend.Models
         [JsonProperty("ticker")]
         public string Symbol { get; set; }
 
-        [JsonProperty("results")]
-        public List<Results> results { get; set; }
+        //[JsonProperty("results")]
+        //public List<Results> results { get; set; }
     }
 }

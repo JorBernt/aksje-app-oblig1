@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-import {Stock} from '../../StockViews/StockContainer'
+import {Stock} from "../../models";
 
 type Props = {}
 
@@ -39,10 +39,11 @@ const SearchBar: React.FC<Props> = () => {
                                 return (
                                     <div
                                         className={"flex flex-row justify-between hover:bg-gradient-to-br hover:from-white hover:to-gray-200 hover:rounded-lg transition duration-150 ease-in-out group hover:animate-pulse"}>
-                                        <a href="#"
+                                        <a href={`/singleStock?symbol=${data.symbol}&name=${data.name}`}
                                            className="text-gray-700 block px-4 py-2 text-sm hover:scale-105 truncate w-96 group-hover:font-bold"
                                            role="menuitem"
-                                           id="menu-item-0">{data.name}</a>
+                                           id="menu-item-0">{data.name}
+                                        </a>
                                         <a href="#"
                                            className=" block px-4 py-2 text-sm text-green-500 font-bold group-hover:text-blue-700 group-hover:animate-spin"
                                            role="menuitem"

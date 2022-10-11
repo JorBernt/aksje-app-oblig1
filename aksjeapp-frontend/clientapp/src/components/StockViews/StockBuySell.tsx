@@ -1,7 +1,13 @@
 import React from "react";
 
+type Props = {
+    data: string;
+    className: string
+};
 
-const StockBuySell = () => {
+const StockBuySell = (props: Props) => {
+
+    const className = "hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full m-4 hover:shadow-xl hover:shadow-red-300 w-40 transition duration-300 " + props.className;
 
     return (
         <>
@@ -15,10 +21,7 @@ const StockBuySell = () => {
                 </div>
                 <div className="flex flex-row justify-center">
                     <button
-                        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-full m-4 hover:shadow-xl hover:shadow-blue-300 w-40 transition duration-300">Buy
-                    </button>
-                    <button
-                        className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full m-4 hover:shadow-xl hover:shadow-red-300 w-40 transition duration-300">Sell
+                        className={className}>{props.data}
                     </button>
                 </div>
 

@@ -1,5 +1,5 @@
 import StockPreview from "./StockPreview";
-import React, {useEffect, useRef, useState} from "react";
+import React, {useEffect, useState} from "react";
 
 type Props = {
     text: String;
@@ -8,14 +8,14 @@ type Props = {
 }
 
 export interface Stock {
-    country : string;
-    name : string;
-    sector : string;
-    symbol : string;
+    country: string;
+    name: string;
+    sector: string;
+    symbol: string;
 }
 
 const StockContainer = (props: Props) => {
-    let data : Stock[] = [{country:"",name:"",symbol:"Waiting",sector:""}]
+    let data: Stock[] = [{country: "", name: "", symbol: "Waiting", sector: ""}]
     let view = React.createRef<HTMLDivElement>();
     const [stockView, setStockView] = useState(data);
     const [showLoading, setShowLoading] = useState(true);
@@ -24,27 +24,22 @@ const StockContainer = (props: Props) => {
         fetch("https://localhost:7187/Stock/GetAllStocks")
             .then(response => response.json()
                 .then(response => {
-                setStockView(p => [...response])
-                setShowLoading(false)
+                    setStockView(p => [...response])
+                    setShowLoading(false)
 
-            }).catch(e => {
-                setShowLoading(false)
-                setError(true)
-                console.log(e.message)
-            }))
-    },[])
-    useEffect(() => {
-            if(!showLoading && view.current != null)
-            console.log(view.current?.className)
-
-    },[showLoading])
+                }).catch(e => {
+                    setShowLoading(false)
+                    setError(true)
+                    console.log(e.message)
+                }))
+    }, [])
     let counter: number = -1;
     const headers = "text-stock-preview-text-1 grid px-5 " + (props.showAmount ? "grid-cols-5" : "grid-cols-4");
     return (
         <>
-            <div className="justify-center flex-row px-0" >
+            <div className="justify-center flex-row px-0">
                 <div className="flex justify-center text-black pb-2">
-                    <h1 className="font-bold" >{props.text} </h1>
+                    <h1 className="font-bold">{props.text} </h1>
                 </div>
                 <div className={headers}>
                     <p className="text-center">Name</p>
@@ -79,7 +74,8 @@ const StockContainer = (props: Props) => {
                                     counter++;
                                     return counter % 2 === 0 ?
                                         <div
-                                            className="hover:scale-105 hover:bg-gradient-to-br hover:from-white hover:to-gray-200 hover:rounded-lg rounded-lg transition duration-150 ease-in-out text-stock-preview-text-1 font-semibold" ref={view}>
+                                            className="hover:scale-105 hover:bg-gradient-to-br hover:from-white hover:to-gray-200 hover:rounded-lg rounded-lg transition duration-150 ease-in-out text-stock-preview-text-1 font-semibold"
+                                            ref={view}>
                                             <StockPreview key={counter} items={val} showAmount={props.showAmount}/>
                                         </div> :
                                         <div

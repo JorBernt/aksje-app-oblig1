@@ -18,7 +18,7 @@ const ProfilePage = () => {
                     </div>
                     <div>
                         <Card color={"default"}>
-                            <StockContainer text="Your stocks" showAmount={true} sorted="valAsc"/>
+                            <StockContainer text="Your stocks" showAmount={true} sorted="valAsc" height="h-[24rem]"/>
                         </Card>
                     </div>
                 </div>

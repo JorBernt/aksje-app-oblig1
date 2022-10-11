@@ -6,6 +6,7 @@ type Props = {
     text: String;
     showAmount: boolean;
     sorted: string;
+    height: string;
 }
 
 const StockContainer = (props: Props) => {
@@ -29,6 +30,7 @@ const StockContainer = (props: Props) => {
     }, [])
     let counter: number = -1;
     const headers = "text-stock-preview-text-1 grid px-5 " + (props.showAmount ? "grid-cols-5" : "grid-cols-4");
+    const className = "w-max px-5 scroll max-h-screen overflow-y-auto scrollbar scrollbar-track-white scrollbar-thumb-rounded-3xl scrollbar-thin scrollbar-thumb-blue-700 " + props.height;
     return (
         <>
             <div className="justify-center flex-row px-0">
@@ -43,8 +45,7 @@ const StockContainer = (props: Props) => {
                     <p className="text-center">Value</p>
                 </div>
                 <hr className="pb-1 border-black"/>
-                <div className="w-max px-5 h-[28.5rem] scroll max-h-screen overflow-y-auto
-                scrollbar scrollbar-track-white scrollbar-thumb-rounded-3xl scrollbar-thin scrollbar-thumb-blue-700">
+                <div className={className}>
                     {error &&
                         <p className={"w-96 flex justify-center mt-48 text-6xl"}>ERROR!</p>
                     }

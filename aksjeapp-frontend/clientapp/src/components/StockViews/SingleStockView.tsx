@@ -19,7 +19,7 @@ const SingleStockView: React.FC<Props> = (props) => {
             <Card color={"default"} customCss="w-max m-5 p-5">
                 <p className="text-5xl text-center pb-5">{stockData.name}</p>
                 <Chart/>
-                <div className="grid grid-rows-3 grid-cols-3 mt-5 ">
+                <div className="grid grid-rows-3 grid-cols-3 mt-5 h-[14rem]">
                     <DataDisplay title={"Name"} content={stockData["name"]}></DataDisplay>
                     <DataDisplay title={"Last"} content={stockData["last"]}></DataDisplay>
                     <DataDisplay title={"Today %"} content={stockData["todayPercent"] + "%"}

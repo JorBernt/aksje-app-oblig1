@@ -60,6 +60,10 @@ namespace aksjeapp_backend.Controller
         {
             return await _db.StockChange(symbol);
         }
+        public async Task<List<StockOverview>> GetStockOverview()
+        {
+            return await _db.GetStockOverview();
+        }
 
     }
 }

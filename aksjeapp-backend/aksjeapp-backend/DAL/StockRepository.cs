@@ -296,6 +296,40 @@ namespace aksjeapp_backend.DAL
             }
         }
 
+        public async Task<List<StockOverview>> GetStockOverview ()
+        {
+            try
+            {
+                var list = new List<StockOverview>();
+
+                var stocks = await _db.Stocks.ToListAsync();
+
+                int counter = 0;
+                foreach (var stock in stocks)
+                {
+                    counter++;
+                    if (counter == 5) break;
+                    var myStock = await StockChange(stock.Symbol);
+                    var stockObject = new StockOverview()
+                    {
+                        Symbol = stock.Symbol,
+                        Name = stock.Name,
+                        Value = myStock.Value,
+                        Change = myStock.Change
+
+                    };
+                    list.Add(stockObject);
+                }
+
+                return list;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
+        }
+
 
         public static DateTime GetTodaysDate()
         {

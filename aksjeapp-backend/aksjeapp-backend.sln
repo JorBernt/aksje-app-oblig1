@@ -1,6 +1,14 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "aksjeapp-backend", "aksjeapp-backend\aksjeapp-backend.csproj", "{3185E3C0-B08E-43D0-B2C2-1E1A6D1341C3}"
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32901.215
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "aksjeapp-backend", "aksjeapp-backend\aksjeapp-backend.csproj", "{3185E3C0-B08E-43D0-B2C2-1E1A6D1341C3}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{D7ABADD6-E5F0-4223-90D7-F1E90B582E64}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -12,5 +20,11 @@ Global
 		{3185E3C0-B08E-43D0-B2C2-1E1A6D1341C3}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3185E3C0-B08E-43D0-B2C2-1E1A6D1341C3}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3185E3C0-B08E-43D0-B2C2-1E1A6D1341C3}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {ED26E9F7-710B-4071-97CF-6409E908D61F}
 	EndGlobalSection
 EndGlobal

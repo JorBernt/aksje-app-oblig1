@@ -41,9 +41,16 @@ namespace aksjeapp_backend.DAL
 
         public DbSet<Transaction> Transactions { get; set; }
 
+        public DbSet<StockChangeValue> StockChangeValues { get; set; }
+
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             optionsBuilder.UseLazyLoadingProxies();
+        }
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+            modelBuilder.Entity<StockChangeValue>().HasKey(k => new { k.Date, k.Symbol });
         }
     }
 }

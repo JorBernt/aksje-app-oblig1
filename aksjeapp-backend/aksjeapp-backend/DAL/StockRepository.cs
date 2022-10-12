@@ -21,7 +21,7 @@ namespace aksjeapp_backend.DAL
         }
         public async Task<StockPrices> GetStockPrices(string symbol, string fromDate, string toDate) // dato skal skrives som "YYYY-MM-DD"
         {
-            var stock = await PolygonAPI.GetStockPrices(symbol, fromDate, toDate);
+            var stock = await PolygonAPI.GetStockPrices(symbol, fromDate, toDate,1);
 
             return stock;
         }
@@ -29,7 +29,7 @@ namespace aksjeapp_backend.DAL
         public async Task<bool> BuyStock(string socialSecurityNumber, string symbol, int number)
         {
             // Gets todays date
-            string date = GetTodaysDate();
+            string date = GetTodaysDate().ToString("yyyy-MM-dd");
 
             try
             {
@@ -84,7 +84,7 @@ namespace aksjeapp_backend.DAL
                 // Finds transactions
                 List<Transaction> transactions = customer.Transactions.Where(k => k.Symbol == symbol && k.IsActive == true).ToList();
 
-                stockPrice = await PolygonAPI.GetOpenClosePrice(symbol, GetTodaysDate());
+                stockPrice = await PolygonAPI.GetOpenClosePrice(symbol, GetTodaysDate().ToString("yyyy-MM-dd"));
 
                 for (int i = 0; i < transactions.Count; i++)
                 {
@@ -97,7 +97,7 @@ namespace aksjeapp_backend.DAL
                         var transaction = new Transaction()
                         {
                             SocialSecurityNumber = transactions[i].SocialSecurityNumber,
-                            Date = GetTodaysDate(),
+                            Date = GetTodaysDate().ToString("yyyy-MM-dd"),
                             Symbol = transactions[i].Symbol,
                             Amount = transactions[i].Amount - number
                         };
@@ -178,7 +178,7 @@ namespace aksjeapp_backend.DAL
             var customer = await _db.Customers.FindAsync(socialSecurityNumber);
             if (customer != null)
             {
-                Transaction transaction = _db.Transactions.Find(id);
+                Transaction transaction = await _db.Transactions.FindAsync(id);
                 return transaction;
             }
             return null;
@@ -193,13 +193,13 @@ namespace aksjeapp_backend.DAL
                 if (customer != null)
                 {
                     Transaction transaction = await _db.Transactions.FindAsync(changeTransaction.Id);
-                    if (GetTodaysDate() == transaction.Date && transaction.IsActive == true)
+                    if (GetTodaysDate().ToString("yyyy-MM-dd") == transaction.Date && transaction.IsActive == true)
                     {
                         //Removes transaction price from customers balance
                         customer.Balance += transaction.TotalPrice;
 
                         // Gets todays price for the new stock
-                        var stockPrice = await PolygonAPI.GetOpenClosePrice(changeTransaction.Symbol, GetTodaysDate());
+                        var stockPrice = await PolygonAPI.GetOpenClosePrice(changeTransaction.Symbol, GetTodaysDate().ToString("yyyy-mm-dd"));
 
                         transaction.Symbol = changeTransaction.Symbol;
                         transaction.Amount = changeTransaction.Amount;
@@ -226,10 +226,16 @@ namespace aksjeapp_backend.DAL
                 var customer = await _db.Customers.FindAsync(socialSecurityNumber);
                 if (customer != null)
                 {
-                    Transaction transaction = _db.Transactions.Find(id);
+                    var transaction = _db.Transactions.Find(id);
+
+                    //Returns if the transaction does not exist
+                    if (transaction == null)
+                    {
+                        return false;
+                    }
 
                     // Deletes transaction that is still active
-                    if (GetTodaysDate() == transaction.Date && transaction.IsActive == true)
+                    if (GetTodaysDate().ToString("yyyy-MM-dd") == transaction.Date && transaction.IsActive == true)
                     {
                         _db.Transactions.Remove(transaction);
                         customer.Balance += transaction.TotalPrice; //Updates balance for customer
@@ -253,13 +259,60 @@ namespace aksjeapp_backend.DAL
             }
         }
 
+        // Might save to DB to save API calls to polygon
+        // StockChange for a single stock the last week
+        public async Task<StockChangeValue> StockChange(string symbol)
+        {
+            try {
+            
+                var date = GetTodaysDate().AddDays(-7); ;
+               
+                var fromDate = date.ToString("yyyy-MM-dd");
+                
+                var stockPrice1 = await PolygonAPI.GetStockPrices(symbol, fromDate, GetTodaysDate().ToString("yyyy-MM-dd"), 1);
+                
+                if (stockPrice1.results != null)
+                {
+                    List<Models.Results> results = stockPrice1.results;
+                
+                    Console.WriteLine(stockPrice1.results);
+                double change = ((results.Last().ClosePrice - results.First().ClosePrice) / results.Last().ClosePrice ) * 100;
 
-        public static string GetTodaysDate()
+                    var stockChange = new StockChangeValue()
+                    {
+                        Date = date.ToString("yyyy-MM-dd"),
+                        Symbol = symbol,
+                        Change = change,
+                        Value = results.Last().ClosePrice
+                    };
+
+                return stockChange;
+                }
+                return null;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+
+        public static DateTime GetTodaysDate()
         {
             DateTime date1 = DateTime.Now;
-            int month = date1.Month - 1; //Uses one month old data since polygon cant get todays prices
-            string date = date1.Year + "-" + month.ToString("D2") + "-" + date1.Day.ToString("D2");
-            return date;
+            date1 = date1.AddMonths(-1);//Uses one month old data since polygon cant get todays date
+
+            // If day of week is a weekend then the last price if from friday
+            if (date1.DayOfWeek.Equals("Saturday"))
+            {
+                date1 = date1.AddDays(-1);
+            }
+            if (date1.DayOfWeek.Equals("Sunday"))
+            {
+                date1 = date1.AddDays(-2);
+            }
+            return date1;
+            
         }
 
 

@@ -260,10 +260,14 @@ namespace aksjeapp_backend.DAL
         }
 
         // Might save to DB to save API calls to polygon
-        public async Task<StockChangeValue> StockChange(string symbol, string fromDate)
+        public async Task<StockChangeValue> StockChange(string symbol)
         {
-            try
-            {
+            try {
+            
+                var date = DateTime.Now;
+                var days = date.AddDays(-7);
+                var fromDate = days.ToString("yyyy-mm-dd");
+                Console.WriteLine(fromDate);
                 var stockPrice1 = await PolygonAPI.GetStockPrices(symbol, fromDate, GetTodaysDate(), 1);
                 
                 if (stockPrice1.results != null)
@@ -275,6 +279,7 @@ namespace aksjeapp_backend.DAL
 
                 var stockChange = new StockChangeValue()
                 {
+                    Date = date,
                     Symbol = symbol,
                     Change = change,
                     Value = results.Last().ClosePrice
@@ -292,11 +297,12 @@ namespace aksjeapp_backend.DAL
         }
 
 
-        public static string GetTodaysDate()
+        public static DateTime GetTodaysDate()
         {
             DateTime date1 = DateTime.Now;
-            int month = date1.Month - 1; //Uses one month old data since polygon cant get todays prices
-            string date = date1.Year + "-" + month.ToString("D2") + "-" + date1.Day.ToString("D2");
+            date1 = date1.AddMonths(-1);//Uses one month old data since polygon cant get todays date
+            string date = date1.ToString("yyyy-mm-dd");
+            Console.WriteLine(date);
             return date;
         }
 

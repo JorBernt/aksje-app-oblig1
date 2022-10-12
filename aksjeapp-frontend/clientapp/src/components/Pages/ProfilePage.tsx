@@ -4,7 +4,7 @@ import Card from "../UI/Card/Card";
 import ProfileInfoContainer from "../ProfileComponents/ProfileInfoContainer";
 import StockContainer from "../StockViews/StockContainer";
 
-export const ProfilePage = () => {
+const ProfilePage = () => {
     return (
         <>
             <div>
@@ -27,4 +27,4 @@ export const ProfilePage = () => {
     )
 }
 
-//export default ProfilePage;
+export default ProfilePage;

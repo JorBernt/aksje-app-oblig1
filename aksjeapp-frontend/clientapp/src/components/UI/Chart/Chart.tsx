@@ -3,18 +3,18 @@ import {CartesianGrid, Line, LineChart, XAxis, YAxis} from "recharts";
 
 const Chart = () => {
     const data = [
-        {name: '1', uv: 10, pv: 2400, amt: 2400},
-        {name: '2', uv: 500, pv: 1500, amt: 2700},
-        {name: '3', uv: 400, pv: 1800, amt: 1200},
-        {name: '1', uv: 10, pv: 2400, amt: 2400},
-        {name: '2', uv: 500, pv: 1500, amt: 2700},
-        {name: '3', uv: 400, pv: 1800, amt: 1200},
-        {name: '1', uv: 10, pv: 2400, amt: 2400},
-        {name: '2', uv: 500, pv: 1500, amt: 2700},
-        {name: '3', uv: 400, pv: 1800, amt: 1200},
-        {name: '1', uv: 10, pv: 2400, amt: 2400},
-        {name: '2', uv: 500, pv: 1500, amt: 2700},
-        {name: '3', uv: 400, pv: 1800, amt: 1200}];
+        {name: '1', uv: 10},
+        {name: '2', uv: 500},
+        {name: '3', uv: 400},
+        {name: '1', uv: 10},
+        {name: '2', uv: 500},
+        {name: '3', uv: 400},
+        {name: '1', uv: 10},
+        {name: '2', uv: 500},
+        {name: '3', uv: 400},
+        {name: '1', uv: 10},
+        {name: '2', uv: 500},
+        {name: '3', uv: 400}];
     return (
         <>
             <div className="bg-gradient-to-tl from-green-500 to-blue-700 p-5 rounded-2xl">

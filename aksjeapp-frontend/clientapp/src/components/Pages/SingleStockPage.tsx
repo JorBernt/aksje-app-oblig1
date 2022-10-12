@@ -20,8 +20,6 @@ let stockData = {
 const SingleStockPage = () => {
     const [searchParams] = useSearchParams();
     stockData.name = String(searchParams.get("symbol"))
-
-
     return (
         <>
             <div>
@@ -48,7 +46,6 @@ const SingleStockPage = () => {
                     </div>
                 </div>
                 <div className="flex justify-center">
-
                 </div>
             </div>
         </>

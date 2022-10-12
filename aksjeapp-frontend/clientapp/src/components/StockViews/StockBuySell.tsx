@@ -1,4 +1,5 @@
 import React from "react";
+import {useNavigate} from "react-router-dom";
 
 type Props = {
     data: string;
@@ -7,12 +8,16 @@ type Props = {
 
 const StockBuySell = (props: Props) => {
 
+    let navigate = useNavigate();
+    const handleOnClick = () =>{
+        navigate(`/singleStock?symbol=${"AAA"}&name=${"ADDA"}`);
+    }
+
     const className = "text-white font-bold py-2 px-4 rounded-full m-4 hover:shadow-xl w-40 transition duration-300 " + props.className;
     const antall = "Antall";
 
     return (
         <>
-
             <div className="flex flex-col">
                 <div className="flex flex-col justify-center">
                     <p className="flex flex-row justify-center text-2xl">{antall}</p>
@@ -22,15 +27,12 @@ const StockBuySell = (props: Props) => {
                 </div>
                 <div className="flex flex-row justify-center">
                     <button
-                        className={className}>{props.data}
+                        className={className} onClick={handleOnClick}>{props.data}
                     </button>
                 </div>
-
             </div>
-
         </>
     );
-
 };
 
 export default StockBuySell;

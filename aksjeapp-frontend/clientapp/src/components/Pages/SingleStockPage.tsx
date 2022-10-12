@@ -24,7 +24,7 @@ const SingleStockPage = () => {
         <>
             <div>
                 <Navbar/>
-                <h1 className="text-center font-semi text-5xl bold py-10">{searchParams.get("name")}</h1>
+                <h1 className="text-center font-semi text-5xl bold py-10">Placeholder name</h1>
                 <div className="flex flex-row justify-center">
                     <div className="flex justify-center">
                         <SingleStockView stockData={stockData}/>

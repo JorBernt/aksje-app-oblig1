@@ -69,7 +69,7 @@ namespace aksjeapp_backend.DAL
                     if (json.Contains("error"))
                     {
                         Console.WriteLine("Found error");
-                        Thread.Sleep(1000);
+                        Thread.Sleep(10000);
                         Console.WriteLine("Sleep is over");
                         return await GetOpenClosePrice(symbol, date); // Starts over
                     }

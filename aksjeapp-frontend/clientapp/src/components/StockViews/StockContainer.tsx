@@ -10,13 +10,13 @@ type Props = {
 }
 
 const StockContainer = (props: Props) => {
-    let data: Stock[] = [{country: "", name: "", symbol: "Waiting", sector: ""}]
+    let data: Stock[] = [{symbol: "", name: "Waiting", change: 1.01, value: ""}]
     let view = React.createRef<HTMLDivElement>();
     const [stockView, setStockView] = useState(data);
     const [showLoading, setShowLoading] = useState(true);
     const [error, setError] = useState(false)
     useEffect(() => {
-        fetch("https://localhost:7187/Stock/GetAllStocks")
+        fetch("https://localhost:7187/Stock/GetStockOverview")
             .then(response => response.json()
                 .then(response => {
                     setStockView(p => [...response])

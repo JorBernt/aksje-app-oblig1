@@ -27,9 +27,8 @@ namespace aksjeapp_backend.DAL
                     Console.WriteLine(json);
                     if (json.Contains("error"))
                     {
-                        Console.WriteLine("Found error");
+                        Console.WriteLine("API cooldown");
                         Thread.Sleep(10000);
-                        Console.WriteLine("Sleep is over");
                         
                         return await GetStockPrices(symbol, fromDate,toDate,interval); // Starts over
                     }
@@ -68,9 +67,8 @@ namespace aksjeapp_backend.DAL
                     // Checks if the API returns a bad response
                     if (json.Contains("error"))
                     {
-                        Console.WriteLine("Found error");
+                        Console.WriteLine("API cooldown");
                         Thread.Sleep(10000);
-                        Console.WriteLine("Sleep is over");
                         return await GetOpenClosePrice(symbol, date); // Starts over
                     }
                     
@@ -87,8 +85,8 @@ namespace aksjeapp_backend.DAL
             }
         }
 
-
-        public static List<String> polygonKeys = new List<string>() { "C1cckwJuZuvEgVJbCmv42HuUZnJSgjeJ" }; //, "uWXhChA2H2mRpH7fCrGH5NebvagOZEBT", "udqqYjjU5_yjzUpSGVpLBaqGv54SWsIY" };
+        // List with tokens for the Poltgon API
+        public static List<String> polygonKeys = new List<string>() { "C1cckwJuZuvEgVJbCmv42HuUZnJSgjeJ", "uWXhChA2H2mRpH7fCrGH5NebvagOZEBT", "udqqYjjU5_yjzUpSGVpLBaqGv54SWsIY", "rt8cZtaDtDUSPGsC0nPpHKnl9tpGPPld", "ku6Bcu6IthG2r5m4pBV8bozJqhOobJWq" };
 
         public static string PolygonKeys()
         {

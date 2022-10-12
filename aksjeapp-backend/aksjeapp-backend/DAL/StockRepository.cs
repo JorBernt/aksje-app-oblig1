@@ -308,8 +308,6 @@ namespace aksjeapp_backend.DAL
                 int counter = 0;
                 foreach (var stock in stocks)
                 {
-                    counter++;
-                    if (counter == 5) break;
                     var myStock = await StockChange(stock.Symbol);
                     var stockObject = new StockOverview()
                     {

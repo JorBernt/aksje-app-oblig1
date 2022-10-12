@@ -19,7 +19,7 @@ const Chart = () => {
         <>
             <div className="bg-gradient-to-tl from-green-500 to-blue-700 p-5 rounded-2xl">
                 <LineChart width={600} height={300} data={data}>
-                    <Line type="monotone" dataKey="uv" stroke="#000000"/>
+                    <Line type="monotone" dataKey="uv" stroke="#000000" dot={false}/>
                     <CartesianGrid stroke="#ccc"/>
                     <XAxis dataKey="name" stroke="black"/>
                     <YAxis stroke="black"/>

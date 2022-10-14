@@ -31,44 +31,85 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> BuyStock(string socialSecurityNumber, string symbol, int number)
         {
-            bool returnOK =  await _db.BuyStock(socialSecurityNumber, symbol.ToUpper(), number);
+            bool returnOK = await _db.BuyStock(socialSecurityNumber, symbol.ToUpper(), number);
             if (!returnOK)
             {
+                _logger.LogInformation("Fault in buyStock");
                 return BadRequest("Fault in buyStock");
             }
             return Ok("Stock bought");
         }
 
-        public async Task<bool> SellStock(string socialSecurityNumber, string symbol, int number)
+        public async Task<ActionResult> SellStock(string socialSecurityNumber, string symbol, int number)
         {
-            return await _db.SellStock(socialSecurityNumber, symbol.ToUpper(), number);
+            bool returnOK = await _db.SellStock(socialSecurityNumber, symbol.ToUpper(), number);
+            if (!returnOK)
+            {
+                _logger.LogInformation("Fault in sellStock");
+                return BadRequest("Fault in sellStock");
+            }
+            return Ok("Stock sold");
         }
 
-        public async Task<List<Stock>> SearchResults(string keyPhrase)
+        public async Task<ActionResult> SearchResults(string keyPhrase)
         {
-            return await _db.ReturnSearchResults(keyPhrase.ToUpper());
+            var searchReults = await _db.ReturnSearchResults(keyPhrase.ToUpper());
+            if(searchReults.Count <= 0)
+            {
+                _logger.LogInformation("Returned 0 results");
+                return BadRequest("0 stocks found");
+            }
+            return Ok(searchReults);
+
         }
 
-        public async Task<List<Transaction>> GetAllTransactions(string socialSecurityNumber)
+        public async Task<ActionResult> GetAllTransactions(string socialSecurityNumber)
         {
-            return await _db.GetAllTransactions(socialSecurityNumber);
+            var transactions = await _db.GetAllTransactions(socialSecurityNumber);
+            if(transactions.Count <= 0)
+            {
+                _logger.LogInformation("No transactions");
+                return BadRequest("No transactions");
+            }
+            return Ok(transactions);
         }
 
-        public async Task<Transaction> GetTransaction(string socialSecurityNumber, int id)
+        public async Task<ActionResult> GetTransaction(string socialSecurityNumber, int id)
         {
-            return await _db.GetTransaction(socialSecurityNumber, id);
+            var transaction = await _db.GetTransaction(socialSecurityNumber, id);
+            if (transaction == null)
+            {
+                _logger.LogInformation("Not found transaction belonging to " + socialSecurityNumber + " with id " + id);
+                return BadRequest("Transaction does not exist");
+            }
+            return Ok(transaction);
+
         }
-        public async Task<bool> UpdateTransaction(Transaction transaction)
+        public async Task<ActionResult> UpdateTransaction(Transaction transaction)
         {
-            return await _db.UpdateTransaction(transaction);
+            var returnOK = await _db.UpdateTransaction(transaction);
+            if (!returnOK)
+            {
+                _logger.LogInformation("Transaction not updated");
+                return BadRequest("Transaction not updated");
+            }
+            return Ok("Transaction updated");
         }
-        public async Task<bool> DeleteTransaction(string socialSecurityNumber, int id)
+        public async Task<ActionResult> DeleteTransaction(string socialSecurityNumber, int id)
         {
-            return await _db.DeleteTransaction(socialSecurityNumber, id);
+            bool returnOK = await _db.DeleteTransaction(socialSecurityNumber, id);
+            if (!returnOK)
+            {
+                _logger.LogInformation("Transaction not deleted");
+                return BadRequest("Transaction not deleted");
+            }
+            return Ok("Transaction deleted");
+
         }
-        public async Task<StockChangeValue> StockChange(string symbol)
+        public async Task<ActionResult> StockChange(string symbol)
         {
-            return await _db.StockChange(symbol);
+            var stockChange = await _db.StockChange(symbol);
+
         }
         public async Task<List<StockOverview>> GetStockOverview()
         {

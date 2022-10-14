@@ -8,25 +8,34 @@ namespace aksjeapp_backend.Controller
     public class StockController : ControllerBase
     {
         private readonly IStockRepository _db;
+        private readonly Logger<StockController> _logger;
 
-        public StockController(IStockRepository db)
+        public StockController(IStockRepository db, Logger<StockController> logger)
         {
             _db = db;
+            _logger = logger;
         }
 
 
-        public async Task<List<Stock>> GetAllStocks()
+        public async Task<ActionResult> GetAllStocks()
         {
-            return await _db.GetAllStocks();
+           var allStocks =  await _db.GetAllStocks();
+           return Ok(allStocks);
         }
-        public async Task<StockPrices> GetStockPrices(string symbol, string fromDate, string toDate) // dato skal skrives som "YYYY-MM-DD"
+        public async Task<ActionResult> GetStockPrices(string symbol, string fromDate, string toDate) // dato skal skrives som "YYYY-MM-DD"
         {
-            return await _db.GetStockPrices(symbol.ToUpper(), fromDate, toDate);
+            var stockPrices =  await _db.GetStockPrices(symbol.ToUpper(), fromDate, toDate);
+            return Ok(stockPrices);
         }
 
-        public async Task<bool> BuyStock(string socialSecurityNumber, string symbol, int number)
+        public async Task<ActionResult> BuyStock(string socialSecurityNumber, string symbol, int number)
         {
-            return await _db.BuyStock(socialSecurityNumber, symbol.ToUpper(), number);
+            bool returnOK =  await _db.BuyStock(socialSecurityNumber, symbol.ToUpper(), number);
+            if (!returnOK)
+            {
+                return BadRequest("Fault in buyStock");
+            }
+            return Ok("Stock bought");
         }
 
         public async Task<bool> SellStock(string socialSecurityNumber, string symbol, int number)

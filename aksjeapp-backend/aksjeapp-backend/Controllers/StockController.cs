@@ -8,9 +8,9 @@ namespace aksjeapp_backend.Controller
     public class StockController : ControllerBase
     {
         private readonly IStockRepository _db;
-        private readonly Logger<StockController> _logger;
+        private readonly ILogger<StockController> _logger;
 
-        public StockController(IStockRepository db, Logger<StockController> logger)
+        public StockController(IStockRepository db, ILogger<StockController> logger)
         {
             _db = db;
             _logger = logger;
@@ -20,6 +20,7 @@ namespace aksjeapp_backend.Controller
         public async Task<ActionResult> GetAllStocks()
         {
            var allStocks =  await _db.GetAllStocks();
+            _logger.LogInformation("Getting all stocks");
            return Ok(allStocks);
         }
         public async Task<ActionResult> GetStockPrices(string symbol, string fromDate, string toDate) // dato skal skrives som "YYYY-MM-DD"

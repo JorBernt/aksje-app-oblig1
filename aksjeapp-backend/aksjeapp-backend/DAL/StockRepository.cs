@@ -21,7 +21,7 @@ namespace aksjeapp_backend.DAL
         }
         public async Task<StockPrices> GetStockPrices(string symbol, string fromDate, string toDate) // dato skal skrives som "YYYY-MM-DD"
         {
-            var stock = await PolygonAPI.GetStockPrices(symbol, fromDate, toDate,1);
+            var stock = await PolygonAPI.GetStockPrices(symbol, fromDate, toDate, 1);
 
             return stock;
         }
@@ -263,20 +263,21 @@ namespace aksjeapp_backend.DAL
         // StockChange for a single stock the last week
         public async Task<StockChangeValue> StockChange(string symbol)
         {
-            try {
-            
+            try
+            {
+
                 var date = GetTodaysDate().AddDays(-7); ;
-               
+
                 var fromDate = date.ToString("yyyy-MM-dd");
-                
+
                 var stockPrice1 = await PolygonAPI.GetStockPrices(symbol, fromDate, GetTodaysDate().ToString("yyyy-MM-dd"), 1);
-                
+
                 if (stockPrice1.results != null)
                 {
                     List<Models.Results> results = stockPrice1.results;
-                
+
                     Console.WriteLine(stockPrice1.results);
-                double change = ((results.Last().ClosePrice - results.First().ClosePrice) / results.Last().ClosePrice ) * 100;
+                    double change = ((results.Last().ClosePrice - results.First().ClosePrice) / results.Last().ClosePrice) * 100;
 
                     var stockChange = new StockChangeValue()
                     {
@@ -286,7 +287,7 @@ namespace aksjeapp_backend.DAL
                         Value = results.Last().ClosePrice
                     };
 
-                return stockChange;
+                    return stockChange;
                 }
                 return null;
             }
@@ -296,7 +297,7 @@ namespace aksjeapp_backend.DAL
             }
         }
 
-        public async Task<List<StockOverview>> GetStockOverview ()
+        public async Task<List<StockOverview>> GetStockOverview()
         {
             try
             {
@@ -307,8 +308,6 @@ namespace aksjeapp_backend.DAL
                 int counter = 0;
                 foreach (var stock in stocks)
                 {
-                    counter++;
-                    if (counter == 5) break;
                     var myStock = await StockChange(stock.Symbol);
                     var stockObject = new StockOverview()
                     {
@@ -346,7 +345,7 @@ namespace aksjeapp_backend.DAL
                 date1 = date1.AddDays(-2);
             }
             return date1;
-            
+
         }
 
 

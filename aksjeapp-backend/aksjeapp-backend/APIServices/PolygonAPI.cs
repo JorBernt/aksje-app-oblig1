@@ -8,13 +8,13 @@ namespace aksjeapp_backend.DAL
 
         public static async Task<StockPrices> GetStockPrices(string symbol, string fromDate, string toDate, int interval)
         {
-            const string polygonKey = "C1cckwJuZuvEgVJbCmv42HuUZnJSgjeJ";
+
 
             try
             {
                 using (var client = new HttpClient())
                 {
-                    var url = new Uri($"https://api.polygon.io/v2/aggs/ticker/{symbol}/range/{interval}/day/{fromDate}/{toDate}?adjusted=true&sort=asc&limit=120&apiKey={polygonKey}");
+                    var url = new Uri($"https://api.polygon.io/v2/aggs/ticker/{symbol}/range/{interval}/day/{fromDate}/{toDate}?adjusted=true&sort=asc&limit=120&apiKey={PolygonKeys()}");
 
                     var responce = await client.GetAsync(url);
                     string json;
@@ -25,6 +25,13 @@ namespace aksjeapp_backend.DAL
 
                     }
                     Console.WriteLine(json);
+                    if (json.Contains("error"))
+                    {
+                        Console.WriteLine("API cooldown");
+                        Thread.Sleep(10000);
+                        
+                        return await GetStockPrices(symbol, fromDate,toDate,interval); // Starts over
+                    }
 
                     return JsonConvert.DeserializeObject<StockPrices>(json);
 
@@ -40,13 +47,11 @@ namespace aksjeapp_backend.DAL
         //Gets a stocks price for one day
         public static async Task<OpenCloseStockPrice> GetOpenClosePrice(string symbol, string date)
         {
-            const string polygonKey = "C1cckwJuZuvEgVJbCmv42HuUZnJSgjeJ";
-
             try
             {
                 using (var client = new HttpClient())
                 {
-                    var url = new Uri($"https://api.polygon.io/v1/open-close/{symbol}/{date}?adjusted=true&apiKey={polygonKey}");
+                    var url = new Uri($"https://api.polygon.io/v1/open-close/{symbol}/{date}?adjusted=true&apiKey={PolygonKeys}");
 
                     var responce = await client.GetAsync(url);
                     string json;
@@ -56,7 +61,17 @@ namespace aksjeapp_backend.DAL
 
 
                     }
+
                     Console.WriteLine(json);
+
+                    // Checks if the API returns a bad response
+                    if (json.Contains("error"))
+                    {
+                        Console.WriteLine("API cooldown");
+                        Thread.Sleep(10000);
+                        return await GetOpenClosePrice(symbol, date); // Starts over
+                    }
+                    
 
                     return JsonConvert.DeserializeObject<OpenCloseStockPrice>(json);
 
@@ -68,6 +83,19 @@ namespace aksjeapp_backend.DAL
                 Console.WriteLine("Cannot getStockPrice");
                 return null;
             }
+        }
+
+        // List with tokens for the Poltgon API
+        public static List<String> polygonKeys = new List<string>() { "C1cckwJuZuvEgVJbCmv42HuUZnJSgjeJ", "uWXhChA2H2mRpH7fCrGH5NebvagOZEBT", "udqqYjjU5_yjzUpSGVpLBaqGv54SWsIY", "rt8cZtaDtDUSPGsC0nPpHKnl9tpGPPld", "ku6Bcu6IthG2r5m4pBV8bozJqhOobJWq" };
+
+        public static string PolygonKeys()
+        {
+            // Shuffles keys every time we use it
+            var polygonKey = polygonKeys[0];
+            polygonKeys.RemoveAt(0);
+            polygonKeys.Add(polygonKey);
+            Console.WriteLine(polygonKey);
+            return polygonKey;
         }
     }
 }

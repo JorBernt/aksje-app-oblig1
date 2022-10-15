@@ -109,11 +109,22 @@ namespace aksjeapp_backend.Controller
         public async Task<ActionResult> StockChange(string symbol)
         {
             var stockChange = await _db.StockChange(symbol);
-
+            if (stockChange == null)
+            {
+                _logger.LogInformation("StockChange not found");
+                return BadRequest("Stockchange not found");
+            }
+            return Ok(stockChange);
         }
-        public async Task<List<StockOverview>> GetStockOverview()
+        public async Task<ActionResult> GetStockOverview()
         {
-            return await _db.GetStockOverview();
+            var stockOverview = await _db.GetStockOverview();
+            if (stockOverview == null)
+            {
+                _logger.LogInformation("Stock overview not found");
+                BadRequest("Stock overview not found");
+            }
+            return Ok(stockOverview);
         }
 
     }

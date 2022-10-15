@@ -19,13 +19,22 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> GetAllStocks()
         {
-           var allStocks =  await _db.GetAllStocks();
-            _logger.LogInformation("Getting all stocks");
-           return Ok(allStocks);
+            var allStocks = await _db.GetAllStocks();
+            if (allStocks == null)
+            {
+                _logger.LogInformation("Not found");
+                return BadRequest("Not found");
+            }
+            return Ok(allStocks);
         }
         public async Task<ActionResult> GetStockPrices(string symbol, string fromDate, string toDate) // dato skal skrives som "YYYY-MM-DD"
         {
-            var stockPrices =  await _db.GetStockPrices(symbol.ToUpper(), fromDate, toDate);
+            var stockPrices = await _db.GetStockPrices(symbol.ToUpper(), fromDate, toDate);
+            if (stockPrices == null)
+            {
+                _logger.LogInformation("GetStockPrices not found");
+                return BadRequest("Not found");
+            }
             return Ok(stockPrices);
         }
 
@@ -54,7 +63,7 @@ namespace aksjeapp_backend.Controller
         public async Task<ActionResult> SearchResults(string keyPhrase)
         {
             var searchReults = await _db.ReturnSearchResults(keyPhrase.ToUpper());
-            if(searchReults.Count <= 0)
+            if (searchReults.Count <= 0)
             {
                 _logger.LogInformation("Returned 0 results");
                 return BadRequest("0 stocks found");
@@ -66,7 +75,7 @@ namespace aksjeapp_backend.Controller
         public async Task<ActionResult> GetAllTransactions(string socialSecurityNumber)
         {
             var transactions = await _db.GetAllTransactions(socialSecurityNumber);
-            if(transactions.Count <= 0)
+            if (transactions.Count <= 0)
             {
                 _logger.LogInformation("No transactions");
                 return BadRequest("No transactions");

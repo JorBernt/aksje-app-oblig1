@@ -31,4 +31,8 @@
       <PackageReference Include="Serilog.Extensions.Logging" Version="3.1.0" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Log\" />
+    </ItemGroup>
+
 </Project>

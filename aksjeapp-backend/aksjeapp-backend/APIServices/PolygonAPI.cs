@@ -5,10 +5,9 @@ namespace aksjeapp_backend.DAL
 {
     public class PolygonAPI
     {
-
+ 
         public static async Task<StockPrices> GetStockPrices(string symbol, string fromDate, string toDate, int interval)
         {
-
 
             try
             {
@@ -24,13 +23,13 @@ namespace aksjeapp_backend.DAL
 
 
                     }
-                    Console.WriteLine(json);
+
                     if (json.Contains("error"))
                     {
                         Console.WriteLine("API cooldown");
                         Thread.Sleep(10000);
-                        
-                        return await GetStockPrices(symbol, fromDate,toDate,interval); // Starts over
+
+                        return await GetStockPrices(symbol, fromDate, toDate, interval); // Starts over
                     }
 
                     return JsonConvert.DeserializeObject<StockPrices>(json);
@@ -71,7 +70,7 @@ namespace aksjeapp_backend.DAL
                         Thread.Sleep(10000);
                         return await GetOpenClosePrice(symbol, date); // Starts over
                     }
-                    
+
 
                     return JsonConvert.DeserializeObject<OpenCloseStockPrice>(json);
 

@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddDbContext<StockContext>(options => options.UseSqlite("Data source=myDb.db"));
 builder.Services.AddScoped<IStockRepository, StockRepository>();
+builder.Services.AddScoped<PolygonAPI>();
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 

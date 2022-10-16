@@ -47,10 +47,10 @@ namespace aksjeapp_backend.DAL
         {
             optionsBuilder.UseLazyLoadingProxies();
         }
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            base.OnModelCreating(modelBuilder);
-            modelBuilder.Entity<StockChangeValue>().HasKey(k => new { k.Date, k.Symbol });
-        }
+        /*  protected override void OnModelCreating(ModelBuilder modelBuilder)
+          {
+              base.OnModelCreating(modelBuilder);
+              modelBuilder.Entity<StockChangeValue>().HasKey(k => new { k.Date, k.Symbol });
+          }*/
     }
 }

@@ -135,6 +135,9 @@ namespace aksjeapp_backend.Controller
             }
             return Ok(stockOverview);
         }
-
+        public async Task<Customer> GetCustomerPortofolio(string socialSecurityNumber)
+        {
+            return await _db.GetCustomerPortofolio(socialSecurityNumber);
+        }
     }
 }

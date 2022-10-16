@@ -29,8 +29,8 @@ namespace aksjeapp_backend.DAL
                     {
                         Console.WriteLine("API cooldown");
                         Thread.Sleep(10000);
-                        
-                        return await GetStockPrices(symbol, fromDate,toDate,interval); // Starts over
+
+                        return await GetStockPrices(symbol, fromDate, toDate, interval); // Starts over
                     }
 
                     return JsonConvert.DeserializeObject<StockPrices>(json);
@@ -71,7 +71,7 @@ namespace aksjeapp_backend.DAL
                         Thread.Sleep(10000);
                         return await GetOpenClosePrice(symbol, date); // Starts over
                     }
-                    
+
 
                     return JsonConvert.DeserializeObject<OpenCloseStockPrice>(json);
 

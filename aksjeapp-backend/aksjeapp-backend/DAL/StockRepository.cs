@@ -264,6 +264,15 @@ namespace aksjeapp_backend.DAL
             try
             {
 
+                var stockChange = await _db.StockChangeValues.FirstOrDefaultAsync(k => k.Symbol == symbol && k.Date == GetTodaysDate().ToString("yyyy-MM-dd"));
+
+                // Returns stockChange if its already in the database. If not it will access the API
+                if (stockChange != null)
+                {
+                    return stockChange;
+                }
+
+
                 var date = GetTodaysDate().AddDays(-7); ;
 
                 var fromDate = date.ToString("yyyy-MM-dd");
@@ -277,15 +286,18 @@ namespace aksjeapp_backend.DAL
                     Console.WriteLine(stockPrice1.results);
                     double change = ((results.Last().ClosePrice - results.First().ClosePrice) / results.Last().ClosePrice) * 100;
 
-                    var stockChange = new StockChangeValue()
+                    stockChange = new StockChangeValue()
                     {
-                        Date = date.ToString("yyyy-MM-dd"),
+                        Date = GetTodaysDate().ToString("yyyy-MM-dd"),
                         Symbol = symbol,
                         Change = change,
                         Value = results.Last().ClosePrice
                     };
+
+                    //Adds to stock change table
                     _db.StockChangeValues.Add(stockChange);
                     await _db.SaveChangesAsync();
+
                     return stockChange;
                 }
                 return null;
@@ -304,7 +316,6 @@ namespace aksjeapp_backend.DAL
 
                 var stocks = await _db.Stocks.ToListAsync();
 
-                int counter = 0;
                 foreach (var stock in stocks)
                 {
                     var myStock = await StockChange(stock.Symbol);

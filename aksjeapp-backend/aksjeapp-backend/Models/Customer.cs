@@ -12,5 +12,6 @@ namespace aksjeapp_backend.DAL
         public List<Transaction> Transactions { get; set; }
         public string PostalCode { get; set; }
         public string PostCity { get; set; }
+        public Portofolio Portofolio { get; set; }
     }
 }

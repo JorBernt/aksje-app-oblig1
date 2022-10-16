@@ -36,7 +36,7 @@ namespace aksjeapp_backend.DAL
                 //Get todays price and and set the todays date
                 var stockPrice = await PolygonAPI.GetOpenClosePrice(symbol, date);
 
-                double totalPrice = stockPrice.OpenPrice * number;
+                double totalPrice = stockPrice.ClosePrice * number;
                 //Creates transaction
                 var stockTransaction = new Transaction
                 {
@@ -332,13 +332,61 @@ namespace aksjeapp_backend.DAL
 
                 return list;
             }
-            catch (Exception e)
+            catch
             {
-                Console.WriteLine(e);
                 return null;
             }
         }
 
+        public async Task<Customer> GetCustomerPortofolio(string socialSecurityNumber)
+        {
+            // Return name, cumtomer info, combined list of transactions, total value of portofolio
+
+            var customerFromDB = await _db.Customers.FindAsync(socialSecurityNumber);
+            var transactions = await _db.Transactions.Where(k => k.SocialSecurityNumber == socialSecurityNumber && k.IsActive == true).ToListAsync();
+            var customer = new Customer()
+            {
+                SocialSecurityNumber = customerFromDB.SocialSecurityNumber,
+                FirstName = customerFromDB.FirstName,
+                LastName = customerFromDB.LastName,
+                Address = customerFromDB.Address,
+                Balance = customerFromDB.Balance,
+                Transactions = customerFromDB.Transactions,
+                PostalCode = customerFromDB.PostalArea.PostalCode,
+                PostCity = customerFromDB.PostalArea.PostCity,
+            };
+            var portofolio = new Portofolio();
+            var portofolioList = new List<PortofoilioList>();
+
+            // Find the amount of each stock the customer has
+            foreach (var transaction in transactions)
+            {
+                int index = portofolioList.FindIndex(k => k.Symbol.Equals(transaction.Symbol));
+                // Sums the amount of stocks if found
+                if (index > 0)
+                {
+                    portofolioList[0].Amount += transaction.Amount;
+                }
+                // Adds the first of this symbol to portofolio list
+                else
+                {
+                    var portofolioItem = new PortofoilioList()
+                    {
+                        Symbol = transaction.Symbol,
+                        Amount = transaction.Amount,
+                    };
+                    portofolioList.Add(portofolioItem);
+                }
+            }
+            portofolio.StockPortofolio = portofolioList;
+            foreach (var stock in portofolio.StockPortofolio)
+            {
+                var stockChange = await StockChange(stock.Symbol);
+                portofolio.Value += stockChange.Value * stock.Amount;
+            }
+            customer.Portofolio = portofolio;
+            return customer;
+        }
 
         public static DateTime GetTodaysDate()
         {

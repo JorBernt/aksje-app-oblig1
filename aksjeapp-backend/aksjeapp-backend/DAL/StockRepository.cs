@@ -209,13 +209,11 @@ namespace aksjeapp_backend.DAL
                         await _db.SaveChangesAsync();
                         return true;
                     }
-                    Console.WriteLine("Transaction is too old to change, you could sell it and buy it again");
                 }
                 return false;
             }
             catch
             {
-                Console.Write("Could not update stock");
                 return false;
             }
         }
@@ -286,7 +284,8 @@ namespace aksjeapp_backend.DAL
                         Change = change,
                         Value = results.Last().ClosePrice
                     };
-
+                    _db.StockChangeValues.Add(stockChange);
+                    await _db.SaveChangesAsync();
                     return stockChange;
                 }
                 return null;

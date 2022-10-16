@@ -131,13 +131,19 @@ namespace aksjeapp_backend.Controller
             if (stockOverview == null)
             {
                 _logger.LogInformation("Stock overview not found");
-                BadRequest("Stock overview not found");
+                return BadRequest("Stock overview not found");
             }
             return Ok(stockOverview);
         }
-        public async Task<Customer> GetCustomerPortofolio(string socialSecurityNumber)
+        public async Task<ActionResult> GetCustomerPortofolio(string socialSecurityNumber)
         {
-            return await _db.GetCustomerPortofolio(socialSecurityNumber);
+            var customer = await _db.GetCustomerPortofolio(socialSecurityNumber);
+            if(customer == null)
+            {
+                _logger.LogInformation("Customer not found");
+                return BadRequest("Customer not found");
+            }
+            return Ok(customer);
         }
     }
 }

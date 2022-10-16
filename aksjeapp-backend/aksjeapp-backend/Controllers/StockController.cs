@@ -64,6 +64,9 @@ namespace aksjeapp_backend.Controller
         {
             return await _db.GetStockOverview();
         }
-
+        public async Task<Customer> GetCustomerPortofolio(string socialSecurityNumber)
+        {
+            return await _db.GetCustomerPortofolio(socialSecurityNumber);
+        }
     }
 }

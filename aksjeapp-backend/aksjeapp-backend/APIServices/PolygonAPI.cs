@@ -51,7 +51,7 @@ namespace aksjeapp_backend.DAL
             {
                 using (var client = new HttpClient())
                 {
-                    var url = new Uri($"https://api.polygon.io/v1/open-close/{symbol}/{date}?adjusted=true&apiKey={PolygonKeys}");
+                    var url = new Uri($"https://api.polygon.io/v1/open-close/{symbol}/{date}?adjusted=true&apiKey={PolygonKeys()}");
 
                     var responce = await client.GetAsync(url);
                     string json;

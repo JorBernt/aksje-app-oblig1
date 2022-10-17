@@ -1,6 +1,8 @@
 ﻿using aksjeapp_backend.Models;
+using aksjeapp_backend.Models.News;
 using Models.News;
 using Newtonsoft.Json;
+using System.Linq.Expressions;
 
 namespace aksjeapp_backend.DAL
 {
@@ -85,13 +87,13 @@ namespace aksjeapp_backend.DAL
             }
         }
 
-        public static async Task<News> GetNews()
+        public static async Task<News> GetNews(string symbol)
         {
             try
             {
                 using (var client = new HttpClient())
                 {
-                    var url = new Uri($"https://api.polygon.io/v2/reference/news?apiKey={PolygonKeys()}");
+                    var url = new Uri($"https://api.polygon.io/v2/reference/news?ticker={symbol}?apiKey={PolygonKeys()}");
 
                     var responce = await client.GetAsync(url);
                     string json;
@@ -109,11 +111,11 @@ namespace aksjeapp_backend.DAL
                     {
                         Console.WriteLine("API cooldown");
                         Thread.Sleep(10000);
-                        return await GetNews(); // Starts over
+                        return await GetNews(symbol); // Starts over
                     }
 
 
-                    return JsonConvert.DeserializeObject<OpenCloseStockPrice>(json);
+                    return JsonConvert.DeserializeObject<News>(json);
 
                 }
 

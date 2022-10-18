@@ -293,6 +293,14 @@ namespace aksjeapp_backend.DAL
                         Change = change,
                         Value = results.Last().ClosePrice
                     };
+                    
+                    stockChange = await _db.StockChangeValues.FirstOrDefaultAsync(k => k.Symbol == symbol && k.Date == GetTodaysDate().ToString("yyyy-MM-dd"));
+
+                    // Returns stockChange if its already in the database. If not it will access the API
+                    if (stockChange != null)
+                    {
+                        return stockChange;
+                    }
 
                     //Adds to stock change table
                     _db.StockChangeValues.Add(stockChange);

@@ -25,6 +25,7 @@ namespace aksjeapp_backend.Controller
                 _logger.LogInformation("Not found");
                 return BadRequest("Not found");
             }
+            Console.WriteLine("Henter aksjer");
             return Ok(allStocks);
         }
         public async Task<ActionResult> GetStockPrices(string symbol, string fromDate, string toDate) // dato skal skrives som "YYYY-MM-DD"

@@ -35,7 +35,7 @@ const StockContainer = (props: Props) => {
     const className = "w-max px-5 scroll max-h-screen overflow-y-auto scrollbar scrollbar-track-white scrollbar-thumb-rounded-3xl scrollbar-thin scrollbar-thumb-blue-700 " + props.height;
     return (
         <>
-            <div className="justify-center flex-row px-0">
+            <div className="justify-center flex-row px-0 min-w-max">
                 <div className="flex justify-center text-black pb-2">
                     <h1 className="font-bold">{props.text} </h1>
                 </div>

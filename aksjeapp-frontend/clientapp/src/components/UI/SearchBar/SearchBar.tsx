@@ -6,16 +6,18 @@ type Props = {}
 
 const SearchBar: React.FC<Props> = () => {
     const [hidden, setHidden] = useState(true)
-    const input = useRef<HTMLInputElement>(null)
+    const inputRef = useRef<HTMLInputElement>(null)
+    const [input, setInput] = useState("")
     const [searchResult, setSearchResult] = useState(Array<Stock>)
 
     const search = () => {
-        let query = input.current?.value;
+        let query = inputRef.current?.value;
         if (query !== "") {
             setHidden(false)
         } else setHidden(true)
         if (typeof query === "undefined")
             return
+        setInput(query)
         fetch(API.SEARCH_RESULTS(query))
             .then(response => response.json()
                 .then(response => setSearchResult(() => [...response]))
@@ -27,7 +29,7 @@ const SearchBar: React.FC<Props> = () => {
             <div
                 className="flex justify-between bg-white rounded-2xl shadow-inner shadow-gray-400 overflow-hidden">
                 <input className="w-[32rem] bg-transparent focus:border focus:border-pink-500 rounded-l-2xl pl-4"
-                       style={{outline: "none"}} type="text" placeholder="Search stocks..." ref={input}
+                       style={{outline: "none"}} type="text" placeholder="Search stocks..." ref={inputRef}
                        onChange={search}/>
                 <button
                     className="bg-transparent bg-gray-300 hover:bg-gradient-to-tl hover:from-gradient-start hover:to-gradient-end text-black font-semibold py-2 px-4 hover:text-white transition duration-300 ease-in-out">
@@ -58,7 +60,7 @@ const SearchBar: React.FC<Props> = () => {
                     }
                     {searchResult.length === 0 &&
                         <div className="p-5 truncate w-64">
-                            No result for "{input.current?.value}"
+                            No result for "{input}"
                         </div>
                     }
                 </div>

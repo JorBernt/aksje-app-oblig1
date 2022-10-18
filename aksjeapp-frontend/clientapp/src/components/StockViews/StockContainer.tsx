@@ -1,6 +1,7 @@
 import StockPreview from "./StockPreview";
 import React, {useEffect, useState} from "react";
 import {Stock} from "../models";
+import {API} from "../../Constants";
 
 type Props = {
     text: String;
@@ -16,7 +17,7 @@ const StockContainer = (props: Props) => {
     const [showLoading, setShowLoading] = useState(true);
     const [error, setError] = useState(false)
     useEffect(() => {
-        fetch("https://localhost:7187/Stock/GetStockOverview")
+        fetch(API.GET_STOCK_OVERVIEW)
             .then(response => response.json()
                 .then(response => {
                     setStockView(p => [...response])

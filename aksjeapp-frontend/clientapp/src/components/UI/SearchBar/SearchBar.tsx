@@ -1,5 +1,6 @@
 import React, {useRef, useState} from 'react';
 import {Stock} from "../../models";
+import {API} from "../../../Constants";
 
 type Props = {}
 
@@ -13,7 +14,9 @@ const SearchBar: React.FC<Props> = () => {
         if (query !== "") {
             setHidden(false)
         } else setHidden(true)
-        fetch(`https://localhost:7187/Stock/SearchResults/?keyPhrase=${query}`)
+        if (typeof query === "undefined")
+            return
+        fetch(API.SEARCH_RESULTS(query))
             .then(response => response.json()
                 .then(response => setSearchResult(() => [...response]))
             )

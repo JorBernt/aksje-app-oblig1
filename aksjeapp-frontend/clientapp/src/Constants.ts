@@ -1,6 +1,6 @@
 import {Transaction} from "./components/models";
 
-const url = "https://localhost:7187/Stocks/"
+const url = "https://localhost:7187/Stock/"
 
 export const API = {
     GET_ALL_STOCKS: url + "GetAllStocks",

@@ -1,7 +1,6 @@
 ﻿using aksjeapp_backend.Models;
 using aksjeapp_backend.Models.News;
 using Newtonsoft.Json;
-using System.Linq.Expressions;
 
 namespace aksjeapp_backend.DAL
 {

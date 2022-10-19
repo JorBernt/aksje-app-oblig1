@@ -148,12 +148,16 @@ namespace aksjeapp_backend.DAL
 
         public async Task<List<Stock>> ReturnSearchResults(string keyPhrase)
         {
-            if (keyPhrase != "")
+            try {
+            if (keyPhrase == "")
             {
-                var stocks = await _db.Stocks.Where(k => k.Symbol.Contains(keyPhrase) || k.Name.ToUpper().Contains(keyPhrase) || k.Country.ToUpper().Contains(keyPhrase) || k.Sector.ToUpper().Contains(keyPhrase)).OrderBy(k => k.Name).ToListAsync();
-                return stocks;
+                return null;
             }
-            else
+            var stocks = await _db.Stocks.Where(k => k.Symbol.Contains(keyPhrase) || k.Name.ToUpper().Contains(keyPhrase) || k.Country.ToUpper().Contains(keyPhrase) || k.Sector.ToUpper().Contains(keyPhrase)).OrderBy(k => k.Name).ToListAsync();
+            return stocks;
+
+            }
+            catch
             {
                 return null;
             }
@@ -339,12 +343,16 @@ namespace aksjeapp_backend.DAL
             }
         }
 
-        public async Task<Customer> GetCustomerPortofolio(string socialSecurityNumber)
+        public async Task<Customer?> GetCustomerPortofolio(string socialSecurityNumber)
         {
             // Return name, cumtomer info, combined list of transactions, total value of portofolio
 
             var customerFromDB = await _db.Customers.FindAsync(socialSecurityNumber);
             var transactions = await _db.Transactions.Where(k => k.SocialSecurityNumber == socialSecurityNumber && k.IsActive == true).ToListAsync();
+            if (customerFromDB == null)
+            {
+                return null;
+            }
             var customer = new Customer()
             {
                 SocialSecurityNumber = customerFromDB.SocialSecurityNumber,

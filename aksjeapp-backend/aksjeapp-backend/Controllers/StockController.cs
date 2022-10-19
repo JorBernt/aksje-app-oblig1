@@ -62,6 +62,10 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> SearchResults(string keyPhrase)
         {
+            if (keyPhrase == null)
+            {
+                return BadRequest("KeyPhrase is empty");
+            }
             var searchReults = await _db.ReturnSearchResults(keyPhrase.ToUpper());
             if (searchReults.Count <= 0)
             {

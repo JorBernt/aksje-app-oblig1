@@ -388,3 +388,5 @@ yarn-error.log*
 
 .idea
 
+/aksjeapp-backend/aksjeapp-backend/myDb.db-wal
+/aksjeapp-backend/aksjeapp-backend/myDb.db-shm

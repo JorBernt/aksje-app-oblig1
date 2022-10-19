@@ -16,7 +16,6 @@ namespace aksjeapp_backend.DAL
             // Oversetter Json fila til en liste og lagrer verdiene i databasen
             using (StreamReader r = new StreamReader("nasdaqSheet.json"))
             {
-                ;
                 string json = r.ReadToEnd();
                 List<Stock> stockList = JsonConvert.DeserializeObject<List<Stock>>(json);
 

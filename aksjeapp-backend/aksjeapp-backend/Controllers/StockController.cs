@@ -145,5 +145,18 @@ namespace aksjeapp_backend.Controller
             }
             return Ok(customer);
         }
+
+        public async Task<ActionResult> GetNews(string symbol)
+        {
+            var news = await _db.GetNews(symbol);
+
+            if (news == null)
+            {
+                _logger.LogInformation("Fault");
+                return BadRequest();
+            }
+            return Ok(news);
+
+        }
     }
 }

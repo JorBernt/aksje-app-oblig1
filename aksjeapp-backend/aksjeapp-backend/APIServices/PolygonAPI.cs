@@ -1,6 +1,5 @@
 ﻿using aksjeapp_backend.Models;
 using aksjeapp_backend.Models.News;
-using Models.News;
 using Newtonsoft.Json;
 using System.Linq.Expressions;
 
@@ -93,7 +92,7 @@ namespace aksjeapp_backend.DAL
             {
                 using (var client = new HttpClient())
                 {
-                    var url = new Uri($"https://api.polygon.io/v2/reference/news?ticker={symbol}?apiKey={PolygonKeys()}");
+                    var url = new Uri($"https://api.polygon.io/v2/reference/news?ticker=AAPL&apiKey=ku6Bcu6IthG2r5m4pBV8bozJqhOobJWq");
 
                     var responce = await client.GetAsync(url);
                     string json;
@@ -114,7 +113,7 @@ namespace aksjeapp_backend.DAL
                         return await GetNews(symbol); // Starts over
                     }
 
-
+                    Console.WriteLine(json);
                     return JsonConvert.DeserializeObject<News>(json);
 
                 }

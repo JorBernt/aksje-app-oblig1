@@ -1,4 +1,5 @@
 ﻿using aksjeapp_backend.Models;
+using aksjeapp_backend.Models.News;
 using Microsoft.EntityFrameworkCore;
 
 namespace aksjeapp_backend.DAL
@@ -386,6 +387,12 @@ namespace aksjeapp_backend.DAL
             }
             customer.Portofolio = portofolio;
             return customer;
+        }
+
+        public async Task<News> GetNews(string symbol)
+        {
+            var News = await PolygonAPI.GetNews(symbol);
+            return News;
         }
 
         public static DateTime GetTodaysDate()

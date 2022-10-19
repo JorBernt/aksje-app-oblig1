@@ -91,7 +91,7 @@ namespace aksjeapp_backend.DAL
             {
                 using (var client = new HttpClient())
                 {
-                    var url = new Uri($"https://api.polygon.io/v2/reference/news?ticker=AAPL&limit=1&apiKey=ku6Bcu6IthG2r5m4pBV8bozJqhOobJWq");
+                    var url = new Uri($"https://api.polygon.io/v2/reference/news?ticker=AAPL&limit=7&apiKey=ku6Bcu6IthG2r5m4pBV8bozJqhOobJWq");
 
                     var responce = await client.GetAsync(url);
                     string json;

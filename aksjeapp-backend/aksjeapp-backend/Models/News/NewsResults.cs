@@ -15,8 +15,8 @@ namespace aksjeapp_backend.Models.News
 
         [JsonProperty("published_utc")]
         public string Date { get; set; }
-        /*
-        [JsonProperty("tickers")]
-        public List<Stock> Stocks { get; set; }*/
+        
+       [JsonProperty("tickers")]
+        public List<string> Stocks { get; set; }
     }
 }

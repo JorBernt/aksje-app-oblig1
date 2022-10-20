@@ -5,7 +5,7 @@ namespace aksjeapp_backend.DAL
 {
     public class PolygonAPI
     {
- 
+
         public static async Task<StockPrices> GetStockPrices(string symbol, string fromDate, string toDate, int interval)
         {
 

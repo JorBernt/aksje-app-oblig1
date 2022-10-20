@@ -17,6 +17,7 @@ namespace aksjeapp_backend.DAL
         Task<StockChangeValue> StockChange(string symbol);
         Task<List<StockOverview>> GetStockOverview();
         Task<Customer> GetCustomerPortofolio(string socialSecurityNumber);
-
+        Task<List<StockChangeValue>> GetWinners();
+        Task<List<StockChangeValue>> GetLosers();
     }
 }

@@ -152,7 +152,7 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> GetNews(string symbol)
         {
-            var news = await _db.GetNews(symbol);
+            var news = await _db.GetNews(symbol.ToUpper());
 
             if (news == null)
             {

@@ -388,3 +388,8 @@ yarn-error.log*
 
 .idea
 
+
+# Db tmp files
+.db-shm
+.db-wal
+

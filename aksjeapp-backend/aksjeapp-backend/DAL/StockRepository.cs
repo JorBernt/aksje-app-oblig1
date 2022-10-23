@@ -133,7 +133,7 @@ namespace aksjeapp_backend.DAL
 
                 if (number == 0)
                 {
-                    customer.Balance -= stockPrice.ClosePrice * (double)number1;
+                    customer.Balance += stockPrice.ClosePrice * (double)number1;
                     await _db.SaveChangesAsync();
 
                     return true;
@@ -380,9 +380,9 @@ namespace aksjeapp_backend.DAL
             {
                 int index = portofolioList.FindIndex(k => k.Symbol.Equals(transaction.Symbol));
                 // Sums the amount of stocks if found
-                if (index > 0)
+                if (index >= 0)
                 {
-                    portofolioList[0].Amount += transaction.Amount;
+                    portofolioList[index].Amount += transaction.Amount;
                 }
                 // Adds the first of this symbol to portofolio list
                 else

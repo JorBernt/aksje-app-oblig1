@@ -1,11 +1,12 @@
 ﻿using aksjeapp_backend.Models;
+using aksjeapp_backend.Models.News;
 using Newtonsoft.Json;
 
 namespace aksjeapp_backend.DAL
 {
     public class PolygonAPI
     {
- 
+
         public static async Task<StockPrices> GetStockPrices(string symbol, string fromDate, string toDate, int interval)
         {
 
@@ -80,6 +81,46 @@ namespace aksjeapp_backend.DAL
             catch
             {
                 Console.WriteLine("Cannot getStockPrice");
+                return null;
+            }
+        }
+
+        public static async Task<News> GetNews(string symbol)
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var url = new Uri($"https://api.polygon.io/v2/reference/news?ticker={symbol}&limit=7&apiKey={PolygonKeys()}");
+
+                    var responce = await client.GetAsync(url);
+                    string json;
+                    using (var content = responce.Content)
+                    {
+                        json = await content.ReadAsStringAsync();
+
+
+                    }
+
+                    Console.WriteLine(json);
+
+                    // Checks if the API returns a bad response
+                    if (json.Contains("error"))
+                    {
+                        Console.WriteLine("API cooldown");
+                        Thread.Sleep(10000);
+                        return await GetNews(symbol); // Starts over
+                    }
+
+                    Console.WriteLine(json);
+                    return JsonConvert.DeserializeObject<News>(json);
+
+                }
+
+            }
+            catch
+            {
+                Console.WriteLine("Cannot get news");
                 return null;
             }
         }

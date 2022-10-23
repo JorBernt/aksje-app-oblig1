@@ -1,4 +1,5 @@
 ﻿using aksjeapp_backend.Models;
+using aksjeapp_backend.Models.News;
 
 namespace aksjeapp_backend.DAL
 {
@@ -17,6 +18,6 @@ namespace aksjeapp_backend.DAL
         Task<StockChangeValue> StockChange(string symbol);
         Task<List<StockOverview>> GetStockOverview();
         Task<Customer> GetCustomerPortofolio(string socialSecurityNumber);
-
+        Task<News> GetNews(string symbol);
     }
 }

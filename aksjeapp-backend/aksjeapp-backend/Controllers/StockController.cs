@@ -62,6 +62,10 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> SearchResults(string keyPhrase)
         {
+            if (keyPhrase == null)
+            {
+                return BadRequest("KeyPhrase is empty");
+            }
             var searchReults = await _db.ReturnSearchResults(keyPhrase.ToUpper());
             if (searchReults.Count <= 0)
             {
@@ -138,12 +142,25 @@ namespace aksjeapp_backend.Controller
         public async Task<ActionResult> GetCustomerPortofolio(string socialSecurityNumber)
         {
             var customer = await _db.GetCustomerPortofolio(socialSecurityNumber);
-            if(customer == null)
+            if (customer == null)
             {
                 _logger.LogInformation("Customer not found");
                 return BadRequest("Customer not found");
             }
             return Ok(customer);
+        }
+
+        public async Task<ActionResult> GetNews(string symbol)
+        {
+            var news = await _db.GetNews(symbol.ToUpper());
+
+            if (news == null)
+            {
+                _logger.LogInformation("Fault");
+                return BadRequest();
+            }
+            return Ok(news);
+
         }
     }
 }

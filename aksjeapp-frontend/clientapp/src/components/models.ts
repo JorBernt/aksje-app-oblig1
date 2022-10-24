@@ -15,3 +15,14 @@ export interface Transaction {
     totalPrice: number,
     isActive: boolean //Vet ikke om denne må være med?
 }
+
+export interface profileInfo {
+    socialSecurityNumber: string,
+    firstName: string,
+    lastName: string,
+    address: string,
+    balance: number,
+    transactions: Transaction[],
+    postalCode: number,
+    postCity: string
+}

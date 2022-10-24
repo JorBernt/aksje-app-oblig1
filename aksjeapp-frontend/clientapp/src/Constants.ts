@@ -40,5 +40,10 @@ export const API = {
         (symbol: string) : string => {
             return url + `StockChange?symbol=${symbol}`
         },
-    GET_STOCK_OVERVIEW: url + "GetStockOverview"
+    GET_STOCK_OVERVIEW: url + "GetStockOverview",
+    GET_NEWS: url + "GetNews",
+    GET_CUSTOMER_PORTOFOLIO:
+        (socialSecurityNumber: string) => {
+            return url + "GetCustomerPortofolio?socialSecurityNumber=" + socialSecurityNumber
+        },
 }

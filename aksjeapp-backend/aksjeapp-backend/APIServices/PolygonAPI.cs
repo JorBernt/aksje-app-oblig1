@@ -1,4 +1,5 @@
 ﻿using aksjeapp_backend.Models;
+using aksjeapp_backend.Models.News;
 using Newtonsoft.Json;
 
 namespace aksjeapp_backend.DAL
@@ -84,8 +85,48 @@ namespace aksjeapp_backend.DAL
             }
         }
 
+        public static async Task<News> GetNews(string symbol)
+        {
+            try
+            {
+                using (var client = new HttpClient())
+                {
+                    var url = new Uri($"https://api.polygon.io/v2/reference/news?ticker={symbol}&limit=7&apiKey={PolygonKeys()}");
+
+                    var responce = await client.GetAsync(url);
+                    string json;
+                    using (var content = responce.Content)
+                    {
+                        json = await content.ReadAsStringAsync();
+
+
+                    }
+
+                    Console.WriteLine(json);
+
+                    // Checks if the API returns a bad response
+                    if (json.Contains("error"))
+                    {
+                        Console.WriteLine("API cooldown");
+                        Thread.Sleep(5000);
+                        return await GetNews(symbol); // Starts over
+                    }
+
+                    Console.WriteLine(json);
+                    return JsonConvert.DeserializeObject<News>(json);
+
+                }
+
+            }
+            catch
+            {
+                Console.WriteLine("Cannot get news");
+                return null;
+            }
+        }
+
         // List with tokens for the Poltgon API
-        public static List<String> polygonKeys = new List<string>() { "C1cckwJuZuvEgVJbCmv42HuUZnJSgjeJ", "uWXhChA2H2mRpH7fCrGH5NebvagOZEBT", "udqqYjjU5_yjzUpSGVpLBaqGv54SWsIY", "rt8cZtaDtDUSPGsC0nPpHKnl9tpGPPld", "ku6Bcu6IthG2r5m4pBV8bozJqhOobJWq" };
+        public static List<String> polygonKeys = new List<string>() { "C1cckwJuZuvEgVJbCmv42HuUZnJSgjeJ", "uWXhChA2H2mRpH7fCrGH5NebvagOZEBT", "udqqYjjU5_yjzUpSGVpLBaqGv54SWsIY", "rt8cZtaDtDUSPGsC0nPpHKnl9tpGPPld", "ku6Bcu6IthG2r5m4pBV8bozJqhOobJWq", "vmCz3EMpwNkSZH_1ekwUvCpJ_dPR2Zhy", "bUPoDNh4OFrbTkQ6DLpsSweKMZKaCqcG", "hK9nttsunnnZ4WqCz1cWJC6yZ7l4LM2U", "eBe50HwzILuzw_bAEwqCHOnMOHbkVjdu", "G_pBRj9ts_Bcbwzl2vKEbdW_i9_XROND" };
 
         public static string PolygonKeys()
         {

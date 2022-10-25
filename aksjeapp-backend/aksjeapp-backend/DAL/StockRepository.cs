@@ -298,7 +298,7 @@ namespace aksjeapp_backend.DAL
                         Change = change,
                         Value = results.Last().ClosePrice
                     };
-                    
+
                     var stockChange2 = await _db.StockChangeValues.FirstOrDefaultAsync(k => k.Symbol == symbol && k.Date == GetTodaysDate().ToString("yyyy-MM-dd"));
 
                     // Returns stockChange if its already in the database. If not it will access the API
@@ -332,6 +332,8 @@ namespace aksjeapp_backend.DAL
                 foreach (var stock in stocks)
                 {
                     var myStock = await StockChange(stock.Symbol);
+                    if(myStock == null)
+                        continue;
                     var stockObject = new StockOverview()
                     {
                         Symbol = stock.Symbol,
@@ -405,6 +407,27 @@ namespace aksjeapp_backend.DAL
             return customer;
         }
 
+        public async Task<List<StockChangeValue>> GetWinners()
+        {
+            var Winners = await _db.StockChangeValues.OrderByDescending(k => k.Change).Take(7).ToListAsync();
+            if (Winners.Count < 7)
+            {
+                await GetStockOverview();
+                return await GetWinners();
+            }
+            return Winners;
+        }
+        public async Task<List<StockChangeValue>> GetLosers()
+        {
+            var Losers = await _db.StockChangeValues.OrderBy(k => k.Change).Take(7).ToListAsync();
+            if (Losers.Count < 7)
+            {
+                await GetStockOverview();
+                return await GetLosers();
+            }
+            return Losers;
+        }
+
         public async Task<News> GetNews(string symbol)
         {
             var News = await PolygonAPI.GetNews(symbol);
@@ -415,6 +438,7 @@ namespace aksjeapp_backend.DAL
         {
             DateTime date1 = DateTime.Now;
             date1 = date1.AddMonths(-1);//Uses one month old data since polygon cant get todays date
+            //var date1 = new DateTime(25/09/2022);
 
             // If day of week is a weekend then the last price if from friday
             if (date1.DayOfWeek.Equals("Saturday"))

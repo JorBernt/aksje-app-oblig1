@@ -7,6 +7,7 @@ import {API} from "../../Constants";
 
 const LandingPage = () => {
     const stockData = {
+        "symbol" : "AAPL",
         "name": "Porsche AG",
         "last": 90.78,
         "todayPercent": 3.25,

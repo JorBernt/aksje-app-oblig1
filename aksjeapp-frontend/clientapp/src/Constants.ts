@@ -6,7 +6,7 @@ export const API = {
     GET_ALL_STOCKS: url + "GetAllStocks",
     GET_STOCK_PRICES:
         (symbol: string, fromDate: string, toDate: string) : string => {
-            return url + `StockPrices?symbol+=${symbol}&fromDate=${fromDate}&toDate=${toDate}`
+            return url + `GetStockPrices?symbol=${symbol}&fromDate=${fromDate}&toDate=${toDate}`
         },
     BUY_STOCK:
         (socialSecurityNumber: string, symbol: string, number: number) : string => {

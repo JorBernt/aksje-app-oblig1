@@ -10,6 +10,7 @@
     "@types/node": "^16.11.62",
     "@types/react": "^18.0.21",
     "@types/react-dom": "^18.0.6",
+    "@types/recharts": "^1.8.23",
     "eslint": "8.22.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
@@ -44,6 +45,7 @@
     ]
   },
   "devDependencies": {
+    "@types/lodash": "^4.14.186",
     "autoprefixer": "^10.4.12",
     "postcss": "^8.4.17",
     "tailwind-scrollbar": "^2.0.1",

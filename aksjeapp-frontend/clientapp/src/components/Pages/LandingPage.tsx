@@ -3,6 +3,7 @@ import Card from "../UI/Card/Card";
 import Navbar from "../Navbar/Navbar";
 import StockContainer from "../StockViews/StockContainer";
 import SingleStockView from "../StockViews/SingleStockView";
+import {API} from "../../Constants";
 
 const LandingPage = () => {
     const stockData = {
@@ -30,11 +31,11 @@ const LandingPage = () => {
                         <div className="flex flex-col">
                             <Card color="default">
                                 <StockContainer text="Winners of the day" showAmount={false} sorted="nameAsc"
-                                                height="h-[14rem]"/>
+                                                height="h-[14rem]" API={API.GET_WINNERS}/>
                             </Card>
                             <Card color="default">
                                 <StockContainer text="Losers of the day" showAmount={false} sorted={"valAsc"}
-                                                height="h-[14rem]"/>
+                                                height="h-[14rem]" API={API.GET_LOSERS}/>
                             </Card>
                         </div>
                     </div>

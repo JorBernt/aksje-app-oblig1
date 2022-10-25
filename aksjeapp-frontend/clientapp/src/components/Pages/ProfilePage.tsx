@@ -3,6 +3,7 @@ import Navbar from "../Navbar/Navbar";
 import Card from "../UI/Card/Card";
 import ProfileInfoContainer from "../ProfileComponents/ProfileInfoContainer";
 import StockContainer from "../StockViews/StockContainer";
+import {API} from "../../Constants";
 
 const ProfilePage = () => {
     return (
@@ -18,7 +19,8 @@ const ProfilePage = () => {
                     </div>
                     <div>
                         <Card color={"default"}>
-                            <StockContainer text="Your stocks" showAmount={true} sorted="valAsc" height="h-[24rem]"/>
+                            <StockContainer text="Your stocks" showAmount={true} sorted="valAsc" height="h-[24rem]"
+                                            API={API.GET_STOCK_OVERVIEW}/>
                         </Card>
                     </div>
                 </div>

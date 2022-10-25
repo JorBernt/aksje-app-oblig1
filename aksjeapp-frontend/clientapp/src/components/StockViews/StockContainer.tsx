@@ -1,7 +1,6 @@
 import StockPreview from "./StockPreview";
 import React, {useEffect, useState} from "react";
 import {Stock} from "../models";
-import {API} from "../../Constants";
 import LoadingSpinner from "../UI/LoadingSpinner";
 
 type Props = {
@@ -9,6 +8,7 @@ type Props = {
     showAmount: boolean;
     sorted: string;
     height: string;
+    API: string
 }
 
 const StockContainer = (props: Props) => {
@@ -18,7 +18,7 @@ const StockContainer = (props: Props) => {
     const [showLoading, setShowLoading] = useState(true);
     const [error, setError] = useState(false)
     useEffect(() => {
-        fetch(API.GET_STOCK_OVERVIEW)
+        fetch(props.API)
             .then(response => response.json()
                 .then(response => {
                     setStockView(p => [...response])

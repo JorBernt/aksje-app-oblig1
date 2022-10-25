@@ -332,6 +332,8 @@ namespace aksjeapp_backend.DAL
                 foreach (var stock in stocks)
                 {
                     var myStock = await StockChange(stock.Symbol);
+                    if(myStock == null)
+                        continue;
                     var stockObject = new StockOverview()
                     {
                         Symbol = stock.Symbol,

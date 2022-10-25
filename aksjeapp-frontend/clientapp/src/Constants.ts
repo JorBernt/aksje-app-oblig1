@@ -40,5 +40,7 @@ export const API = {
         (symbol: string) => {
             return url + `StockChange?symbol=${symbol}`
         },
-    GET_STOCK_OVERVIEW: url + "GetStockOverview"
+    GET_STOCK_OVERVIEW: url + "GetStockOverview",
+    GET_WINNERS: url + "GetWinners",
+    GET_LOSERS: url + "GetLosers"
 }

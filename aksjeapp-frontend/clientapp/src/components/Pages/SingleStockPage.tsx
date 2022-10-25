@@ -6,6 +6,7 @@ import {useSearchParams} from "react-router-dom";
 import StockBuySell from "../StockViews/StockBuySell";
 
 let stockData = {
+    "symbol" : "AAPL",
     "name": "Porsche AG",
     "last": 90.78,
     "todayPercent": 3.25,
@@ -19,8 +20,7 @@ let stockData = {
 
 const SingleStockPage = () => {
     const [searchParams] = useSearchParams();
-    stockData.name = String(searchParams.get("symbol"))
-
+    stockData.symbol = String(searchParams.get("symbol"))
 
     return (
         <>
@@ -29,7 +29,7 @@ const SingleStockPage = () => {
                 <h1 className="text-center font-semi text-5xl bold py-10">Placeholder name</h1>
                 <div className="flex flex-row justify-center">
                     <div className="flex justify-center">
-                        <SingleStockView stockData={stockData}/>
+                        <SingleStockView stockData={stockData} />
                     </div>
                     <div className="flex flex-col">
                         <Card customCss="h-1/2 p-5 m-5">

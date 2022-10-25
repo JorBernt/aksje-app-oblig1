@@ -2,6 +2,7 @@ import Navbar from "../Navbar/Navbar";
 import Card from "../UI/Card/Card";
 import StockContainer from "../StockViews/StockContainer";
 import NewsContainer from "../NewsContainer";
+import {API} from "../../Constants";
 
 const Stocks = () => {
     return (
@@ -12,7 +13,8 @@ const Stocks = () => {
                 <div className="flex flex-row justify-center">
                     <div className="flex justify-center">
                         <Card>
-                            <StockContainer text="All stocks" showAmount={false} sorted="valAsc" height="h-[28.5rem]"/>
+                            <StockContainer text="All stocks" showAmount={false} sorted="valAsc" height="h-[28.5rem]"
+                                            API={API.GET_STOCK_OVERVIEW}/>
                         </Card>
                     </div>
                     <div>

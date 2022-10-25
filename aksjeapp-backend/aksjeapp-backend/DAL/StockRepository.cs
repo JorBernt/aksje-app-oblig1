@@ -1,4 +1,5 @@
 ﻿using aksjeapp_backend.Models;
+using aksjeapp_backend.Models.News;
 using Microsoft.EntityFrameworkCore;
 
 namespace aksjeapp_backend.DAL
@@ -132,7 +133,7 @@ namespace aksjeapp_backend.DAL
 
                 if (number == 0)
                 {
-                    customer.Balance -= stockPrice.ClosePrice * (double)number1;
+                    customer.Balance += stockPrice.ClosePrice * (double)number1;
                     await _db.SaveChangesAsync();
 
                     return true;
@@ -147,12 +148,16 @@ namespace aksjeapp_backend.DAL
 
         public async Task<List<Stock>> ReturnSearchResults(string keyPhrase)
         {
-            if (keyPhrase != "")
+            try {
+            if (keyPhrase == "")
             {
-                var stocks = await _db.Stocks.Where(k => k.Symbol.Contains(keyPhrase) || k.Name.ToUpper().Contains(keyPhrase) || k.Country.ToUpper().Contains(keyPhrase) || k.Sector.ToUpper().Contains(keyPhrase)).OrderBy(k => k.Name).ToListAsync();
-                return stocks;
+                return null;
             }
-            else
+            var stocks = await _db.Stocks.Where(k => k.Symbol.Contains(keyPhrase) || k.Name.ToUpper().Contains(keyPhrase) || k.Country.ToUpper().Contains(keyPhrase) || k.Sector.ToUpper().Contains(keyPhrase)).OrderBy(k => k.Name).ToListAsync();
+            return stocks;
+
+            }
+            catch
             {
                 return null;
             }
@@ -294,6 +299,14 @@ namespace aksjeapp_backend.DAL
                         Value = results.Last().ClosePrice
                     };
 
+                    var stockChange2 = await _db.StockChangeValues.FirstOrDefaultAsync(k => k.Symbol == symbol && k.Date == GetTodaysDate().ToString("yyyy-MM-dd"));
+
+                    // Returns stockChange if its already in the database. If not it will access the API
+                    if (stockChange2 != null)
+                    {
+                        return stockChange2;
+                    }
+
                     //Adds to stock change table
                     _db.StockChangeValues.Add(stockChange);
                     await _db.SaveChangesAsync();
@@ -319,6 +332,8 @@ namespace aksjeapp_backend.DAL
                 foreach (var stock in stocks)
                 {
                     var myStock = await StockChange(stock.Symbol);
+                    if(myStock == null)
+                        continue;
                     var stockObject = new StockOverview()
                     {
                         Symbol = stock.Symbol,
@@ -338,12 +353,16 @@ namespace aksjeapp_backend.DAL
             }
         }
 
-        public async Task<Customer> GetCustomerPortofolio(string socialSecurityNumber)
+        public async Task<Customer?> GetCustomerPortofolio(string socialSecurityNumber)
         {
             // Return name, cumtomer info, combined list of transactions, total value of portofolio
 
             var customerFromDB = await _db.Customers.FindAsync(socialSecurityNumber);
             var transactions = await _db.Transactions.Where(k => k.SocialSecurityNumber == socialSecurityNumber && k.IsActive == true).ToListAsync();
+            if (customerFromDB == null)
+            {
+                return null;
+            }
             var customer = new Customer()
             {
                 SocialSecurityNumber = customerFromDB.SocialSecurityNumber,
@@ -363,9 +382,9 @@ namespace aksjeapp_backend.DAL
             {
                 int index = portofolioList.FindIndex(k => k.Symbol.Equals(transaction.Symbol));
                 // Sums the amount of stocks if found
-                if (index > 0)
+                if (index >= 0)
                 {
-                    portofolioList[0].Amount += transaction.Amount;
+                    portofolioList[index].Amount += transaction.Amount;
                 }
                 // Adds the first of this symbol to portofolio list
                 else
@@ -388,10 +407,38 @@ namespace aksjeapp_backend.DAL
             return customer;
         }
 
+        public async Task<List<StockChangeValue>> GetWinners()
+        {
+            var Winners = await _db.StockChangeValues.OrderByDescending(k => k.Change).Take(7).ToListAsync();
+            if (Winners.Count < 7)
+            {
+                await GetStockOverview();
+                return await GetWinners();
+            }
+            return Winners;
+        }
+        public async Task<List<StockChangeValue>> GetLosers()
+        {
+            var Losers = await _db.StockChangeValues.OrderBy(k => k.Change).Take(7).ToListAsync();
+            if (Losers.Count < 7)
+            {
+                await GetStockOverview();
+                return await GetLosers();
+            }
+            return Losers;
+        }
+
+        public async Task<News> GetNews(string symbol)
+        {
+            var News = await PolygonAPI.GetNews(symbol);
+            return News;
+        }
+
         public static DateTime GetTodaysDate()
         {
             DateTime date1 = DateTime.Now;
             date1 = date1.AddMonths(-1);//Uses one month old data since polygon cant get todays date
+            //var date1 = new DateTime(25/09/2022);
 
             // If day of week is a weekend then the last price if from friday
             if (date1.DayOfWeek.Equals("Saturday"))

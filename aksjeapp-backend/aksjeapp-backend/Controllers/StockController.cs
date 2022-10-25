@@ -25,7 +25,6 @@ namespace aksjeapp_backend.Controller
                 _logger.LogInformation("Not found");
                 return BadRequest("Not found");
             }
-            Console.WriteLine("Henter aksjer");
             return Ok(allStocks);
         }
         public async Task<ActionResult> GetStockPrices(string symbol, string fromDate, string toDate) // dato skal skrives som "YYYY-MM-DD"
@@ -63,6 +62,10 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> SearchResults(string keyPhrase)
         {
+            if (keyPhrase == null)
+            {
+                return BadRequest("KeyPhrase is empty");
+            }
             var searchReults = await _db.ReturnSearchResults(keyPhrase.ToUpper());
             if (searchReults.Count <= 0)
             {
@@ -136,15 +139,50 @@ namespace aksjeapp_backend.Controller
             }
             return Ok(stockOverview);
         }
+
+        public async Task<ActionResult> GetWinners()
+        {
+            var winners = await _db.GetWinners();
+            if (winners == null)
+            {
+                _logger.LogInformation("Winners not found");
+                return BadRequest("Winners not found");
+    }
+            return Ok(winners);
+}
+        public async Task<ActionResult> GetLosers()
+        {
+            var Losers = await _db.GetLosers();
+            if (Losers == null)
+            {
+                _logger.LogInformation("Losers not found");
+                return BadRequest("Losers not found");
+            }
+            return Ok(Losers);
+        }
+
         public async Task<ActionResult> GetCustomerPortofolio(string socialSecurityNumber)
         {
             var customer = await _db.GetCustomerPortofolio(socialSecurityNumber);
-            if(customer == null)
+            if (customer == null)
             {
                 _logger.LogInformation("Customer not found");
                 return BadRequest("Customer not found");
             }
             return Ok(customer);
+        }
+
+        public async Task<ActionResult> GetNews(string symbol)
+        {
+            var news = await _db.GetNews(symbol.ToUpper());
+
+            if (news == null)
+            {
+                _logger.LogInformation("Fault");
+                return BadRequest();
+            }
+            return Ok(news);
+
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using aksjeapp_backend.Models;
+using System.ComponentModel.DataAnnotations;
 
 namespace aksjeapp_backend.DAL
 {

@@ -415,6 +415,7 @@ namespace aksjeapp_backend.DAL
         {
             DateTime date1 = DateTime.Now;
             date1 = date1.AddMonths(-1);//Uses one month old data since polygon cant get todays date
+            //var date1 = new DateTime(25/09/2022);
 
             // If day of week is a weekend then the last price if from friday
             if (date1.DayOfWeek.Equals("Saturday"))

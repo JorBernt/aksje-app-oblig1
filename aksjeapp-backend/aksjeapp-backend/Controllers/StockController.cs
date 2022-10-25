@@ -139,6 +139,28 @@ namespace aksjeapp_backend.Controller
             }
             return Ok(stockOverview);
         }
+
+        public async Task<ActionResult> GetWinners()
+        {
+            var winners = await _db.GetWinners();
+            if (winners == null)
+            {
+                _logger.LogInformation("Winners not found");
+                return BadRequest("Winners not found");
+    }
+            return Ok(winners);
+}
+        public async Task<ActionResult> GetLosers()
+        {
+            var Losers = await _db.GetLosers();
+            if (Losers == null)
+            {
+                _logger.LogInformation("Losers not found");
+                return BadRequest("Losers not found");
+            }
+            return Ok(Losers);
+        }
+
         public async Task<ActionResult> GetCustomerPortofolio(string socialSecurityNumber)
         {
             var customer = await _db.GetCustomerPortofolio(socialSecurityNumber);

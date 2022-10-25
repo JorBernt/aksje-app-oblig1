@@ -298,7 +298,7 @@ namespace aksjeapp_backend.DAL
                         Change = change,
                         Value = results.Last().ClosePrice
                     };
-                    
+
                     var stockChange2 = await _db.StockChangeValues.FirstOrDefaultAsync(k => k.Symbol == symbol && k.Date == GetTodaysDate().ToString("yyyy-MM-dd"));
 
                     // Returns stockChange if its already in the database. If not it will access the API
@@ -405,6 +405,27 @@ namespace aksjeapp_backend.DAL
             }
             customer.Portofolio = portofolio;
             return customer;
+        }
+
+        public async Task<List<StockChangeValue>> GetWinners()
+        {
+            var Winners = await _db.StockChangeValues.OrderByDescending(k => k.Change).Take(7).ToListAsync();
+            if (Winners.Count < 7)
+            {
+                await GetStockOverview();
+                return await GetWinners();
+            }
+            return Winners;
+        }
+        public async Task<List<StockChangeValue>> GetLosers()
+        {
+            var Losers = await _db.StockChangeValues.OrderBy(k => k.Change).Take(7).ToListAsync();
+            if (Losers.Count < 7)
+            {
+                await GetStockOverview();
+                return await GetLosers();
+            }
+            return Losers;
         }
 
         public async Task<News> GetNews(string symbol)

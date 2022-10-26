@@ -406,7 +406,7 @@ namespace aksjeapp_backend.DAL
                 PostCity = customerFromDB.PostalArea.PostCity,
             };
             var portfolio = new Portfolio();
-            var portfolioList = new List<PortfolioList>();
+            var portfolioList = new List<StockOverview>();
 
             // Find the amount of each stock the customer has
             foreach (var transaction in transactions)
@@ -420,7 +420,7 @@ namespace aksjeapp_backend.DAL
                 // Adds the first of this symbol to portofolio list
                 else
                 {
-                    var portfolioItem = new PortfolioList()
+                    var portfolioItem = new StockOverview()
                     {
                         Symbol = transaction.Symbol,
                         Amount = transaction.Amount,
@@ -432,6 +432,8 @@ namespace aksjeapp_backend.DAL
             foreach (var stock in portfolio.StockPortfolio)
             {
                 var stockChange = await StockChange(stock.Symbol);
+                stock.Value = stockChange.Value * stock.Amount;
+                stock.Change = stockChange.Change;
                 portfolio.Value += stockChange.Value * stock.Amount;
             }
             customer.Portfolio = portfolio;

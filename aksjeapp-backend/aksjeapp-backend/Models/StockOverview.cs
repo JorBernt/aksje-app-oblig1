@@ -6,4 +6,5 @@ public class StockOverview
     public string Name { get; set; }
     public double Change { get; set; }
     public double Value { get; set; }
+    public int Amount { get; set; } = 0;
 }

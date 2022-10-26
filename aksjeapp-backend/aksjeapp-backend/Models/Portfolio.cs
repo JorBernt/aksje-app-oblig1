@@ -2,7 +2,7 @@
 {
     public class Portfolio
     {
-        public List<PortfolioList> StockPortfolio { get; set; }
+        public List<StockOverview> StockPortfolio { get; set; }
         public double Value { get; set; }
     }
 }

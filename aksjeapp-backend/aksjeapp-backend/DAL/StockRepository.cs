@@ -24,6 +24,28 @@ namespace aksjeapp_backend.DAL
         {
             var stock = await PolygonAPI.GetStockPrices(symbol, fromDate, toDate, 1);
 
+            var results = stock.results;
+
+            if (results == null)
+            {
+                return null;
+            }
+
+            DateTime date;
+
+            if (DateTime.TryParse(fromDate, out date))
+            {
+
+                Console.WriteLine(date.ToString());
+                foreach (var stocks in results)
+                {
+                    stocks.Date = date.ToString("yyyy-MM-dd");
+                    date = date.AddDays(1);
+                    Console.WriteLine(stocks.ClosePrice);
+                }
+                stock.results = results;
+            }
+
             return stock;
         }
 
@@ -62,7 +84,6 @@ namespace aksjeapp_backend.DAL
             }
             catch
             {
-
                 return false;
             }
 
@@ -92,8 +113,6 @@ namespace aksjeapp_backend.DAL
 
                     if (transactions[i].Amount > number)
                     {
-
-
                         // Need to split transaction since we are not selling the same amount we bought.
                         var transaction = new Transaction()
                         {
@@ -138,7 +157,8 @@ namespace aksjeapp_backend.DAL
 
                     return true;
                 }
-                else { return false; }
+
+                return false;
             }
             catch
             {
@@ -148,13 +168,14 @@ namespace aksjeapp_backend.DAL
 
         public async Task<List<Stock>> ReturnSearchResults(string keyPhrase)
         {
-            try {
-            if (keyPhrase == "")
+            try
             {
-                return null;
-            }
-            var stocks = await _db.Stocks.Where(k => k.Symbol.Contains(keyPhrase) || k.Name.ToUpper().Contains(keyPhrase) || k.Country.ToUpper().Contains(keyPhrase) || k.Sector.ToUpper().Contains(keyPhrase)).OrderBy(k => k.Name).ToListAsync();
-            return stocks;
+                if (keyPhrase == "")
+                {
+                    return null;
+                }
+                var stocks = await _db.Stocks.Where(k => k.Symbol.Contains(keyPhrase) || k.Name.ToUpper().Contains(keyPhrase) || k.Country.ToUpper().Contains(keyPhrase) || k.Sector.ToUpper().Contains(keyPhrase)).OrderBy(k => k.Name).ToListAsync();
+                return stocks;
 
             }
             catch
@@ -332,7 +353,7 @@ namespace aksjeapp_backend.DAL
                 foreach (var stock in stocks)
                 {
                     var myStock = await StockChange(stock.Symbol);
-                    if(myStock == null)
+                    if (myStock == null)
                         continue;
                     var stockObject = new StockOverview()
                     {
@@ -409,22 +430,16 @@ namespace aksjeapp_backend.DAL
 
         public async Task<List<StockChangeValue>> GetWinners()
         {
-            var Winners = await _db.StockChangeValues.OrderByDescending(k => k.Change).Take(7).ToListAsync();
-            if (Winners.Count < 7)
-            {
-                await GetStockOverview();
-                return await GetWinners();
-            }
+            await GetStockOverview();
+            var Winners = await _db.StockChangeValues.OrderByDescending(k => k.Change).Where(k => k.Date == GetTodaysDate().ToString("yyyy-MM-dd") && k.Change > 0).Take(7).ToListAsync();
+
             return Winners;
         }
         public async Task<List<StockChangeValue>> GetLosers()
         {
-            var Losers = await _db.StockChangeValues.OrderBy(k => k.Change).Take(7).ToListAsync();
-            if (Losers.Count < 7)
-            {
-                await GetStockOverview();
-                return await GetLosers();
-            }
+            await GetStockOverview();
+            var Losers = await _db.StockChangeValues.OrderBy(k => k.Change).Where(k => k.Date == GetTodaysDate().ToString("yyyy-MM-dd") && k.Change < 0).Take(7).ToListAsync();
+
             return Losers;
         }
 

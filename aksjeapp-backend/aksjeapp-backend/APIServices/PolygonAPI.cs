@@ -68,7 +68,7 @@ namespace aksjeapp_backend.DAL
                     if (json.Contains("error"))
                     {
                         Console.WriteLine("API cooldown");
-                        Thread.Sleep(10000);
+                        Thread.Sleep(5000);
                         return await GetOpenClosePrice(symbol, date); // Starts over
                     }
 

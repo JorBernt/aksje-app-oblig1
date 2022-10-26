@@ -147,9 +147,9 @@ namespace aksjeapp_backend.Controller
             {
                 _logger.LogInformation("Winners not found");
                 return BadRequest("Winners not found");
-    }
+            }
             return Ok(winners);
-}
+        }
         public async Task<ActionResult> GetLosers()
         {
             var Losers = await _db.GetLosers();

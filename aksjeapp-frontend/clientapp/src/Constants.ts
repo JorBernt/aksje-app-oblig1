@@ -33,14 +33,19 @@ export const API = {
             return url + `GetTransaction?transaction=${transaction}`
         },
     DELETE_TRANSACTION:
-        (socialSecurityNumber: string, id: number) : string => {
+        (socialSecurityNumber: string, id: number): string => {
             return url + `DeleteTransaction?socialSecurityNumber=${socialSecurityNumber}&id=${id}`
         },
     STOCK_CHANGE:
-        (symbol: string) : string => {
+        (symbol: string): string => {
             return url + `StockChange?symbol=${symbol}`
         },
     GET_STOCK_OVERVIEW: url + "GetStockOverview",
     GET_WINNERS: url + "GetWinners",
-    GET_LOSERS: url + "GetLosers"
+    GET_LOSERS: url + "GetLosers",
+    GET_NEWS: url + "GetNews?symbol=TSLA",
+    GET_CUSTOMER_PORTOFOLIO:
+        (socialSecurityNumber: string) => {
+            return url + "GetCustomerPortofolio?socialSecurityNumber=" + socialSecurityNumber
+        },
 }

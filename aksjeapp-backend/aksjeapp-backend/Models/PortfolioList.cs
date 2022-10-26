@@ -1,6 +1,6 @@
 ﻿namespace aksjeapp_backend.Models
 {
-    public class PortofoilioList
+    public class PortfolioList
     {
         public string Symbol { get; set; }
         public int Amount { get; set; }

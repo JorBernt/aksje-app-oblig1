@@ -20,6 +20,6 @@ namespace aksjeapp_backend.DAL
         [RegularExpression(@"^[a-zA-ZæøåÆØÅ. \-]{2,50$")]
         public string PostCity { get; set; }
 
-        public Portofolio Portofolio { get; set; }
+        public Portfolio Portfolio { get; set; }
     }
 }

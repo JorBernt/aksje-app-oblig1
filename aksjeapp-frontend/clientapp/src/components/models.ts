@@ -18,12 +18,23 @@ export interface Transaction {
     //Vet ikke om denne må være med?
 }
 
-export interface profileInfo {
+export interface PortfolioList {
+    symbol: string,
+    amount: number;
+}
+
+export interface Portfolio {
+    stockPortfolio: Array<Stock>,
+    value: number,
+}
+
+export interface ProfileInfo {
     socialSecurityNumber: string,
     firstName: string,
     lastName: string,
     address: string,
     balance: number,
+    portfolio: Portfolio
     transactions: Transaction[],
     postalCode: number,
     postCity: string

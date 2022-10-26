@@ -193,6 +193,16 @@ namespace aksjeapp_backend.DAL
             {
                 // Lists all transactions that belongs to the owner
                 var transactions = customer.Transactions.Where(k => k.IsActive == true).ToList();
+
+                foreach(var transaction in transactions)
+                {
+                    if (transaction.Date.Equals(GetTodaysDate().ToString("yyyy-MM-dd")))
+                    {
+                        transaction.Awaiting = true;
+                    }
+
+                }
+
                 return transactions;
             }
             return null;

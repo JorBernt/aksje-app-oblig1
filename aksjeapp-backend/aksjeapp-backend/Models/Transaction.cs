@@ -19,6 +19,6 @@ namespace aksjeapp_backend.Models
         [RegularExpression(@"^^(?!0*[.]0*$|[.]0*$|0*$)\d+[.]?\d{0,2}$")]
         public double TotalPrice { get; set; }
         public bool IsActive { get; set; } = true; //This will be false if we sell stocks and we sell the amount this transaction is for
-
+        public bool Awaiting { get; set; } = false;
     }
 }

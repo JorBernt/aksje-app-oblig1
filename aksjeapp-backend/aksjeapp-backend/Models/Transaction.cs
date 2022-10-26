@@ -10,7 +10,7 @@ namespace aksjeapp_backend.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; } // Lage et tilfeldig nummer
 
-        [RegularExpression(@"^[0-9]{11}$")] 
+        [RegularExpression(@"^[0-9]{11}$")]
         public string SocialSecurityNumber { get; set; }
         public string Date { get; set; }
         public string Symbol { get; set; }

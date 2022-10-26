@@ -15,7 +15,7 @@ namespace aksjeapp_backend.Models
 
         [JsonProperty("l")]
         public double LowestPrice { get; set; }
-
+        public string? Date { get; set; }
 
     }
 }

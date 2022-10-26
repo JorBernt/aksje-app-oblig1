@@ -4,8 +4,8 @@ using System.ComponentModel.DataAnnotations;
 namespace aksjeapp_backend.DAL
 {
     public class Customer
-    {   
-        [RegularExpression(@"^[0-9]{11}$")] 
+    {
+        [RegularExpression(@"^[0-9]{11}$")]
         public string SocialSecurityNumber { get; set; }
         [RegularExpression(@"^[a-zA-ZæøåÆØÅ. \-]{2,20}$")]
         public string FirstName { get; set; }

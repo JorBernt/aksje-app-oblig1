@@ -300,7 +300,7 @@ namespace aksjeapp_backend.DAL
             try
             {
 
-                var stockChange = await _db.StockChangeValues.FirstOrDefaultAsync(k => k.Symbol == symbol && k.Date == GetTodaysDate().ToString("yyyy-MM-dd"));
+                var stockChange = await _db.StockChangeValues.FirstOrDefaultAsync(k => k.Symbol == symbol && k.Date == "2022-09-18");
 
                 // Returns stockChange if its already in the database. If not it will access the API
                 if (stockChange != null)
@@ -313,7 +313,7 @@ namespace aksjeapp_backend.DAL
 
                 var fromDate = date.ToString("yyyy-MM-dd");
 
-                var stockPrice1 = await PolygonAPI.GetStockPrices(symbol, fromDate, GetTodaysDate().ToString("yyyy-MM-dd"), 1);
+                var stockPrice1 = await PolygonAPI.GetStockPrices(symbol, fromDate, "2022-09-18", 1);
 
                 if (stockPrice1.results != null)
                 {

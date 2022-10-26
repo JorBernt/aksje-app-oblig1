@@ -1,8 +1,10 @@
+
 type Props = {
     title: string;
     content: string | number;
     date: string;
-    affectedStocks: string;
+    affectedStocks: string[];
+    link?: string;
 }
 
 const NewsDisplay = (props: Props) => {
@@ -12,11 +14,11 @@ const NewsDisplay = (props: Props) => {
             <div className={className}>
                 <div className="pr-5 col-span-2">
                     <p className="text-xs">{props.date}</p>
-                    <h2 className="text-left font-semibold text-xl">{props.title}</h2>
-                    <p className="text-left">{props.content}</p>
+                    <a className="text-left font-semibold text-xl" href={props.link}>{props.content}</a>
+                    <p className="text-left">{props.title}</p>
                 </div>
                 <div className="w-44 col-span 1">
-                    <p>{props.affectedStocks}</p>
+                    <p>{props.affectedStocks.join(", ")}</p>
                 </div>
             </div>
         </>

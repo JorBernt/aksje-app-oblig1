@@ -1,5 +1,7 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import {Transaction} from "../models";
+import {API} from "../../Constants";
 
 type Props = {
     data: string;
@@ -12,9 +14,12 @@ const StockBuySell = (props: Props) => {
     const handleOnClick = () =>{
         navigate(`/singleStock?symbol=${"AAA"}&name=${"ADDA"}`);
     }
+    
 
     const className = "text-white font-bold py-2 px-4 rounded-full m-4 hover:shadow-xl w-40 transition duration-300 " + props.className;
     const antall = "Antall";
+    
+  
 
     return (
         <>

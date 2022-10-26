@@ -26,3 +26,11 @@ export interface profileInfo {
     postalCode: number,
     postCity: string
 }
+
+export interface News {
+    publisher: string,
+    title: string,
+    author: string,
+    date: string,
+    stocks: string[]
+}

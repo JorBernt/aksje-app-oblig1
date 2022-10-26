@@ -1,10 +1,28 @@
 import NewsDisplay from "./UI/TextDisplay/NewsDisplay";
-import React from "react";
+import React, {useEffect, useState} from "react";
+import {API} from "../Constants";
+import {News} from "./models";
 
 const NewsContainer = () => {
+
+    const [news, setNews] = useState<News[]>([]);
+
+    useEffect(() => {
+        fetch(API.GET_NEWS)
+            .then(response => response.json()
+                .then((res) => {
+                    setNews(p => [...res.results])
+                    console.log(res)
+                }).catch(e => {
+                    console.log(e.message)
+                }))
+    }, [])
+    console.log(news[0])
+
+
     return (
         <>
-            <div className="h-[32rem]">
+            <div className="h-[32rem] w-[40rem]">
                 <div className="flex justify-center text-stock-preview-text-1 pb-2">
                     <h1 className="font-bold">News and other events</h1>
                 </div>
@@ -15,36 +33,10 @@ const NewsContainer = () => {
                 <hr className="border-text-display mb-1"/>
                 <div
                     className="scroll h-[28.5rem] overflow-y-auto pr-0.5 scrollbar scrollbar-track-white scrollbar-thumb-rounded-3xl scrollbar-thin scrollbar-thumb-gray-300 scrollbar">
-                    <NewsDisplay title={"Another red day on the market"} date="08-10-2022 08:32"
-                                 content={"Market remains under pressure as..."}
-                                 affectedStocks="AAPL, AMZN, MSFT, GOOGL, SHOP, TSLA, META"/>
-                    <NewsDisplay title={"Another red day on the market"} date="08-10-2022 08:32"
-                                 content={"Market remains under pressure as..."}
-                                 affectedStocks="AAPL, AMZN, MSFT, GOOGL, SHOP, TSLA, META"/>
-                    <NewsDisplay title={"Another red day on the market"} date="08-10-2022 08:32"
-                                 content={"Market remains under pressure as..."}
-                                 affectedStocks="AAPL, AMZN, MSFT, GOOGL, SHOP, TSLA, META"/>
-                    <NewsDisplay title={"Another red day on the market"} date="08-10-2022 08:32"
-                                 content={"Market remains under pressure as..."}
-                                 affectedStocks="AAPL, AMZN, MSFT, GOOGL, SHOP, TSLA, META"/>
-                    <NewsDisplay title={"Another red day on the market"} date="08-10-2022 08:32"
-                                 content={"Market remains under pressure as..."}
-                                 affectedStocks="AAPL, AMZN, MSFT, GOOGL, SHOP, TSLA, META"/>
-                    <NewsDisplay title={"Another red day on the market"} date="08-10-2022 08:32"
-                                 content={"Market remains under pressure as..."}
-                                 affectedStocks="AAPL, AMZN, MSFT, GOOGL, SHOP, TSLA, META"/>
-                    <NewsDisplay title={"Another red day on the market"} date="08-10-2022 08:32"
-                                 content={"Market remains under pressure as..."}
-                                 affectedStocks="AAPL, AMZN, MSFT, GOOGL, SHOP, TSLA, META"/>
-                    <NewsDisplay title={"Another red day on the market"} date="08-10-2022 08:32"
-                                 content={"Market remains under pressure as..."}
-                                 affectedStocks="AAPL, AMZN, MSFT, GOOGL, SHOP, TSLA, META"/>
-                    <NewsDisplay title={"Another red day on the market"} date="08-10-2022 08:32"
-                                 content={"Market remains under pressure as..."}
-                                 affectedStocks="AAPL, AMZN, MSFT, GOOGL, SHOP, TSLA, META"/>
-                    <NewsDisplay title={"Another red day on the market"} date="08-10-2022 08:32"
-                                 content={"Market remains under pressure as..."}
-                                 affectedStocks="AAPL, AMZN, MSFT, GOOGL, SHOP, TSLA, META"/>
+                    {news.map((val) => {
+                        return <NewsDisplay title={val.author} content={val.title} date={val.date}
+                                            affectedStocks={val.stocks}/>
+                    })}
                 </div>
             </div>
         </>

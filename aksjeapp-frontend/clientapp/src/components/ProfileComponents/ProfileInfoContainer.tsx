@@ -16,8 +16,6 @@ const ProfileInfoContainer = () => {
         transactions: [],
         postalCode: 10,
         postCity: "Oslo"
-
-
     });
 
     useEffect(() => {

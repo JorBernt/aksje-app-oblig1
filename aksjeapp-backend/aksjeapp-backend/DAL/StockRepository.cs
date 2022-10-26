@@ -24,6 +24,28 @@ namespace aksjeapp_backend.DAL
         {
             var stock = await PolygonAPI.GetStockPrices(symbol, fromDate, toDate, 1);
 
+            var results = stock.results;
+
+            if (results == null)
+            {
+                return null;
+            }
+
+            DateTime date;
+
+            if (DateTime.TryParse(fromDate, out date))
+            {
+
+                Console.WriteLine(date.ToString());
+                foreach (var stocks in results)
+                {
+                    stocks.Date = date.ToString("yyyy-MM-dd");
+                    date = date.AddDays(1);
+                    Console.WriteLine(stocks.ClosePrice);
+                }
+                stock.results = results;
+            }
+
             return stock;
         }
 
@@ -62,7 +84,6 @@ namespace aksjeapp_backend.DAL
             }
             catch
             {
-
                 return false;
             }
 
@@ -92,8 +113,6 @@ namespace aksjeapp_backend.DAL
 
                     if (transactions[i].Amount > number)
                     {
-
-
                         // Need to split transaction since we are not selling the same amount we bought.
                         var transaction = new Transaction()
                         {
@@ -138,7 +157,8 @@ namespace aksjeapp_backend.DAL
 
                     return true;
                 }
-                else { return false; }
+
+                return false;
             }
             catch
             {
@@ -148,13 +168,14 @@ namespace aksjeapp_backend.DAL
 
         public async Task<List<Stock>> ReturnSearchResults(string keyPhrase)
         {
-            try {
-            if (keyPhrase == "")
+            try
             {
-                return null;
-            }
-            var stocks = await _db.Stocks.Where(k => k.Symbol.Contains(keyPhrase) || k.Name.ToUpper().Contains(keyPhrase) || k.Country.ToUpper().Contains(keyPhrase) || k.Sector.ToUpper().Contains(keyPhrase)).OrderBy(k => k.Name).ToListAsync();
-            return stocks;
+                if (keyPhrase == "")
+                {
+                    return null;
+                }
+                var stocks = await _db.Stocks.Where(k => k.Symbol.Contains(keyPhrase) || k.Name.ToUpper().Contains(keyPhrase) || k.Country.ToUpper().Contains(keyPhrase) || k.Sector.ToUpper().Contains(keyPhrase)).OrderBy(k => k.Name).ToListAsync();
+                return stocks;
 
             }
             catch
@@ -172,6 +193,16 @@ namespace aksjeapp_backend.DAL
             {
                 // Lists all transactions that belongs to the owner
                 var transactions = customer.Transactions.Where(k => k.IsActive == true).ToList();
+
+                foreach(var transaction in transactions)
+                {
+                    if (transaction.Date.Equals(GetTodaysDate().ToString("yyyy-MM-dd")))
+                    {
+                        transaction.Awaiting = true;
+                    }
+
+                }
+
                 return transactions;
             }
             return null;
@@ -332,7 +363,7 @@ namespace aksjeapp_backend.DAL
                 foreach (var stock in stocks)
                 {
                     var myStock = await StockChange(stock.Symbol);
-                    if(myStock == null)
+                    if (myStock == null)
                         continue;
                     var stockObject = new StockOverview()
                     {
@@ -374,57 +405,51 @@ namespace aksjeapp_backend.DAL
                 PostalCode = customerFromDB.PostalArea.PostalCode,
                 PostCity = customerFromDB.PostalArea.PostCity,
             };
-            var portofolio = new Portofolio();
-            var portofolioList = new List<PortofoilioList>();
+            var portfolio = new Portfolio();
+            var portfolioList = new List<PortfolioList>();
 
             // Find the amount of each stock the customer has
             foreach (var transaction in transactions)
             {
-                int index = portofolioList.FindIndex(k => k.Symbol.Equals(transaction.Symbol));
+                int index = portfolioList.FindIndex(k => k.Symbol.Equals(transaction.Symbol));
                 // Sums the amount of stocks if found
                 if (index >= 0)
                 {
-                    portofolioList[index].Amount += transaction.Amount;
+                    portfolioList[index].Amount += transaction.Amount;
                 }
                 // Adds the first of this symbol to portofolio list
                 else
                 {
-                    var portofolioItem = new PortofoilioList()
+                    var portfolioItem = new PortfolioList()
                     {
                         Symbol = transaction.Symbol,
                         Amount = transaction.Amount,
                     };
-                    portofolioList.Add(portofolioItem);
+                    portfolioList.Add(portfolioItem);
                 }
             }
-            portofolio.StockPortofolio = portofolioList;
-            foreach (var stock in portofolio.StockPortofolio)
+            portfolio.StockPortfolio = portfolioList;
+            foreach (var stock in portfolio.StockPortfolio)
             {
                 var stockChange = await StockChange(stock.Symbol);
-                portofolio.Value += stockChange.Value * stock.Amount;
+                portfolio.Value += stockChange.Value * stock.Amount;
             }
-            customer.Portofolio = portofolio;
+            customer.Portfolio = portfolio;
             return customer;
         }
 
         public async Task<List<StockChangeValue>> GetWinners()
         {
-            var Winners = await _db.StockChangeValues.OrderByDescending(k => k.Change).Take(7).ToListAsync();
-            if (Winners.Count < 7)
-            {
-                await GetStockOverview();
-                return await GetWinners();
-            }
+            await GetStockOverview();
+            var Winners = await _db.StockChangeValues.OrderByDescending(k => k.Change).Where(k => k.Date == GetTodaysDate().ToString("yyyy-MM-dd") && k.Change > 0).Take(7).ToListAsync();
+
             return Winners;
         }
         public async Task<List<StockChangeValue>> GetLosers()
         {
-            var Losers = await _db.StockChangeValues.OrderBy(k => k.Change).Take(7).ToListAsync();
-            if (Losers.Count < 7)
-            {
-                await GetStockOverview();
-                return await GetLosers();
-            }
+            await GetStockOverview();
+            var Losers = await _db.StockChangeValues.OrderBy(k => k.Change).Where(k => k.Date == GetTodaysDate().ToString("yyyy-MM-dd") && k.Change < 0).Take(7).ToListAsync();
+
             return Losers;
         }
 

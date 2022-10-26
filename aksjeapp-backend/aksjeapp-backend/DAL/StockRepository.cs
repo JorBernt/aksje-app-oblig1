@@ -193,6 +193,16 @@ namespace aksjeapp_backend.DAL
             {
                 // Lists all transactions that belongs to the owner
                 var transactions = customer.Transactions.Where(k => k.IsActive == true).ToList();
+
+                foreach(var transaction in transactions)
+                {
+                    if (transaction.Date.Equals(GetTodaysDate().ToString("yyyy-MM-dd")))
+                    {
+                        transaction.Awaiting = true;
+                    }
+
+                }
+
                 return transactions;
             }
             return null;
@@ -290,7 +300,7 @@ namespace aksjeapp_backend.DAL
             try
             {
 
-                var stockChange = await _db.StockChangeValues.FirstOrDefaultAsync(k => k.Symbol == symbol && k.Date == GetTodaysDate().ToString("yyyy-MM-dd"));
+                var stockChange = await _db.StockChangeValues.FirstOrDefaultAsync(k => k.Symbol == symbol && k.Date == "2022-09-18");
 
                 // Returns stockChange if its already in the database. If not it will access the API
                 if (stockChange != null)
@@ -303,7 +313,7 @@ namespace aksjeapp_backend.DAL
 
                 var fromDate = date.ToString("yyyy-MM-dd");
 
-                var stockPrice1 = await PolygonAPI.GetStockPrices(symbol, fromDate, GetTodaysDate().ToString("yyyy-MM-dd"), 1);
+                var stockPrice1 = await PolygonAPI.GetStockPrices(symbol, fromDate, "2022-09-18", 1);
 
                 if (stockPrice1.results != null)
                 {
@@ -395,36 +405,36 @@ namespace aksjeapp_backend.DAL
                 PostalCode = customerFromDB.PostalArea.PostalCode,
                 PostCity = customerFromDB.PostalArea.PostCity,
             };
-            var portofolio = new Portofolio();
-            var portofolioList = new List<PortofoilioList>();
+            var portfolio = new Portfolio();
+            var portfolioList = new List<PortfolioList>();
 
             // Find the amount of each stock the customer has
             foreach (var transaction in transactions)
             {
-                int index = portofolioList.FindIndex(k => k.Symbol.Equals(transaction.Symbol));
+                int index = portfolioList.FindIndex(k => k.Symbol.Equals(transaction.Symbol));
                 // Sums the amount of stocks if found
                 if (index >= 0)
                 {
-                    portofolioList[index].Amount += transaction.Amount;
+                    portfolioList[index].Amount += transaction.Amount;
                 }
                 // Adds the first of this symbol to portofolio list
                 else
                 {
-                    var portofolioItem = new PortofoilioList()
+                    var portfolioItem = new PortfolioList()
                     {
                         Symbol = transaction.Symbol,
                         Amount = transaction.Amount,
                     };
-                    portofolioList.Add(portofolioItem);
+                    portfolioList.Add(portfolioItem);
                 }
             }
-            portofolio.StockPortofolio = portofolioList;
-            foreach (var stock in portofolio.StockPortofolio)
+            portfolio.StockPortfolio = portfolioList;
+            foreach (var stock in portfolio.StockPortfolio)
             {
                 var stockChange = await StockChange(stock.Symbol);
-                portofolio.Value += stockChange.Value * stock.Amount;
+                portfolio.Value += stockChange.Value * stock.Amount;
             }
-            customer.Portofolio = portofolio;
+            customer.Portfolio = portfolio;
             return customer;
         }
 

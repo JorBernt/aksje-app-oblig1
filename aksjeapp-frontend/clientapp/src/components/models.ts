@@ -13,7 +13,9 @@ export interface Transaction {
     symbol: string,
     amount: number,
     totalPrice: number,
-    isActive: boolean //Vet ikke om denne må være med?
+    isActive: boolean,
+    awaiting: boolean
+    //Vet ikke om denne må være med?
 }
 
 export interface profileInfo {

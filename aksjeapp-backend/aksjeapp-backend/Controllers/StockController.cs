@@ -67,11 +67,6 @@ namespace aksjeapp_backend.Controller
                 return BadRequest("KeyPhrase is empty");
             }
             var searchReults = await _db.ReturnSearchResults(keyPhrase.ToUpper());
-            if (searchReults.Count <= 0)
-            {
-                _logger.LogInformation("Returned 0 results");
-                return BadRequest("0 stocks found");
-            }
             return Ok(searchReults);
 
         }

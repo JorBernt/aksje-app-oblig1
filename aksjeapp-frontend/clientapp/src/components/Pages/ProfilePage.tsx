@@ -23,6 +23,7 @@ const ProfilePage = () => {
                                             API={API.GET_STOCK_OVERVIEW}/>
                         </Card>
                     </div>
+
                 </div>
             </div>
         </>

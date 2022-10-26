@@ -4,6 +4,8 @@ import Card from "../UI/Card/Card";
 import TransactionContainer from "../Transactions/TransactionContainer";
 import {useSearchParams} from "react-router-dom";
 import StockBuySell from "../StockViews/StockBuySell";
+import React from "react";
+import TransactionsView from "../StockViews/TransactionsView";
 
 let stockData = {
     "name": "Porsche AG",
@@ -38,14 +40,20 @@ const SingleStockPage = () => {
                                 <StockBuySell data={"Buy"} className="bg-green-500 hover:shadow-green-300"/>
                             </div>
                         </Card>
-                        <Card >
+                        <Card>
                             <div className="flex flex-col justify-between">
                                 <StockBuySell data={"Sell"} className="bg-red-500 hover:shadow-red-300"/>
                             </div>
                         </Card>
                     </div>
                 </div>
+                <h1 className="text-center font-semi text-5xl bold py-10">Placeholder name</h1>
                 <div className="flex justify-center">
+                    <Card customCss={"w-[74rem] p-5 m-5"}>
+                        <div className="flex flex-col justify-between">
+                            <TransactionsView/>
+                        </div>
+                    </Card>
                 </div>
             </div>
         </>

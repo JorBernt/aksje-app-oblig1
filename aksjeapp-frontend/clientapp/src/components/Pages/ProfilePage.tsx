@@ -21,6 +21,7 @@ const ProfilePage = () => {
                             <StockContainer text="Your stocks" showAmount={true} sorted="valAsc" height="h-[24rem]"/>
                         </Card>
                     </div>
+
                 </div>
             </div>
         </>

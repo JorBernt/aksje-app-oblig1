@@ -72,12 +72,12 @@ const StockContainer = (props: Props) => {
                                 counter++;
                                     return counter % 2 === 0 ?
                                         <div
-                                            className="hover:scale-105 hover:bg-gradient-to-br hover:from-white hover:to-gray-200 hover:rounded-lg rounded-lg transition duration-150 ease-in-out text-stock-preview-text-1 font-semibold"
+                                            className="cursor-pointer hover:scale-105 hover:bg-gradient-to-br hover:from-white hover:to-gray-200 hover:rounded-lg rounded-lg transition duration-150 ease-in-out text-stock-preview-text-1 font-semibold"
                                             ref={view}>
                                             <StockPreview key={val.symbol} items={val} showAmount={props.showAmount}/>
                                         </div> :
                                         <div
-                                            className="hover:scale-105 transition duration-150 ease-in-out bg-gradient-to-tl rounded-lg from-green-500 to-blue-700 text-stock-preview-text-2 font-semibold">
+                                            className="cursor-pointer hover:scale-105 transition duration-150 ease-in-out bg-gradient-to-tl rounded-lg from-green-500 to-blue-700 text-stock-preview-text-2 font-semibold">
                                             <StockPreview key={val.symbol} items={val} showAmount={props.showAmount}/>
                                         </div>
                                 }

@@ -3,6 +3,9 @@ import Chart from "../UI/Chart/Chart";
 import Card from "../UI/Card/Card";
 import DataDisplay from "../UI/TextDisplay/DataDisplay";
 import {API} from "../../Constants";
+import LoadingSpinner from "../UI/LoadingSpinner";
+import {Simulate} from "react-dom/test-utils";
+
 
 interface Results {
     closePrice: number;
@@ -71,21 +74,32 @@ const SingleStockView: React.FC<Props> = (props) => {
 
     return (
         <>
-            <Card color={"default"} customCss="w-max m-5 p-5">
+            <Card color={"default"} customCss=" m-5 p-5">
                 <p className="text-2xl text-center pb-5">{name}</p>
                 <Chart data={stockPrices} loading={loading} max={max} min={min}/>
                 <div className="grid grid-rows-3 grid-cols-3 mt-5 h-[14rem]">
-                    <DataDisplay title={"Symbol"} content={stockData?.name}></DataDisplay>
-                    <DataDisplay title={"Last"} content={stockData?.last}></DataDisplay>
-                    <DataDisplay title={"Today %"} content={stockData?.change.toFixed(2) + "%"}
-                                 color={colorHandler(stockData?.change)}></DataDisplay>
-                    <DataDisplay title={"Today +/-"} content={stockData?.todayDifference.toFixed(2)}
-                                 color={colorHandler(stockData?.todayDifference)}></DataDisplay>
-                    <DataDisplay title={"Buy"} content={stockData?.buy}></DataDisplay>
-                    <DataDisplay title={"Sell"} content={stockData?.sell}></DataDisplay>
-                    <DataDisplay title={"High"} content={stockData?.high}></DataDisplay>
-                    <DataDisplay title={"Low"} content={stockData?.low}></DataDisplay>
-                    <DataDisplay title={"Turnover"} content={stockData?.turnover}></DataDisplay>
+                    {loading &&
+                        <>
+                            <div className={"ml-28"}>
+                                <LoadingSpinner/>
+                            </div>
+                        </>
+                    }
+                    {!loading &&
+                        <>
+                            <DataDisplay title={"Symbol"} content={stockData?.name}></DataDisplay>
+                            <DataDisplay title={"Last"} content={stockData?.last}></DataDisplay>
+                            <DataDisplay title={"Today %"} content={stockData?.change.toFixed(2) + "%"}
+                                         color={colorHandler(stockData?.change)}></DataDisplay>
+                            <DataDisplay title={"Today +/-"} content={stockData?.todayDifference.toFixed(2)}
+                                         color={colorHandler(stockData?.todayDifference)}></DataDisplay>
+                            <DataDisplay title={"Buy"} content={stockData?.buy}></DataDisplay>
+                            <DataDisplay title={"Sell"} content={stockData?.sell}></DataDisplay>
+                            <DataDisplay title={"High"} content={stockData?.high}></DataDisplay>
+                            <DataDisplay title={"Low"} content={stockData?.low}></DataDisplay>
+                            <DataDisplay title={"Turnover"} content={stockData?.turnover}></DataDisplay>
+                        </>
+                    }
                 </div>
             </Card>
         </>

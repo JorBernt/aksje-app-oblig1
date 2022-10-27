@@ -30,6 +30,8 @@ namespace aksjeapp_backend.DAL
             {
                 return null;
             }
+            
+            
 
             DateTime date;
 
@@ -44,6 +46,15 @@ namespace aksjeapp_backend.DAL
                 stock.results = results;
             }
 
+            stock.Name = symbol;
+            stock.Last = results[0].ClosePrice;
+            stock.Change = results[0].ClosePrice / results[^1].ClosePrice;
+            stock.TodayDifference = results[0].ClosePrice - results[^1].ClosePrice;
+            stock.Buy = 10;
+            stock.Sell = 100;
+            stock.High = results[0].LowestPrice;
+            stock.Low = results[0].HighestPrice;
+            stock.Turnover = 10000;
             return stock;
         }
 

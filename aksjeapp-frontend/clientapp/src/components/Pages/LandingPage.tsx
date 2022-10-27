@@ -6,18 +6,7 @@ import SingleStockView from "../StockViews/SingleStockView";
 import {API} from "../../Constants";
 
 const LandingPage = () => {
-    const stockData = {
-        "symbol" : "AAPL",
-        "name": "Porsche AG",
-        "last": 90.78,
-        "todayPercent": 3.25,
-        "todayDifference": -1.86,
-        "buy": 90.78,
-        "sell": 90.80,
-        "high": 93.70,
-        "low": 89.50,
-        "turnover": 1386098
-    };
+
     return (
         <>
             <div className="bg-background">
@@ -25,18 +14,18 @@ const LandingPage = () => {
                 <div className="flex flex-row justify-center mt-5">
                     <div className="basis-1">
                         <div className="flex flex-auto">
-                            <SingleStockView stockData={stockData}/>
+                            <SingleStockView symbol={"AAPL"} fromDate={"2022-09-24"} toDate={"2022-10-24"}/>
                         </div>
                     </div>
                     <div className="basis-1">
                         <div className="flex flex-col">
                             <Card color="default">
-                                <StockContainer text="Winners of the day" showAmount={false} sorted="nameAsc"
-                                                height="h-[14rem]" API={API.GET_WINNERS}/>
+                                <StockContainer text="Winners of the day" showAmount={false} sorted="valDsc"
+                                                height="h-[14.25rem]" API={API.GET_WINNERS}/>
                             </Card>
                             <Card color="default">
-                                <StockContainer text="Losers of the day" showAmount={false} sorted={"valAsc"}
-                                                height="h-[14rem]" API={API.GET_LOSERS}/>
+                                <StockContainer text="Losers of the day" showAmount={false} sorted="valAsc"
+                                                height="h-[14.25rem]" API={API.GET_LOSERS}/>
                             </Card>
                         </div>
                     </div>

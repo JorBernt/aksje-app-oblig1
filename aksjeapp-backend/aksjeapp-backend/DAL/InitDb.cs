@@ -22,8 +22,8 @@ namespace aksjeapp_backend.DAL
                 context.Stocks.AddRange(stockList);
 
 
-                // Adding customers
-                var postalArea1 = new PostalAreas
+            // Adding customers
+            var postalArea1 = new PostalAreas
                 {
                     PostalCode = "0134",
                     PostCity = "Oslo"
@@ -40,9 +40,9 @@ namespace aksjeapp_backend.DAL
                     PostalArea = postalArea1
                 };
                 context.Customers.Add(customer1);
-            }
+            
             context.SaveChanges();
-
+            }
         }
     }
 }

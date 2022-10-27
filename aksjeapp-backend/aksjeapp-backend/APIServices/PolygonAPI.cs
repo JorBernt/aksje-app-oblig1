@@ -24,7 +24,7 @@ namespace aksjeapp_backend.DAL
 
 
                     }
-
+                    Console.WriteLine(json);
                     if (json.Contains("error"))
                     {
                         Console.WriteLine("API cooldown");

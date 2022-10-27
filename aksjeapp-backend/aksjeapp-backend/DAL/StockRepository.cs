@@ -36,12 +36,10 @@ namespace aksjeapp_backend.DAL
             if (DateTime.TryParse(fromDate, out date))
             {
 
-                Console.WriteLine(date.ToString());
                 foreach (var stocks in results)
                 {
                     stocks.Date = date.ToString("yyyy-MM-dd");
                     date = date.AddDays(1);
-                    Console.WriteLine(stocks.ClosePrice);
                 }
                 stock.results = results;
             }
@@ -300,7 +298,7 @@ namespace aksjeapp_backend.DAL
             try
             {
 
-                var stockChange = await _db.StockChangeValues.FirstOrDefaultAsync(k => k.Symbol == symbol && k.Date == "2022-09-18");
+                var stockChange = await _db.StockChangeValues.FirstOrDefaultAsync(k => k.Symbol == symbol && k.Date == GetTodaysDate().ToString("yyyy-MM-dd"));
 
                 // Returns stockChange if its already in the database. If not it will access the API
                 if (stockChange != null)
@@ -313,7 +311,7 @@ namespace aksjeapp_backend.DAL
 
                 var fromDate = date.ToString("yyyy-MM-dd");
 
-                var stockPrice1 = await PolygonAPI.GetStockPrices(symbol, fromDate, "2022-09-18", 1);
+                var stockPrice1 = await PolygonAPI.GetStockPrices(symbol, fromDate, GetTodaysDate().ToString("yyyy-MM-dd"), 1);
 
                 if (stockPrice1.results != null)
                 {
@@ -463,9 +461,9 @@ namespace aksjeapp_backend.DAL
 
         public static DateTime GetTodaysDate()
         {
-            DateTime date1 = DateTime.Now;
-            date1 = date1.AddMonths(-1);//Uses one month old data since polygon cant get todays date
-            //var date1 = new DateTime(25/09/2022);
+            //DateTime date1 = DateTime.Now;
+            //date1 = date1.AddMonths(-1);//Uses one month old data since polygon cant get todays date
+            var date1 = new DateTime(2022,09,25);
 
             // If day of week is a weekend then the last price if from friday
             if (date1.DayOfWeek.Equals("Saturday"))

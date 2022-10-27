@@ -18,5 +18,8 @@ namespace aksjeapp_backend.Models.News
 
         [JsonProperty("tickers")]
         public List<string> Stocks { get; set; }
+
+        [JsonProperty("article_url")]
+        public string url { get; set; }
     }
 }

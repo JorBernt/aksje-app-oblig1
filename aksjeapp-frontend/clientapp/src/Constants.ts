@@ -1,11 +1,13 @@
 import {Transaction} from "./components/models";
 
+export const DATE_TODAY = new Date().toLocaleDateString("nb-NO").replace("/", "-");
+
 const url = "https://localhost:7187/Stock/"
 
 export const API = {
     GET_ALL_STOCKS: url + "GetAllStocks",
     GET_STOCK_PRICES:
-        (symbol: string, fromDate: string, toDate: string) : string => {
+        (symbol: string, fromDate: string, toDate: string): string => {
             return url + `GetStockPrices?symbol=${symbol}&fromDate=${fromDate}&toDate=${toDate}`
         },
     BUY_STOCK:

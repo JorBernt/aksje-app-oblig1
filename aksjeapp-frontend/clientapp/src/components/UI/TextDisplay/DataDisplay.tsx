@@ -1,6 +1,6 @@
 type Props = {
     title: string;
-    content: string | number;
+    content: string | number | undefined;
     color?: string
 }
 

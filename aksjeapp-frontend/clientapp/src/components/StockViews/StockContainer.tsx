@@ -43,7 +43,7 @@ const StockContainer = (props: Props) => {
     return (
         <>
             <div className="justify-center flex-row px-0 min-w-max">
-                <div className="flex justify-center text-black pb-2">
+                <div className="flex justify-center text-black pb-0">
                     <h1 className="font-bold">{props.text} </h1>
                 </div>
                 <div className={headers}>

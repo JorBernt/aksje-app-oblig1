@@ -75,7 +75,7 @@ namespace aksjeapp_backend.DAL
                     return false;
                 }
                 customer.Transactions.Add(stockTransaction);
-                customer.Balance -= stockTransaction.TotalPrice;
+                customer.Balance -= stockTransaction.TotalPrice - 5; //5 dollars in brokerage fee
                 await _db.SaveChangesAsync();
 
                 return true;
@@ -270,7 +270,7 @@ namespace aksjeapp_backend.DAL
                     if (GetTodaysDate().ToString("yyyy-MM-dd") == transaction.Date && transaction.IsActive == true)
                     {
                         _db.Transactions.Remove(transaction);
-                        customer.Balance += transaction.TotalPrice; //Updates balance for customer
+                        customer.Balance += transaction.TotalPrice + 5; //Updates balance for customer and refunds brokerage fee
                         await _db.SaveChangesAsync();
                         return true;
 
@@ -440,14 +440,12 @@ namespace aksjeapp_backend.DAL
 
         public async Task<List<StockChangeValue>> GetWinners()
         {
-            await GetStockOverview();
             var Winners = await _db.StockChangeValues.OrderByDescending(k => k.Change).Where(k => k.Date == GetTodaysDate().ToString("yyyy-MM-dd") && k.Change > 0).Take(7).ToListAsync();
 
             return Winners;
         }
         public async Task<List<StockChangeValue>> GetLosers()
         {
-            await GetStockOverview();
             var Losers = await _db.StockChangeValues.OrderBy(k => k.Change).Where(k => k.Date == GetTodaysDate().ToString("yyyy-MM-dd") && k.Change < 0).Take(7).ToListAsync();
 
             return Losers;

@@ -82,17 +82,6 @@ namespace aksjeapp_backend.Controller
             return Ok(transactions);
         }
 
-        public async Task<ActionResult> GetTransaction(string socialSecurityNumber, int id)
-        {
-            var transaction = await _db.GetTransaction(socialSecurityNumber, id);
-            if (transaction == null)
-            {
-                _logger.LogInformation("Not found transaction belonging to " + socialSecurityNumber + " with id " + id);
-                return BadRequest("Transaction does not exist");
-            }
-            return Ok(transaction);
-
-        }
         public async Task<ActionResult> UpdateTransaction(Transaction transaction)
         {
             var returnOK = await _db.UpdateTransaction(transaction);

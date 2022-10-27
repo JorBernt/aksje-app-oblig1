@@ -13,17 +13,14 @@ var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
-        policy =>
-        {
-            policy.WithOrigins("http://localhost:3000");
-        });
+        policy => { policy.WithOrigins("http://localhost:3000"); });
 });
 
 // Initialized logger (code accessed from https://www.claudiobernasconi.ch/2022/01/28/how-to-use-serilog-in-asp-net-core-web-api/) 
 var logger = new LoggerConfiguration()
-.ReadFrom.Configuration(builder.Configuration)
-.Enrich.FromLogContext()
-.CreateLogger();
+    .ReadFrom.Configuration(builder.Configuration)
+    .Enrich.FromLogContext()
+    .CreateLogger();
 
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
@@ -36,8 +33,6 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
 //InitDb.Initialize(app);
-
-
 
 
 app.Run();

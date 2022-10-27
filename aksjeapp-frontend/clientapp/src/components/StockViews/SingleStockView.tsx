@@ -53,6 +53,7 @@ const SingleStockView: React.FC<Props> = (props) => {
     const [max, setMax] = useState(0)
     const [min, setMin] = useState(0)
     const [loading, setLoading] = useState(true)
+    const [name, setName] = useState("")
     const mappableStockPriceData: Array<MappableData> = []
     let weekNumber = 0;
     useEffect(() => {
@@ -69,15 +70,17 @@ const SingleStockView: React.FC<Props> = (props) => {
                     setStockData(response)
                     setLoading(false)
                 }))
+        fetch(API.GET_STOCK_NAME(props.symbol)).then(response => response.text().then(text => setName(text)))
+
     }, [])
 
     return (
         <>
             <Card color={"default"} customCss="w-max m-5 p-5">
-                <p className="text-5xl text-center pb-5">{stockData?.name}</p>
+                <p className="text-2xl text-center pb-5">{name}</p>
                 <Chart data={stockPrices} loading={loading} max={max} min={min}/>
                 <div className="grid grid-rows-3 grid-cols-3 mt-5 h-[14rem]">
-                    <DataDisplay title={"Name"} content={stockData?.name}></DataDisplay>
+                    <DataDisplay title={"Symbol"} content={stockData?.name}></DataDisplay>
                     <DataDisplay title={"Last"} content={stockData?.last}></DataDisplay>
                     <DataDisplay title={"Today %"} content={stockData?.change.toFixed(2) + "%"}
                                  color={colorHandler(stockData?.change)}></DataDisplay>

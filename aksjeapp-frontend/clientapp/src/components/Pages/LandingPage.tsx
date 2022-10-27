@@ -1,11 +1,19 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Card from "../UI/Card/Card";
 import Navbar from "../Navbar/Navbar";
 import StockContainer from "../StockViews/StockContainer";
 import SingleStockView from "../StockViews/SingleStockView";
 import {API} from "../../Constants";
 
+interface SingeStockViewData {
+    symbol: string,
+    fromDate: string,
+    toDate: string;
+}
+
 const LandingPage = () => {
+
+    const [stockName, setStockName] = useState("")
 
     return (
         <>
@@ -14,14 +22,15 @@ const LandingPage = () => {
                 <div className="flex flex-row justify-center mt-5">
                     <div className="basis-1">
                         <div className="flex flex-auto">
-                            <SingleStockView symbol={"AAPL"} fromDate={"2022-09-24"} toDate={"2022-10-24"}/>
+                            {stockName.length > 0 && <SingleStockView symbol={"" + stockName} fromDate={"2022-09-24"}
+                                                                      toDate={"2022-10-24"}/>}
                         </div>
                     </div>
                     <div className="basis-1">
                         <div className="flex flex-col">
                             <Card color="default">
                                 <StockContainer text="Winners of the day" showAmount={false} sorted="valDsc"
-                                                height="h-[14.25rem]" API={API.GET_WINNERS}/>
+                                                height="h-[14.25rem]" API={API.GET_WINNERS} setName={setStockName}/>
                             </Card>
                             <Card color="default">
                                 <StockContainer text="Losers of the day" showAmount={false} sorted="valAsc"

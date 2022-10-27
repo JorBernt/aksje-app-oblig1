@@ -10,11 +10,13 @@ import {API} from "../../Constants";
 
 const SingleStockPage = () => {
     const [searchParams] = useSearchParams();
-    const symbol = String(searchParams.get("symbol"))
+    const [symbol, setSymbol] = useState("")
+
     const [name, setName] = useState("")
     useEffect(() => {
         fetch(API.GET_STOCK_NAME(symbol)).then(response => response.text().then(text => setName(text)))
-    }, [])
+        setSymbol(String(searchParams.get("symbol")))
+    }, [searchParams, symbol])
     return (
         <>
             <div>

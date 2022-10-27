@@ -11,11 +11,6 @@ interface Results {
     lowestPrice: number;
 }
 
-interface StockPrice {
-    symbol: string;
-    results: Array<Results>;
-}
-
 export interface MappableData {
     name: string;
     uv: number;

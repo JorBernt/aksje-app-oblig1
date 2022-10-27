@@ -20,7 +20,7 @@ namespace aksjeapp_backend.DAL
             {
                 string json = r.ReadToEnd();
                 List<StockChangeValue> stockList = JsonConvert.DeserializeObject<List<StockChangeValue>>(json);
-
+                
                 context.StockChangeValues.AddRange(stockList);
             }
 
@@ -30,7 +30,7 @@ namespace aksjeapp_backend.DAL
                 List<Stock> stockList = JsonConvert.DeserializeObject<List<Stock>>(json);
 
                 context.Stocks.AddRange(stockList);
-            }
+                
             
             // Adding customers
             var postalArea1 = new PostalAreas
@@ -40,76 +40,19 @@ namespace aksjeapp_backend.DAL
             };
 
 
-            var customer1 = new Customers
-            {
-                FirstName = "Line",
-                SocialSecurityNumber = "12345678910",
-                LastName = "Jensen",
-                Address = "Karl Johansgate 3",
-                Balance = 100_000,
-                PostalArea = postalArea1
-            };
-
-            var transaction1 = new Transaction()
-            {
-                SocialSecurityNumber = "12345678910",
-                Date = "2022-09-18",
-                Symbol = "AAPL",
-                Amount = 100,
-                TotalPrice = 10231,
-                IsActive = true,
-                Awaiting = false
-            };
-            var transaction2 = new Transaction()
-            {
-                SocialSecurityNumber = "12345678910",
-                Date = "2022-09-25",
-                Symbol = "AAPL",
-                Amount = 230,
-                TotalPrice = 27624,
-                IsActive = true,
-                Awaiting = false
-            };
-            var transaction3 = new Transaction()
-            {
-                SocialSecurityNumber = "12345678910",
-                Date = "2022-10-05",
-                Symbol = "GOOG",
-                Amount = 20,
-                TotalPrice = 2801,
-                IsActive = true,
-                Awaiting = false
-            };
-            var transaction4 = new Transaction()
-            {
-                SocialSecurityNumber = "12345678910",
-                Date = "2022-09-18",
-                Symbol = "ZS",
-                Amount = 25,
-                TotalPrice = 9335,
-                IsActive = true,
-                Awaiting = false
-            };
-            var transaction5 = new Transaction()
-            {
-                SocialSecurityNumber = "12345678910",
-                Date = "2022-09-18",
-                Symbol = "ENPH",
-                Amount = 700,
-                TotalPrice = 14812,
-                IsActive = true,
-                Awaiting = false
-            };
+                var customer1 = new Customers
+                {
+                    SocialSecurityNumber = "12345678910",
+                    FirstName = "Line",
+                    LastName = "Jensen",
+                    Address = "Karl Johansgate 3",
+                    Balance = 100_000,
+                    PostalArea = postalArea1
+                };
+                context.Customers.Add(customer1);
             
-            context.Transactions.Add(transaction1);
-            context.Transactions.Add(transaction2);
-            context.Transactions.Add(transaction3);
-            context.Transactions.Add(transaction4);
-            context.Transactions.Add(transaction5);
-            
-            context.Customers.Add(customer1);
             context.SaveChanges();
-
+            }
         }
     }
 }

@@ -328,7 +328,7 @@ namespace aksjeapp_backend.DAL
                         Value = results.Last().ClosePrice
                     };
 
-                    var stockChange2 = await _db.StockChangeValues.FirstOrDefaultAsync(k => k.Symbol == symbol && k.Date == GetTodaysDate().ToString("yyyy-MM-dd"));
+                    var stockChange2 = await _db.StockChangeValues.FirstOrDefaultAsync(k => k.Symbol == symbol && k.Date == "2022-09-18");
 
                     // Returns stockChange if its already in the database. If not it will access the API
                     if (stockChange2 != null)
@@ -473,8 +473,8 @@ namespace aksjeapp_backend.DAL
             if (date1.DayOfWeek.Equals("Sunday"))
             {
                 date1 = date1.AddDays(-2);
-            }
-            return date1;
+            } 
+            return new DateTime(2022, 09, 18);;
 
         }
 

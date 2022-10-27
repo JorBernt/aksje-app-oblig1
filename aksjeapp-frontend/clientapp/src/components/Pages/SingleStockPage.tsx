@@ -49,14 +49,7 @@ const SingleStockPage = () => {
                         </Card>
                     </div>
                 </div>
-                <h1 className="text-center font-semi text-5xl bold py-10">Placeholder name</h1>
-                <div className="flex justify-center">
-                    <Card customCss={"w-[74rem] p-5 m-5"}>
-                        <div className="flex flex-col justify-between">
-                            <TransactionsView/>
-                        </div>
-                    </Card>
-                </div>
+                
             </div>
         </>
     )

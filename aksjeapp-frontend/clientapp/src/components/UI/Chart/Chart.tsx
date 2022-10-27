@@ -1,6 +1,7 @@
-import React, {useEffect, useRef, useState} from 'react';
-import {CartesianGrid, Line, LineChart, Tooltip, XAxis, YAxis, TooltipProps} from "recharts";
+import React, {useEffect, useState} from 'react';
+import {CartesianGrid, Line, LineChart, Tooltip, TooltipProps, XAxis, YAxis} from "recharts";
 import {API} from "../../../Constants";
+import LoadingSpinner from "../LoadingSpinner";
 
 type Props = {
     symbol: string;
@@ -35,6 +36,7 @@ const Chart: React.FC<Props> = (props) => {
     let weekNumber = 0;
     const [max, setMax] = useState(0)
     const [min, setMin] = useState(0)
+    const [loading, setLoading] = useState(true)
     useEffect(() => {
         fetch(API.GET_STOCK_PRICES(props.symbol, props.fromDate, props.toDate))
             .then(response => response.json()
@@ -43,6 +45,7 @@ const Chart: React.FC<Props> = (props) => {
                         name: (weekNumber++).toString(),
                         uv: r
                     }))
+                    setLoading(false)
                     setStockPrices(mappableStockPriceData)
                     setMax(Math.max(...mappableStockPriceData.map(d => d.uv)))
                     setMin(Math.min(...mappableStockPriceData.map(d => d.uv)))
@@ -73,15 +76,30 @@ const Chart: React.FC<Props> = (props) => {
 
     return (
         <>
-            <div className="bg-gradient-to-tl from-green-500 to-blue-700 p-5 rounded-2xl">
-                <LineChart width={600} height={300} margin={{top: 5, right: 30, left: 0, bottom: 5}} data={stockPrices}>
-                    <CartesianGrid stroke="#dbdbdb" />
-                    <Tooltip content={<CustomTooltip/>}/>
-                    <Line type="monotone" dataKey="uv" strokeWidth={2} stroke="#000000" />
-                    <XAxis dataKey="name" stroke="black"/>
-                    <YAxis stroke="black" type="number" domain={[Math.round(min * 0.9), Math.round(max * 1.1)]}/>
-                </LineChart>
+            <div className="bg-gradient-to-tl from-green-500 to-blue-700 p-5 rounded-2xl w-[40rem] h-[21rem]">
+                {loading &&
+                    <>
+                        <div className="ml-28">
+                            <LoadingSpinner/>
+                        </div>
+                    </>
+                }
+                {!loading &&
+                    <>
+
+                        <LineChart width={600} height={300} margin={{top: 5, right: 30, left: 0, bottom: 5}}
+                                   data={stockPrices}>
+                            <CartesianGrid stroke="#dbdbdb"/>
+                            <Tooltip content={<CustomTooltip/>}/>
+                            <Line type="monotone" dataKey="uv" strokeWidth={2} stroke="#000000"/>
+                            <XAxis dataKey="name" stroke="black"/>
+                            <YAxis stroke="black" type="number"
+                                   domain={[Math.round(min * 0.9), Math.round(max * 1.1)]}/>
+                        </LineChart>
+                    </>
+                }
             </div>
+
         </>
     );
 }

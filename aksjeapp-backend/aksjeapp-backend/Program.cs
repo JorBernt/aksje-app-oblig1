@@ -1,3 +1,4 @@
+using System.Data.SqlClient;
 using aksjeapp_backend.DAL;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
@@ -35,9 +36,6 @@ app.UseRouting();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
-//InitDb.Initialize(app);
-
-
-
+InitDb.Initialize(app);
 
 app.Run();

@@ -36,7 +36,7 @@ const StockContainer = (props: Props) => {
                         setError(true)
                         console.log(e.message)
                     }))
-    }, [props.data])
+    }, [props.data, props.API])
     let counter: number = -1;
     const headers = "text-stock-preview-text-1 grid px-5 " + (props.showAmount ? "grid-cols-5" : "grid-cols-4");
     const className = "w-max px-5 scroll max-h-screen overflow-y-auto scrollbar scrollbar-track-white scrollbar-thumb-rounded-3xl scrollbar-thin scrollbar-thumb-blue-700 " + props.height;

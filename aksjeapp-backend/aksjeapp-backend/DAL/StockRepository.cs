@@ -54,7 +54,6 @@ namespace aksjeapp_backend.DAL
             stock.Sell = 100;
             stock.High = results[0].LowestPrice;
             stock.Low = results[0].HighestPrice;
-            stock.Turnover = 10000;
             return stock;
         }
 

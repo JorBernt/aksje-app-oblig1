@@ -46,6 +46,11 @@ export const API = {
     GET_WINNERS: url + "GetWinners",
     GET_LOSERS: url + "GetLosers",
     GET_NEWS: url + "GetNews?symbol=TSLA",
+    GET_STOCK_NAME:
+        (symbol: string): string => {
+            return url + `GetStockName?symbol=${symbol}`
+        },
+
     GET_CUSTOMER_PORTOFOLIO:
         (socialSecurityNumber: string) => {
             return url + "GetCustomerPortofolio?socialSecurityNumber=" + socialSecurityNumber

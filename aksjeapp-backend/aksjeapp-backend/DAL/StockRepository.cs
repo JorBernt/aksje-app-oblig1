@@ -488,6 +488,12 @@ namespace aksjeapp_backend.DAL
 
         }
 
+        public async Task<String> GetStockName(string symbol)
+        {
+            var stock = await _db.Stocks.FindAsync(symbol);
+            return stock == null ? "" : stock.Name;
+        }
+
 
     }
 

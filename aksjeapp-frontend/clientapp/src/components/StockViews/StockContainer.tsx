@@ -10,6 +10,7 @@ type Props = {
     height: string;
     API?: string
     data?: Array<Stock>
+    setName?: React.Dispatch<React.SetStateAction<string>>
 }
 
 const StockContainer = (props: Props) => {
@@ -30,14 +31,16 @@ const StockContainer = (props: Props) => {
                     .then(response => {
                         setStockView(p => [...response])
                         setShowLoading(false)
-
+                        if (props.setName) {
+                            props.setName(response[0].symbol)
+                        }
                     }).catch(e => {
+                        console.log(e)
                         setShowLoading(false)
                         setError(true)
-                        console.log(e.message)
                     }))
     }, [props.data, props.API])
-    let counter: number = -1;
+    let counter: number = 0;
     const headers = "text-stock-preview-text-1 grid px-5 " + (props.showAmount ? "grid-cols-5" : "grid-cols-4");
     const className = "w-max px-5 scroll max-h-screen overflow-y-auto scrollbar scrollbar-track-white scrollbar-thumb-rounded-3xl scrollbar-thin scrollbar-thumb-blue-700 " + props.height;
     return (
@@ -66,15 +69,16 @@ const StockContainer = (props: Props) => {
                     {!showLoading && !error &&
                         <>
                             {stockView.map((val) => {
+                                counter++;
                                     return counter % 2 === 0 ?
                                         <div
-                                            className="hover:scale-105 hover:bg-gradient-to-br hover:from-white hover:to-gray-200 hover:rounded-lg rounded-lg transition duration-150 ease-in-out text-stock-preview-text-1 font-semibold"
+                                            className="cursor-pointer hover:scale-105 hover:bg-gradient-to-br hover:from-white hover:to-gray-200 hover:rounded-lg rounded-lg transition duration-150 ease-in-out text-stock-preview-text-1 font-semibold"
                                             ref={view}>
-                                            <StockPreview key={counter++} items={val} showAmount={props.showAmount}/>
+                                            <StockPreview key={val.symbol} items={val} showAmount={props.showAmount}/>
                                         </div> :
                                         <div
-                                            className="hover:scale-105 transition duration-150 ease-in-out bg-gradient-to-tl rounded-lg from-green-500 to-blue-700 text-stock-preview-text-2 font-semibold">
-                                            <StockPreview key={counter++} items={val} showAmount={props.showAmount}/>
+                                            className="cursor-pointer hover:scale-105 transition duration-150 ease-in-out bg-gradient-to-tl rounded-lg from-green-500 to-blue-700 text-stock-preview-text-2 font-semibold">
+                                            <StockPreview key={val.symbol} items={val} showAmount={props.showAmount}/>
                                         </div>
                                 }
                             )}

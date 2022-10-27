@@ -1,5 +1,4 @@
-﻿using System.Data.SqlClient;
-using aksjeapp_backend.Models;
+﻿using aksjeapp_backend.Models;
 using Newtonsoft.Json;
 
 namespace aksjeapp_backend.DAL
@@ -13,14 +12,14 @@ namespace aksjeapp_backend.DAL
 
             context.Database.EnsureDeleted();
             context.Database.EnsureCreated();
-            
+
             // Translates the JSON file to a list and adds the list to the database
-            
+
             using (StreamReader r = new StreamReader("stockChangeValuesSheet.json"))
             {
                 string json = r.ReadToEnd();
                 List<StockChangeValue> stockList = JsonConvert.DeserializeObject<List<StockChangeValue>>(json);
-                
+
                 context.StockChangeValues.AddRange(stockList);
             }
 
@@ -30,14 +29,14 @@ namespace aksjeapp_backend.DAL
                 List<Stock> stockList = JsonConvert.DeserializeObject<List<Stock>>(json);
 
                 context.Stocks.AddRange(stockList);
-                
-            
-            // Adding customers
-            var postalArea1 = new PostalAreas
-            {
-                PostalCode = "0134",
-                PostCity = "Oslo"
-            };
+
+
+                // Adding customers
+                var postalArea1 = new PostalAreas
+                {
+                    PostalCode = "0134",
+                    PostCity = "Oslo"
+                };
 
 
                 var customer1 = new Customers
@@ -50,9 +49,11 @@ namespace aksjeapp_backend.DAL
                     PostalArea = postalArea1
                 };
                 context.Customers.Add(customer1);
-            
-            context.SaveChanges();
             }
+
+            context.SaveChanges();
         }
     }
+}
+
 }

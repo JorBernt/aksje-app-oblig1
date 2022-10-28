@@ -89,6 +89,8 @@ namespace aksjeapp_backend.DAL
                 this.value = Math.Round(value, 2);
             }
         }
+        [ForeignKey("PortfolioId")]
+        public int PortfolioId { get; set; }
     }
     public class StockContext : DbContext
     {

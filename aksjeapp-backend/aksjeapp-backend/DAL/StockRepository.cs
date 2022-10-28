@@ -514,10 +514,11 @@ namespace aksjeapp_backend.DAL
                 return null;
             }
         }
-        public async Task<bool> UpdatePortfolio(string socialSecurityNumber)
+        private async Task<bool> UpdatePortfolio(string socialSecurityNumber)
         {
             try
             {
+                // Gets customer object from DB
                 var customerFromDB = await _db.Customers.FindAsync(socialSecurityNumber);
 
                 if (customerFromDB == null)
@@ -525,13 +526,39 @@ namespace aksjeapp_backend.DAL
                     return false;
                 }
 
-
+                // Gets transaction objects from DB
                 var transactionsBought = await _db.TransactionsBought.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
                 var transactionsSold = await _db.TransactionsSold.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
+                
                 StockChangeValue stockChange;
-                var portfolio = new Portfolio();
-                var portfolioList = await _db.PortfolioList.ToListAsync();
 
+                var portfolio = await _db.Portfolios.FirstOrDefaultAsync(k=> k.SocialSecurityNumber == socialSecurityNumber);
+                // Initilizes a portfolio object if it does not exist
+                if (portfolio == null)
+                {
+                    portfolio = new Portfolio();
+                }
+
+                // Resets portfolio value
+                portfolio.Value = 0;
+                portfolio.LastUpdated = GetTodaysDate().ToString("yyyy-MM-dd");
+
+                var portfolioList = await _db.PortfolioList.Where(k=> k.PortfolioId == portfolio.PortfolioId).ToListAsync();
+                
+                // Initilizes a portfoliolist object if it does not exist
+                if (portfolioList == null)
+                {
+                    portfolioList = new List<PortfolioList>();
+                }
+
+                // Sets amount and value to 0
+                foreach(var portfolioListItem in portfolioList)
+                {
+                    portfolioListItem.Value = 0;
+                    portfolioListItem.Amount = 0;
+                }
+
+                // Adds the transactions from TransactionsBought
                 foreach (var transaction in transactionsBought)
                 {
                     stockChange = await StockChange(transaction.Symbol);
@@ -539,7 +566,6 @@ namespace aksjeapp_backend.DAL
                     // Sums the amount of stocks if found
                     if (index >= 0)
                     {
-                        
                         Console.WriteLine(transaction.Amount);
                         portfolioList[index].Amount += transaction.Amount;
                         portfolioList[index].Value += stockChange.Value * transaction.Amount;
@@ -547,27 +573,45 @@ namespace aksjeapp_backend.DAL
                     // Adds the first of this symbol to portofolio list
                     else
                     {
-                        
+
                         var portfolioItem = new PortfolioList()
                         {
                             Symbol = transaction.Symbol,
                             Amount = transaction.Amount,
                             Change = stockChange.Change,
-                            
+                            Value = transaction.Amount * stockChange.Value,
+                            PortfolioId = portfolio.PortfolioId,
                         };
-                        Console.WriteLine(portfolioItem.Amount + " 2");
-                        portfolioItem.Value = portfolioItem.Amount * stockChange.Value;
-                        portfolioList.Add(portfolioItem);
+                        portfolioList.Add(portfolioItem); // Adds the new portfolio item to the portfolio list. It will be added to the DB when we save later
                     }
                 }
                 portfolio.StockPortfolio = portfolioList;
+
+                // Subtracts the stocks from TransactionsSold
+                foreach (var transaction in transactionsSold)
+                {
+                    stockChange = await StockChange(transaction.Symbol); // Gets todays stockchange and value
+                    int index = portfolioList.FindIndex(k => k.Symbol == transaction.Symbol);
+                    // Sums the amount of stocks if found
+                    if (index >= 0)
+                    {
+                        portfolioList[index].Amount -= transaction.Amount;
+                        portfolioList[index].Value -= stockChange.Value * transaction.Amount;
+                    }
+
+                    // Removes 
+                    if (portfolioList[index].Amount == 0)
+                    {
+                        portfolioList.RemoveAt(index);
+                    }
+                }
+                
+                // Calculates the total value of the portfolio
                 foreach (var stock in portfolioList)
                 {
-
-                    portfolio.Value += stock.Amount * stock.Value;
+                    portfolio.Value += stock.Value;
                 }
-                portfolio.SocialSecurityNumber = socialSecurityNumber;
-                portfolio.LastUpdated = GetTodaysDate().ToString("yyyy-MM-dd");
+                
                 await _db.Portfolios.AddAsync(portfolio);
                 customerFromDB.Portfolio = portfolio;
                 await _db.SaveChangesAsync();
@@ -579,130 +623,69 @@ namespace aksjeapp_backend.DAL
             }
         }
 
-        /*public async Task<Customer?> GetCustomerPortofolio(string socialSecurityNumber)
-        {
-            // Return name, cumtomer info, combined list of transactions, total value of portofolio
-
-            var customerFromDB = await _db.Customers.FindAsync(socialSecurityNumber);
-
-            if (customerFromDB == null)
-            {
-                return null;
-            }
-
-            var transactionsfromDB = await _db.TransactionsBought.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
-            List<Transaction> transactions = new List<Transaction>();
-
-            // Builds transaction list
-            foreach (var transactionDB in transactionsfromDB)
-            {
-                var transaction1 = new Transaction
-                {
-                    Id = transactionDB.Id,
-                    SocialSecurityNumber = transactionDB.SocialSecurityNumber,
-                    Date = transactionDB.Date,
-                    Symbol = transactionDB.Symbol,
-                    Amount = transactionDB.Amount,
-                    TotalPrice = transactionDB.TotalPrice
-                };
-                transactions.Add(transaction1);
-            }
-
-            var customer = new Customer()
-            {
-                SocialSecurityNumber = customerFromDB.SocialSecurityNumber,
-                FirstName = customerFromDB.FirstName,
-                LastName = customerFromDB.LastName,
-                Address = customerFromDB.Address,
-                Balance = customerFromDB.Balance,
-                Transactions = transactions,
-                PostalCode = customerFromDB.PostalArea.PostalCode,
-                PostCity = customerFromDB.PostalArea.PostCity,
-            };
-            var portfolio = new Portfolio();
-            var portfolioList = new List<StockOverview>();
-
-            // Find the amount of each stock the customer has
-            foreach (var transaction in transactions)
-            {
-                int index = portfolioList.FindIndex(k => k.Symbol.Equals(transaction.Symbol));
-                // Sums the amount of stocks if found
-                if (index >= 0)
-                {
-                    portfolioList[index].Amount += transaction.Amount;
-                }
-                // Adds the first of this symbol to portofolio list
-                else
-                {
-                    var portfolioItem = new StockOverview()
-                    {
-                        Symbol = transaction.Symbol,
-                        Amount = transaction.Amount,
-                    };
-                    portfolioList.Add(portfolioItem);
-                }
-            }
-            portfolio.StockPortfolio = portfolioList;
-            foreach (var stock in portfolio.StockPortfolio)
-            {
-                var stockChange = await StockChange(stock.Symbol);
-                stock.Value = stockChange.Value * stock.Amount;
-                stock.Change = stockChange.Change;
-                portfolio.Value += stockChange.Value * stock.Amount;
-            }
-            customer.Portfolio = portfolio;
-            return customer;
-        }*/
-
+        
         public async Task<Customer?> GetCustomerPortofolio(string socialSecurityNumber)
         {
-            // Return name, cumtomer info, combined list of transactions, total value of portofolio
+            try
+            {
+                // Return name, cumtomer info, combined list of transactions, total value of portofolio
 
-            var customerFromDB = await _db.Customers.FindAsync(socialSecurityNumber);
+                var customerFromDB = await _db.Customers.FindAsync(socialSecurityNumber);
 
-            if (customerFromDB == null)
+                if (customerFromDB == null)
+                {
+                    return null;
+                }
+
+                var transactionsfromDB = await _db.TransactionsBought.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
+                List<Transaction> transactions = new List<Transaction>();
+
+                // Builds transaction list
+                foreach (var transactionDB in transactionsfromDB)
+                {
+                    var transaction1 = new Transaction
+                    {
+                        Id = transactionDB.BoughtId,
+                        SocialSecurityNumber = transactionDB.SocialSecurityNumber,
+                        Date = transactionDB.Date,
+                        Symbol = transactionDB.Symbol,
+                        Amount = transactionDB.Amount,
+                        TotalPrice = transactionDB.TotalPrice
+                    };
+                    transactions.Add(transaction1);
+                }
+
+                // Runs UpdatePortfolio to update it
+                await UpdatePortfolio(socialSecurityNumber);
+
+                var portofolio = await _db.Portfolios.FirstOrDefaultAsync(k => k.SocialSecurityNumber == socialSecurityNumber && k.LastUpdated == GetTodaysDate().ToString("yyyy-MM-dd"));
+                var portofolioList = await _db.PortfolioList.ToListAsync();
+
+                // Adds portfoliolist to portfolio
+                portofolio.StockPortfolio = portofolioList;
+
+                //Converts Customers to Customer
+                var customer = new Customer()
+                {
+                    SocialSecurityNumber = customerFromDB.SocialSecurityNumber,
+                    FirstName = customerFromDB.FirstName,
+                    LastName = customerFromDB.LastName,
+                    Address = customerFromDB.Address,
+                    Balance = customerFromDB.Balance,
+                    Transactions = transactions,
+                    PostalCode = customerFromDB.PostalArea.PostalCode,
+                    PostCity = customerFromDB.PostalArea.PostCity,
+                    Portfolio = portofolio
+
+                };
+
+
+                return customer;
+            }
+            catch
             {
                 return null;
             }
-
-            var transactionsfromDB = await _db.TransactionsBought.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
-            List<Transaction> transactions = new List<Transaction>();
-
-            // Builds transaction list
-            foreach (var transactionDB in transactionsfromDB)
-            {
-                var transaction1 = new Transaction
-                {
-                    Id = transactionDB.BoughtId,
-                    SocialSecurityNumber = transactionDB.SocialSecurityNumber,
-                    Date = transactionDB.Date,
-                    Symbol = transactionDB.Symbol,
-                    Amount = transactionDB.Amount,
-                    TotalPrice = transactionDB.TotalPrice
-                };
-                transactions.Add(transaction1);
-            }
-            bool ok = await UpdatePortfolio(socialSecurityNumber);
-            var portofolio = await _db.Portfolios.FirstOrDefaultAsync(k => k.SocialSecurityNumber == socialSecurityNumber && k.LastUpdated == GetTodaysDate().ToString("yyyy-MM-dd"));
-            var portofolioList = await _db.PortfolioList.ToListAsync();
-            
-            portofolio.StockPortfolio = portofolioList;
-            var customer = new Customer()
-            {
-                SocialSecurityNumber = customerFromDB.SocialSecurityNumber,
-                FirstName = customerFromDB.FirstName,
-                LastName = customerFromDB.LastName,
-                Address = customerFromDB.Address,
-                Balance = customerFromDB.Balance,
-                Transactions = transactions,
-                PostalCode = customerFromDB.PostalArea.PostalCode,
-                PostCity = customerFromDB.PostalArea.PostCity,
-                Portfolio = portofolio
-
-            };
-            
-
-            return customer;
 
         }
 

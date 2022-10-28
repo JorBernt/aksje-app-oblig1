@@ -48,24 +48,23 @@ namespace aksjeapp_backend.DAL
                     Balance = 100_000,
                     PostalArea = postalArea1
                 };
-
                 var transaction1 = new Transaction()
-                {
-                    SocialSecurityNumber = "12345678910",
-                    Date = "2022-09-18",
-                    Symbol = "AAPL",
-                    Amount = 100,
-                    TotalPrice = 10231,
-                    IsActive = true,
-                    Awaiting = false
-                };
-                var transaction2 = new Transaction()
                 {
                     SocialSecurityNumber = "12345678910",
                     Date = "2022-09-25",
                     Symbol = "AAPL",
                     Amount = 230,
                     TotalPrice = 27624,
+                    IsActive = true,
+                    Awaiting = false
+                };
+                var transaction2 = new Transaction()
+                {
+                    SocialSecurityNumber = "12345678910",
+                    Date = "2022-09-18",
+                    Symbol = "AAPL",
+                    Amount = 100,
+                    TotalPrice = 10231,
                     IsActive = true,
                     Awaiting = false
                 };

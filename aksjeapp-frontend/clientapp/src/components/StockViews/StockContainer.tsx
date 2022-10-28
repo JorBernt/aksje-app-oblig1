@@ -64,7 +64,9 @@ const StockContainer = (props: Props) => {
                         <p className={"w-96 flex justify-center mt-48 text-6xl"}>ERROR!</p>
                     }
                     {showLoading && !error &&
-                        <LoadingSpinner/>
+                        <div className="flex justify-center items-center w-64 h-48">
+                            <LoadingSpinner/>
+                        </div>
                     }
                     {!showLoading && !error &&
                         <>

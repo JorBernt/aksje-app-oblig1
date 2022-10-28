@@ -3,7 +3,7 @@ import React from "react";
 const LoadingSpinner = () => {
     return (
         <>
-            <div role="status" className={"w-96 flex justify-center"}>
+            <div role="status" className={"flex justify-center"}>
                 <svg
                     className="inline mr-2 w-10 h-10 text-gray-200 animate-spin dark:text-gray-600 fill-blue-600"
                     viewBox="0 0 100 101" fill="none" xmlns="http://www.w3.org/2000/svg">

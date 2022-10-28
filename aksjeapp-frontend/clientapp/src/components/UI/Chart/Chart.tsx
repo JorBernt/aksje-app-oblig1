@@ -35,7 +35,7 @@ const Chart: React.FC<Props> = (props) => {
             <div className="bg-gradient-to-tl from-green-500 to-blue-700 p-5 rounded-2xl w-[40rem] h-[21rem]">
                 {props.loading &&
                     <>
-                        <div className="ml-28">
+                        <div className="flex justify-center items-center pt-32">
                             <LoadingSpinner/>
                         </div>
                     </>

@@ -10,7 +10,7 @@ import {API} from "../../Constants";
 
 const SingleStockPage = () => {
     const [searchParams] = useSearchParams();
-    const [symbol, setSymbol] = useState("")
+    const [symbol, setSymbol] = useState(String(searchParams.get("symbol")))
 
     const [stockPrice, setStockprice] = useState(0)
 

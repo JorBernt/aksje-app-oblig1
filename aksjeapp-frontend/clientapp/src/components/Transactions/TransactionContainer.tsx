@@ -9,7 +9,7 @@ type Props = {
 const TransactionContainer = (props: Props) => {
     const testTransaction = [{
         id: 0,
-        socialSecurityNumber: "",
+        socialSecurityNumber: "standardObject",
         date: "",
         symbol: "",
         amount: 0,
@@ -26,6 +26,7 @@ const TransactionContainer = (props: Props) => {
                 .then(response => {
                     setTransactionView(p => [...response])
                 }).catch(e => {
+                    setTransactionView(testTransaction)
                     console.log(e)
                 }))
     }, [props.symbol])
@@ -48,15 +49,19 @@ const TransactionContainer = (props: Props) => {
                 scrollbar scrollbar-track-white scrollbar-thumb-rounded-3xl scrollbar-thin scrollbar-thumb-blue-700">
                     {transactionView.map((val) => {
                         counter++;
-                        return counter % 2 !== 0 ?
-                            <div
-                                className="hover:scale-105 hover:bg-gradient-to-br hover:from-white hover:to-gray-200 hover:rounded-lg rounded-lg transition duration-150 ease-in-out text-stock-preview-text-1 font-semibold">
-                                <TransactionPreview transaction={val}/>
-                            </div> :
-                            <div
-                                className="hover:scale-105 transition duration-150 ease-in-out bg-gradient-to-tl rounded-lg from-green-500 to-blue-700 text-stock-preview-text-2 font-semibold">
-                                <TransactionPreview transaction={val}/>
-                            </div>
+                        console.log(transactionView)
+                        if (val.socialSecurityNumber == "standardObject") return <p className="text-center">Det er ikke
+                            gjort noen transaksjoner på denne aksjen.</p>
+                        else
+                            return counter % 2 !== 0 ?
+                                <div
+                                    className="hover:scale-105 hover:bg-gradient-to-br hover:from-white hover:to-gray-200 hover:rounded-lg rounded-lg transition duration-150 ease-in-out text-stock-preview-text-1 font-semibold">
+                                    <TransactionPreview transaction={val}/>
+                                </div> :
+                                <div
+                                    className="hover:scale-105 transition duration-150 ease-in-out bg-gradient-to-tl rounded-lg from-green-500 to-blue-700 text-stock-preview-text-2 font-semibold">
+                                    <TransactionPreview transaction={val}/>
+                                </div>
                     })}
                 </div>
             </div>

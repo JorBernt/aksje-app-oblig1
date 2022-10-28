@@ -1,5 +1,6 @@
 ﻿using aksjeapp_backend.Models;
 using aksjeapp_backend.Models.News;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace aksjeapp_backend.DAL
@@ -243,7 +244,8 @@ namespace aksjeapp_backend.DAL
         }
 
         // It is only possible to change transaction after you have bought it, you cannot change it if you sold
-        public async Task<bool> UpdateTransaction(Transaction changeTransaction)
+        [HttpPost]
+        public async Task<bool> UpdateTransaction([FromBody]Transaction changeTransaction)
         {
             try
             {

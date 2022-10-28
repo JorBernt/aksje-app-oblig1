@@ -1,6 +1,5 @@
 ﻿using aksjeapp_backend.Models;
 using aksjeapp_backend.Models.News;
-using Castle.Core.Resource;
 using Microsoft.EntityFrameworkCore;
 
 namespace aksjeapp_backend.DAL
@@ -309,7 +308,7 @@ namespace aksjeapp_backend.DAL
                 {
                     var transaction1 = new Transaction
                     {
-                        Id = transactionDB.Id,
+                        Id = transactionDB.BoughtId,
                         SocialSecurityNumber = transactionDB.SocialSecurityNumber,
                         Date = transactionDB.Date,
                         Symbol = transactionDB.Symbol,
@@ -340,7 +339,7 @@ namespace aksjeapp_backend.DAL
             var transactionfromDB = await _db.TransactionsBought.FindAsync(id);
             var transaction = new Transaction
             {
-                Id = transactionfromDB.Id,
+                Id = transactionfromDB.BoughtId,
                 SocialSecurityNumber = transactionfromDB.SocialSecurityNumber,
                 Date = transactionfromDB.Date,
                 Symbol = transactionfromDB.Symbol,
@@ -517,53 +516,63 @@ namespace aksjeapp_backend.DAL
         }
         public async Task<bool> UpdatePortfolio(string socialSecurityNumber)
         {
-            var customerFromDB = await _db.Customers.FindAsync(socialSecurityNumber);
+            try
+            {
+                var customerFromDB = await _db.Customers.FindAsync(socialSecurityNumber);
 
-            if (customerFromDB == null)
+                if (customerFromDB == null)
+                {
+                    return false;
+                }
+
+
+                var transactionsBought = await _db.TransactionsBought.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
+                var transactionsSold = await _db.TransactionsSold.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
+
+                var portfolio = new Portfolio();
+                var portfolioList = await _db.PortfolioList.ToListAsync();
+
+                foreach (var transaction in transactionsBought)
+                {
+                    int index = portfolioList.FindIndex(k => k.Symbol.Equals(transaction.Symbol));
+                    // Sums the amount of stocks if found
+                    if (index >= 0)
+                    {
+                        portfolioList[index].Amount += transaction.Amount;
+                    }
+                    // Adds the first of this symbol to portofolio list
+                    else
+                    {
+                        var stockChange = await StockChange(transaction.Symbol);
+                        var portfolioItem = new PortfolioList()
+                        {
+                            Symbol = transaction.Symbol,
+                            Amount = transaction.Amount,
+                            Change = stockChange.Change,
+                            Value = stockChange.Value
+                        };
+                        await _db.PortfolioList.AddAsync(portfolioItem);
+                    }
+                }
+                portfolio.StockPortfolio = portfolioList;
+                foreach (var stock in portfolio.StockPortfolio)
+                {
+                    var stockChange = await StockChange(stock.Symbol);
+                    stock.Value = stockChange.Value * stock.Amount;
+                    stock.Change = stockChange.Change;
+                    portfolio.Value += stockChange.Value * stock.Amount;
+                }
+                portfolio.SocialSecurityNumber = socialSecurityNumber;
+                portfolio.LastUpdated = GetTodaysDate().ToString("yyyy-MM-dd");
+                await _db.Portfolios.AddAsync(portfolio);
+                customerFromDB.Portfolio = portfolio;
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            catch
             {
                 return false;
             }
-
-
-            var transactionsBought = await _db.TransactionsBought.Where(k=>k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
-            var transactionsSold = await _db.TransactionsSold.Where(k=>k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
-
-            var portfolio = new Portfolio();
-            var portfolioList = new List<StockOverview>();
-
-            foreach (var transaction in transactionsBought)
-            {
-                int index = transactionsBought.FindIndex(k => k.Symbol.Equals(transaction.Symbol));
-                // Sums the amount of stocks if found
-                if (index >= 0)
-                {
-                    portfolioList[index].Amount += transaction.Amount;
-                }
-                // Adds the first of this symbol to portofolio list
-                else
-                {
-                    var portfolioItem = new StockOverview()
-                    {
-                        Symbol = transaction.Symbol,
-                        Amount = transaction.Amount,
-                    };
-                    await _db.PortfolioList.AddAsync(portfolioItem);
-                }
-            }
-            portfolio.StockPortfolio = portfolioList;
-            foreach (var stock in portfolio.StockPortfolio)
-            {
-                var stockChange = await StockChange(stock.Symbol);
-                stock.Value = stockChange.Value * stock.Amount;
-                stock.Change = stockChange.Change;
-                portfolio.Value += stockChange.Value * stock.Amount;
-            }
-            portfolio.SocialSecurityNumber = socialSecurityNumber;
-            portfolio.LastUpdated = GetTodaysDate().ToString("yyyy-MM-dd");
-            await _db.Portfolios.AddAsync(portfolio);
-            customerFromDB.Portfolio = portfolio;
-            await _db.SaveChangesAsync();
-            return true;
         }
 
         /*public async Task<Customer?> GetCustomerPortofolio(string socialSecurityNumber)
@@ -660,7 +669,7 @@ namespace aksjeapp_backend.DAL
             {
                 var transaction1 = new Transaction
                 {
-                    Id = transactionDB.Id,
+                    Id = transactionDB.BoughtId,
                     SocialSecurityNumber = transactionDB.SocialSecurityNumber,
                     Date = transactionDB.Date,
                     Symbol = transactionDB.Symbol,
@@ -669,7 +678,11 @@ namespace aksjeapp_backend.DAL
                 };
                 transactions.Add(transaction1);
             }
-
+            bool ok = await UpdatePortfolio(socialSecurityNumber);
+            var portofolio = await _db.Portfolios.FirstOrDefaultAsync(k => k.SocialSecurityNumber == socialSecurityNumber && k.LastUpdated == GetTodaysDate().ToString("yyyy-MM-dd"));
+            var portofolioList = await _db.PortfolioList.ToListAsync();
+            
+            portofolio.StockPortfolio = portofolioList;
             var customer = new Customer()
             {
                 SocialSecurityNumber = customerFromDB.SocialSecurityNumber,
@@ -680,10 +693,13 @@ namespace aksjeapp_backend.DAL
                 Transactions = transactions,
                 PostalCode = customerFromDB.PostalArea.PostalCode,
                 PostCity = customerFromDB.PostalArea.PostCity,
+                Portfolio = portofolio
+
             };
+            
 
             return customer;
-           
+
         }
 
         public async Task<List<StockChangeValue>> GetWinners()

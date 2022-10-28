@@ -1,5 +1,6 @@
 ﻿using aksjeapp_backend.Models;
 using aksjeapp_backend.Models.News;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace aksjeapp_backend.DAL
@@ -258,7 +259,7 @@ namespace aksjeapp_backend.DAL
 
                         // Gets todays price for the new stock
                         var stockPrice = await PolygonAPI.GetOpenClosePrice(changeTransaction.Symbol,
-                            GetTodaysDate().ToString("yyyy-mm-dd"));
+                            GetTodaysDate().ToString("yyyy-MM-dd"));
 
                         transaction.Symbol = changeTransaction.Symbol;
                         transaction.Amount = changeTransaction.Amount;

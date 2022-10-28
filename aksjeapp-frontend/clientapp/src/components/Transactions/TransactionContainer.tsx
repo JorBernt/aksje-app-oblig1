@@ -9,7 +9,7 @@ type Props = {
 const TransactionContainer = (props: Props) => {
     const testTransaction = [{
         id: 0,
-        socialSecurityNumber: "standardObject",
+        socialSecurityNumber: "",
         date: "",
         symbol: "",
         amount: 0,
@@ -50,7 +50,7 @@ const TransactionContainer = (props: Props) => {
                     {transactionView.map((val) => {
                         counter++;
                         console.log(transactionView)
-                        if (val.socialSecurityNumber == "standardObject") return <p className="text-center">Det er ikke
+                        if (val.socialSecurityNumber.length === 0) return <p className="text-center">Det er ikke
                             gjort noen transaksjoner på denne aksjen.</p>
                         else
                             return counter % 2 !== 0 ?

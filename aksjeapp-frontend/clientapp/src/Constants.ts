@@ -36,10 +36,6 @@ export const API = {
         (socialSecurityNumber: string, id: number): string => {
             return url + `GetTransaction?socialSecurityNumber=${socialSecurityNumber}&id=${id}`
         },
-    UPDATE_TRANSACTION:
-        (transaction: Transaction): string => {
-            return url + `GetTransaction?transaction=${transaction}`
-        },
     DELETE_TRANSACTION:
         (socialSecurityNumber: string, id: number): string => {
             return url + `DeleteTransaction?socialSecurityNumber=${socialSecurityNumber}&id=${id}`
@@ -48,6 +44,7 @@ export const API = {
         (symbol: string): string => {
             return url + `StockChange?symbol=${symbol}`
         },
+    UPDATE_TRANSACTION: url + "UpdateTransaction",
     GET_STOCK_OVERVIEW: url + "GetStockOverview",
     GET_WINNERS: url + "GetWinners",
     GET_LOSERS: url + "GetLosers",

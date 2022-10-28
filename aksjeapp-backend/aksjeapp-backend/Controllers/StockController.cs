@@ -112,8 +112,8 @@ namespace aksjeapp_backend.Controller
 
             return Ok(transaction);
         }
-
-        public async Task<ActionResult> UpdateTransaction(Transaction transaction)
+        [HttpPost]
+        public async Task<ActionResult> UpdateTransaction([FromBody]Transaction transaction)
         {
             var returnOK = await _db.UpdateTransaction(transaction);
             if (!returnOK)

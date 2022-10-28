@@ -73,7 +73,7 @@ const StockBuySell = (props: Props) => {
     return (
         <>
             {showLoading &&
-                <div className="">
+                <div className="h-[6.5rem] flex justify-center items-center">
                     <LoadingSpinner/>
                 </div>
             }
@@ -96,7 +96,7 @@ const StockBuySell = (props: Props) => {
             }
 
             {showTransactionResponse && !showLoading &&
-                <div className="flex flex-col">
+                <div className="flex flex-col h-[6.5rem]">
                     <div className="flex justify-center ">
                         <p className="text-0.5 xl">{successTransaction}</p>
                     </div>

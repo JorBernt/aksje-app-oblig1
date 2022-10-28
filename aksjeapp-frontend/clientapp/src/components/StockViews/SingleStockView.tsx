@@ -11,6 +11,7 @@ interface Results {
     openPrice: number;
     highestPrice: number;
     lowestPrice: number;
+    date: string;
 }
 
 export interface MappableData {
@@ -53,14 +54,15 @@ const SingleStockView: React.FC<Props> = (props) => {
     const [loading, setLoading] = useState(true)
     const [name, setName] = useState("")
     const mappableStockPriceData: Array<MappableData> = []
-    let weekNumber = 0;
     useEffect(() => {
+        setLoading(true)
+        console.log(loading)
         fetch(API.GET_STOCK_PRICES(props.symbol, props.fromDate, props.toDate))
             .then(response => response.json()
                 .then((response: StockData) => {
-                    response.results.map(r => r.closePrice).forEach(r => mappableStockPriceData.push({
-                        name: (weekNumber++).toString(),
-                        uv: r
+                    response.results.forEach(r => mappableStockPriceData.push({
+                        name: r.date,
+                        uv: r.closePrice
                     }))
                     setStockPrices(mappableStockPriceData)
                     if (props.setStockPrice)
@@ -77,18 +79,18 @@ const SingleStockView: React.FC<Props> = (props) => {
     return (
         <>
             <Card color={"default"} customCss="w-[42.5rem] m-5 p-5">
-                <p className="text-2xl text-center pb-5">{name}</p>
+                <p className="m text-2xl text-center pb-5">{name}</p>
                 <Chart data={stockPrices} loading={loading} max={max} min={min}/>
-                <div className="grid grid-rows-3 grid-cols-3 mt-5 h-[14rem]">
-                    {loading &&
-                        <>
-                            <div className={"ml-28"}>
-                                <LoadingSpinner/>
-                            </div>
-                        </>
-                    }
-                    {!loading &&
-                        <>
+                {loading &&
+                    <>
+                        <div className={"items-center flex justify-center h-[15.2rem]"}>
+                            <LoadingSpinner/>
+                        </div>
+                    </>
+                }
+                {!loading &&
+                    <>
+                        <div className="grid grid-rows-3 grid-cols-3 mt-5 h-[14rem]">
                             <DataDisplay title={"Symbol"} content={stockData?.name}></DataDisplay>
                             <DataDisplay title={"Last"} content={stockData?.last}></DataDisplay>
                             <DataDisplay title={"Today %"} content={stockData?.change.toFixed(2) + "%"}
@@ -100,9 +102,9 @@ const SingleStockView: React.FC<Props> = (props) => {
                             <DataDisplay title={"High"} content={stockData?.high}></DataDisplay>
                             <DataDisplay title={"Low"} content={stockData?.low}></DataDisplay>
                             <DataDisplay title={"Turnover"} content={stockData?.turnover}></DataDisplay>
-                        </>
-                    }
-                </div>
+                        </div>
+                    </>
+                }
             </Card>
         </>
     )

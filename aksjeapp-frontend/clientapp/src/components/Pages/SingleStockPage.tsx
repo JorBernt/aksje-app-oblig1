@@ -24,7 +24,6 @@ const SingleStockPage = () => {
         <>
             <div>
                 <Navbar/>
-                <h1 className="text-center font-semi text-5xl bold py-10">{name}</h1>
                 <div className="flex flex-row justify-center">
                     <div className="flex justify-center">
                         <SingleStockView symbol={symbol} fromDate={"2022-09-24"} toDate={"2022-10-24"}

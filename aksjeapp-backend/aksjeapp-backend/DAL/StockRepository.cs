@@ -244,8 +244,7 @@ namespace aksjeapp_backend.DAL
         }
 
         // It is only possible to change transaction after you have bought it, you cannot change it if you sold
-        [HttpPost]
-        public async Task<bool> UpdateTransaction([FromBody]Transaction changeTransaction)
+        public async Task<bool> UpdateTransaction(Transaction changeTransaction)
         {
             try
             {
@@ -260,7 +259,7 @@ namespace aksjeapp_backend.DAL
 
                         // Gets todays price for the new stock
                         var stockPrice = await PolygonAPI.GetOpenClosePrice(changeTransaction.Symbol,
-                            GetTodaysDate().ToString("yyyy-mm-dd"));
+                            GetTodaysDate().ToString("yyyy-MM-dd"));
 
                         transaction.Symbol = changeTransaction.Symbol;
                         transaction.Amount = changeTransaction.Amount;

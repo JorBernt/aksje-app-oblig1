@@ -528,39 +528,43 @@ namespace aksjeapp_backend.DAL
 
                 var transactionsBought = await _db.TransactionsBought.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
                 var transactionsSold = await _db.TransactionsSold.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
-
+                StockChangeValue stockChange;
                 var portfolio = new Portfolio();
                 var portfolioList = await _db.PortfolioList.ToListAsync();
 
                 foreach (var transaction in transactionsBought)
                 {
-                    int index = portfolioList.FindIndex(k => k.Symbol.Equals(transaction.Symbol));
+                    stockChange = await StockChange(transaction.Symbol);
+                    int index = portfolioList.FindIndex(k => k.Symbol == transaction.Symbol);
                     // Sums the amount of stocks if found
                     if (index >= 0)
                     {
+                        
+                        Console.WriteLine(transaction.Amount);
                         portfolioList[index].Amount += transaction.Amount;
+                        portfolioList[index].Value += stockChange.Value * transaction.Amount;
                     }
                     // Adds the first of this symbol to portofolio list
                     else
                     {
-                        var stockChange = await StockChange(transaction.Symbol);
+                        
                         var portfolioItem = new PortfolioList()
                         {
                             Symbol = transaction.Symbol,
                             Amount = transaction.Amount,
                             Change = stockChange.Change,
-                            Value = stockChange.Value
+                            
                         };
-                        await _db.PortfolioList.AddAsync(portfolioItem);
+                        Console.WriteLine(portfolioItem.Amount + " 2");
+                        portfolioItem.Value = portfolioItem.Amount * stockChange.Value;
+                        portfolioList.Add(portfolioItem);
                     }
                 }
                 portfolio.StockPortfolio = portfolioList;
-                foreach (var stock in portfolio.StockPortfolio)
+                foreach (var stock in portfolioList)
                 {
-                    var stockChange = await StockChange(stock.Symbol);
-                    stock.Value = stockChange.Value * stock.Amount;
-                    stock.Change = stockChange.Change;
-                    portfolio.Value += stockChange.Value * stock.Amount;
+
+                    portfolio.Value += stock.Amount * stock.Value;
                 }
                 portfolio.SocialSecurityNumber = socialSecurityNumber;
                 portfolio.LastUpdated = GetTodaysDate().ToString("yyyy-MM-dd");

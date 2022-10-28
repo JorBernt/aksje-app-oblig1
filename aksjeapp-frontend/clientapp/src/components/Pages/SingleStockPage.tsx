@@ -28,7 +28,7 @@ const SingleStockPage = () => {
                     </div>
                     <div className="flex flex-col">
                         <Card customCss="h-1/2 p-5 m-5">
-                            <TransactionContainer/>
+                            <TransactionContainer symbol={symbol}/>
                         </Card>
                         <Card>
                             <div className="flex flex-col justify-between">

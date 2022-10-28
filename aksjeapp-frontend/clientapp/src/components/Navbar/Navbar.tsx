@@ -10,7 +10,9 @@ function Navbar() {
                 <a href="/" className="text-2xl ml-10">
                     Stock Trading
                 </a>
-                <SearchBar/>
+                <div className="ml-[29rem]">
+                    <SearchBar/>
+                </div>
                 <div className="flex items-center justify-between">
                     <NavbarLink link={"/"} text={"Home"}/>
                     <Divider/>

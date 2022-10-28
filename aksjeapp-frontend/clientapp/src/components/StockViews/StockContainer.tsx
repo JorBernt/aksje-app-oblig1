@@ -58,7 +58,7 @@ const StockContainer = (props: Props) => {
                     <p className="text-center">Change</p>
                     <p className="text-center">Value</p>
                 </div>
-                <hr className="pb-1 border-black"/>
+                <hr className="pb-1 border-black pb-3"/>
                 <div className={className}>
                     {error &&
                         <p className={"w-96 flex justify-center mt-48 text-6xl"}>ERROR!</p>

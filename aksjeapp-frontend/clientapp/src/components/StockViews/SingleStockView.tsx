@@ -36,6 +36,7 @@ type Props = {
     symbol: string,
     fromDate: string,
     toDate: string;
+    setStockPrice?: React.Dispatch<React.SetStateAction<number>>
 }
 
 export const colorHandler = (color: number | string | undefined) => {
@@ -62,6 +63,8 @@ const SingleStockView: React.FC<Props> = (props) => {
                         uv: r
                     }))
                     setStockPrices(mappableStockPriceData)
+                    if (props.setStockPrice)
+                        props.setStockPrice(response.last)
                     setMax(Math.max(...mappableStockPriceData.map(d => d.uv)))
                     setMin(Math.min(...mappableStockPriceData.map(d => d.uv)))
                     setStockData(response)

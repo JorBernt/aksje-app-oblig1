@@ -4,6 +4,8 @@ export const DATE_TODAY = new Date().toLocaleDateString("nb-NO").replace("/", "-
 
 const url = "https://localhost:7187/Stock/"
 
+export const SSN = "12345678910";
+
 export const API = {
     GET_ALL_STOCKS: url + "GetAllStocks",
     GET_STOCK_PRICES:
@@ -11,7 +13,7 @@ export const API = {
             return url + `GetStockPrices?symbol=${symbol}&fromDate=${fromDate}&toDate=${toDate}`
         },
     BUY_STOCK:
-        (socialSecurityNumber: string, symbol: string, number: number) : string => {
+        (socialSecurityNumber: string, symbol: string, number: number): string => {
             return url + `BuyStock?socialSecurityNumber=${socialSecurityNumber}&symbol=${symbol}&number=${number}`
         },
     SELL_STOCK:

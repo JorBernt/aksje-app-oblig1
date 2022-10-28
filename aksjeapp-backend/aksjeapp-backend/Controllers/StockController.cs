@@ -25,9 +25,12 @@ namespace aksjeapp_backend.Controller
                 _logger.LogInformation("Not found");
                 return BadRequest("Not found");
             }
+
             return Ok(allStocks);
         }
-        public async Task<ActionResult> GetStockPrices(string symbol, string fromDate, string toDate) // dato skal skrives som "YYYY-MM-DD"
+
+        public async Task<ActionResult>
+            GetStockPrices(string symbol, string fromDate, string toDate) // dato skal skrives som "YYYY-MM-DD"
         {
             var stockPrices = await _db.GetStockPrices(symbol.ToUpper(), fromDate, toDate);
             if (stockPrices == null)
@@ -35,6 +38,7 @@ namespace aksjeapp_backend.Controller
                 _logger.LogInformation("GetStockPrices not found");
                 return BadRequest("Not found");
             }
+
             return Ok(stockPrices);
         }
 
@@ -46,6 +50,7 @@ namespace aksjeapp_backend.Controller
                 _logger.LogInformation("Fault in buyStock");
                 return BadRequest("Fault in buyStock");
             }
+
             return Ok("Stock bought");
         }
 
@@ -57,6 +62,7 @@ namespace aksjeapp_backend.Controller
                 _logger.LogInformation("Fault in sellStock");
                 return BadRequest("Fault in sellStock");
             }
+
             return Ok("Stock sold");
         }
 
@@ -66,9 +72,9 @@ namespace aksjeapp_backend.Controller
             {
                 return BadRequest("KeyPhrase is empty");
             }
+
             var searchReults = await _db.ReturnSearchResults(keyPhrase.ToUpper());
             return Ok(searchReults);
-
         }
 
         public async Task<ActionResult> GetAllTransactions(string socialSecurityNumber)
@@ -79,6 +85,19 @@ namespace aksjeapp_backend.Controller
                 _logger.LogInformation("No transactions");
                 return BadRequest("No transactions");
             }
+
+            return Ok(transactions);
+        }
+
+        public async Task<ActionResult> GetSpecificTransactions(string symbol)
+        {
+            var transactions = await _db.GetSpecificTransactions(symbol);
+            if (transactions.Count <= 0)
+            {
+                _logger.LogInformation("No transactions");
+                return BadRequest("No transactions");
+            }
+
             return Ok(transactions);
         }
 
@@ -90,9 +109,10 @@ namespace aksjeapp_backend.Controller
                 _logger.LogInformation("Not found transaction belonging to " + socialSecurityNumber + " with id " + id);
                 return BadRequest("Transaction does not exist");
             }
-            return Ok(transaction);
 
+            return Ok(transaction);
         }
+
         public async Task<ActionResult> UpdateTransaction(Transaction transaction)
         {
             var returnOK = await _db.UpdateTransaction(transaction);
@@ -101,8 +121,10 @@ namespace aksjeapp_backend.Controller
                 _logger.LogInformation("Transaction not updated");
                 return BadRequest("Transaction not updated");
             }
+
             return Ok("Transaction updated");
         }
+
         public async Task<ActionResult> DeleteTransaction(string socialSecurityNumber, int id)
         {
             bool returnOK = await _db.DeleteTransaction(socialSecurityNumber, id);
@@ -111,9 +133,10 @@ namespace aksjeapp_backend.Controller
                 _logger.LogInformation("Transaction not deleted");
                 return BadRequest("Transaction not deleted");
             }
-            return Ok("Transaction deleted");
 
+            return Ok("Transaction deleted");
         }
+
         public async Task<ActionResult> StockChange(string symbol)
         {
             var stockChange = await _db.StockChange(symbol);
@@ -122,8 +145,10 @@ namespace aksjeapp_backend.Controller
                 _logger.LogInformation("StockChange not found");
                 return BadRequest("Stockchange not found");
             }
+
             return Ok(stockChange);
         }
+
         public async Task<ActionResult> GetStockOverview()
         {
             var stockOverview = await _db.GetStockOverview();
@@ -132,6 +157,7 @@ namespace aksjeapp_backend.Controller
                 _logger.LogInformation("Stock overview not found");
                 return BadRequest("Stock overview not found");
             }
+
             return Ok(stockOverview);
         }
 
@@ -143,8 +169,10 @@ namespace aksjeapp_backend.Controller
                 _logger.LogInformation("Winners not found");
                 return BadRequest("Winners not found");
             }
+
             return Ok(winners);
         }
+
         public async Task<ActionResult> GetLosers()
         {
             var Losers = await _db.GetLosers();
@@ -153,6 +181,7 @@ namespace aksjeapp_backend.Controller
                 _logger.LogInformation("Losers not found");
                 return BadRequest("Losers not found");
             }
+
             return Ok(Losers);
         }
 
@@ -164,6 +193,7 @@ namespace aksjeapp_backend.Controller
                 _logger.LogInformation("Customer not found");
                 return BadRequest("Customer not found");
             }
+
             return Ok(customer);
         }
 
@@ -176,8 +206,8 @@ namespace aksjeapp_backend.Controller
                 _logger.LogInformation("Fault");
                 return BadRequest();
             }
-            return Ok(news);
 
+            return Ok(news);
         }
 
         public async Task<ActionResult> GetStockName(string symbol)
@@ -188,6 +218,7 @@ namespace aksjeapp_backend.Controller
                 _logger.LogInformation("Fault");
                 return BadRequest();
             }
+
             return Ok(name);
         }
     }

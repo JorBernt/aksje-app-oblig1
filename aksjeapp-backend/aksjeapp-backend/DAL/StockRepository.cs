@@ -1,5 +1,6 @@
 ﻿using aksjeapp_backend.Models;
 using aksjeapp_backend.Models.News;
+using Castle.Core.Resource;
 using Microsoft.EntityFrameworkCore;
 
 namespace aksjeapp_backend.DAL
@@ -58,45 +59,45 @@ namespace aksjeapp_backend.DAL
             return stock;
         }
 
-       /* public async Task<bool> BuyStock2(string socialSecurityNumber, string symbol, int number)
-        {
-            // Gets todays date
-            string date = GetTodaysDate().ToString("yyyy-MM-dd");
+        /* public async Task<bool> BuyStock2(string socialSecurityNumber, string symbol, int number)
+         {
+             // Gets todays date
+             string date = GetTodaysDate().ToString("yyyy-MM-dd");
 
-            try
-            {
-                //Get todays price and and set the todays date
-                var stockPrice = await PolygonAPI.GetOpenClosePrice(symbol, date);
+             try
+             {
+                 //Get todays price and and set the todays date
+                 var stockPrice = await PolygonAPI.GetOpenClosePrice(symbol, date);
 
-                double totalPrice = stockPrice.ClosePrice * number;
-                //Creates transaction
-                var stockTransaction = new Transaction
-                {
-                    Date = date,
-                    SocialSecurityNumber = socialSecurityNumber,
-                    Symbol = symbol,
-                    Amount = number,
-                    TotalPrice = totalPrice
-                };
+                 double totalPrice = stockPrice.ClosePrice * number;
+                 //Creates transaction
+                 var stockTransaction = new Transaction
+                 {
+                     Date = date,
+                     SocialSecurityNumber = socialSecurityNumber,
+                     Symbol = symbol,
+                     Amount = number,
+                     TotalPrice = totalPrice
+                 };
 
-                var customer = await _db.Customers.FindAsync(socialSecurityNumber);
+                 var customer = await _db.Customers.FindAsync(socialSecurityNumber);
 
-                if (customer == null)
-                {
-                    return false;
-                }
-                customer.Transactions.Add(stockTransaction);
-                customer.Balance -= stockTransaction.TotalPrice - 5; //5 dollars in brokerage fee
-                await _db.SaveChangesAsync();
+                 if (customer == null)
+                 {
+                     return false;
+                 }
+                 customer.Transactions.Add(stockTransaction);
+                 customer.Balance -= stockTransaction.TotalPrice - 5; //5 dollars in brokerage fee
+                 await _db.SaveChangesAsync();
 
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
+                 return true;
+             }
+             catch
+             {
+                 return false;
+             }
 
-        }*/
+         }*/
         public async Task<bool> BuyStock(string socialSecurityNumber, string symbol, int number)
         {
             // Gets todays date
@@ -299,14 +300,27 @@ namespace aksjeapp_backend.DAL
             if (customer != null)
             {
                 // Lists all transactions that belongs to the owner
-                var transactions = customer.Transactions.Where(k => k.IsActive == true).ToList();
+                var transactionsfromDb = await _db.TransactionsBought.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
 
-                foreach (var transaction in transactions)
+                var transactions = new List<Transaction>();
+
+
+                foreach (var transactionDB in transactionsfromDb)
                 {
-                    if (transaction.Date.Equals(GetTodaysDate().ToString("yyyy-MM-dd")))
+                    var transaction1 = new Transaction
                     {
-                        transaction.Awaiting = true;
+                        Id = transactionDB.Id,
+                        SocialSecurityNumber = transactionDB.SocialSecurityNumber,
+                        Date = transactionDB.Date,
+                        Symbol = transactionDB.Symbol,
+                        Amount = transactionDB.Amount,
+                        TotalPrice = transactionDB.TotalPrice
+                    };
+                    if (transaction1.Date.Equals(GetTodaysDate().ToString("yyyy-MM-dd")))
+                    {
+                        transaction1.Awaiting = true;
                     }
+                    transactions.Add(transaction1);
 
                 }
 
@@ -319,12 +333,21 @@ namespace aksjeapp_backend.DAL
         {
             // Checks if socialSecuritynumber is correct
             var customer = await _db.Customers.FindAsync(socialSecurityNumber);
-            if (customer != null)
+            if (customer == null)
             {
-                Transaction transaction = await _db.Transactions.FindAsync(id);
-                return transaction;
+                return null;
             }
-            return null;
+            var transactionfromDB = await _db.TransactionsBought.FindAsync(id);
+            var transaction = new Transaction
+            {
+                Id = transactionfromDB.Id,
+                SocialSecurityNumber = transactionfromDB.SocialSecurityNumber,
+                Date = transactionfromDB.Date,
+                Symbol = transactionfromDB.Symbol,
+                Amount = transactionfromDB.Amount,
+                TotalPrice = transactionfromDB.TotalPrice
+            };
+            return transaction;
         }
 
         // It is only possible to change transaction after you have bought it, you cannot change it if you sold
@@ -354,7 +377,7 @@ namespace aksjeapp_backend.DAL
                     await _db.SaveChangesAsync();
                     return true;
                 }
-            
+
                 return false;
             }
             catch
@@ -362,233 +385,291 @@ namespace aksjeapp_backend.DAL
                 return false;
             }
         }
-    public async Task<bool> DeleteTransaction(string socialSecurityNumber, int id)
-    {
-        try
+        public async Task<bool> DeleteTransaction(string socialSecurityNumber, int id)
         {
-            var customer = await _db.Customers.FindAsync(socialSecurityNumber);
-            if (customer != null)
+            try
             {
-                var transaction = _db.TransactionsBought.Find(id);
-
-                //Returns if the transaction does not exist
-                if (transaction == null)
+                var customer = await _db.Customers.FindAsync(socialSecurityNumber);
+                if (customer != null)
                 {
-                    return false;
-                }
+                    var transaction = _db.TransactionsBought.Find(id);
 
-                // Deletes transaction that is still active
-                if (GetTodaysDate().ToString("yyyy-MM-dd") == transaction.Date && transaction.IsActive == true)
-                {
-                    _db.TransactionsBought.Remove(transaction);
-                    customer.Balance += transaction.TotalPrice + 5; //Updates balance for customer and refunds brokerage fee
-                    await _db.SaveChangesAsync();
-                    return true;
+                    //Returns if the transaction does not exist
+                    if (transaction == null)
+                    {
+                        return false;
+                    }
 
+                    // Deletes transaction that is still active
+                    if (GetTodaysDate().ToString("yyyy-MM-dd") == transaction.Date)
+                    {
+                        _db.TransactionsBought.Remove(transaction);
+                        customer.Balance += transaction.TotalPrice + 5; //Updates balance for customer and refunds brokerage fee
+                        await _db.SaveChangesAsync();
+                        return true;
+
+                    }
+                    else
+                    {
+                        _db.TransactionsBought.Remove(transaction);
+                        await _db.SaveChangesAsync();
+                        return true;
+                    }
                 }
-                else
-                {
-                    _db.TransactionsBought.Remove(transaction);
-                    await _db.SaveChangesAsync();
-                    return true;
-                }
+                // If the customer is not in the database
+                return false;
             }
-            // If the customer is not in the database
-            return false;
-        }
-        catch
-        {
-            return false;
-        }
-    }
-
-    // Might save to DB to save API calls to polygon
-    // StockChange for a single stock the last week
-    public async Task<StockChangeValue> StockChange(string symbol)
-    {
-        try
-        {
-
-            var stockChange = await _db.StockChangeValues.FirstOrDefaultAsync(k => k.Symbol == symbol && k.Date == GetTodaysDate().ToString("yyyy-MM-dd"));
-
-            // Returns stockChange if its already in the database. If not it will access the API
-            if (stockChange != null)
+            catch
             {
-                return stockChange;
+                return false;
             }
+        }
 
-
-            var date = GetTodaysDate().AddDays(-7); ;
-
-            var fromDate = date.ToString("yyyy-MM-dd");
-
-            var stockPrice1 = await PolygonAPI.GetStockPrices(symbol, fromDate, GetTodaysDate().ToString("yyyy-MM-dd"), 1);
-
-            if (stockPrice1.results != null)
+        // Might save to DB to save API calls to polygon
+        // StockChange for a single stock the last week
+        public async Task<StockChangeValue> StockChange(string symbol)
+        {
+            try
             {
-                List<Models.Results> results = stockPrice1.results;
 
-                Console.WriteLine(stockPrice1.results);
-                double change = ((results.Last().ClosePrice - results.First().ClosePrice) / results.Last().ClosePrice) * 100;
-
-                stockChange = new StockChangeValue()
-                {
-                    Date = GetTodaysDate().ToString("yyyy-MM-dd"),
-                    Symbol = symbol,
-                    Change = change,
-                    Value = results.Last().ClosePrice
-                };
-
-                var stockChange2 = await _db.StockChangeValues.FirstOrDefaultAsync(k => k.Symbol == symbol && k.Date == "2022-09-18");
+                var stockChange = await _db.StockChangeValues.FirstOrDefaultAsync(k => k.Symbol == symbol && k.Date == GetTodaysDate().ToString("yyyy-MM-dd"));
 
                 // Returns stockChange if its already in the database. If not it will access the API
-                if (stockChange2 != null)
+                if (stockChange != null)
                 {
-                    return stockChange2;
+                    return stockChange;
                 }
 
-                //Adds to stock change table
-                _db.StockChangeValues.Add(stockChange);
-                await _db.SaveChangesAsync();
 
-                return stockChange;
-            }
-            return null;
-        }
-        catch
-        {
-            return null;
-        }
-    }
+                var date = GetTodaysDate().AddDays(-7); ;
 
-    public async Task<List<StockOverview>> GetStockOverview()
-    {
-        try
-        {
-            var list = new List<StockOverview>();
+                var fromDate = date.ToString("yyyy-MM-dd");
 
-            var stocks = await _db.Stocks.ToListAsync();
+                var stockPrice1 = await PolygonAPI.GetStockPrices(symbol, fromDate, GetTodaysDate().ToString("yyyy-MM-dd"), 1);
 
-            foreach (var stock in stocks)
-            {
-                var myStock = await StockChange(stock.Symbol);
-                if (myStock == null)
-                    continue;
-                var stockObject = new StockOverview()
+                if (stockPrice1.results != null)
                 {
-                    Symbol = stock.Symbol,
-                    Name = stock.Name,
-                    Value = myStock.Value,
-                    Change = myStock.Change
+                    List<Models.Results> results = stockPrice1.results;
 
-                };
-                list.Add(stockObject);
+                    Console.WriteLine(stockPrice1.results);
+                    double change = ((results.Last().ClosePrice - results.First().ClosePrice) / results.Last().ClosePrice) * 100;
+
+                    stockChange = new StockChangeValue()
+                    {
+                        Date = GetTodaysDate().ToString("yyyy-MM-dd"),
+                        Symbol = symbol,
+                        Change = change,
+                        Value = results.Last().ClosePrice
+                    };
+
+                    var stockChange2 = await _db.StockChangeValues.FirstOrDefaultAsync(k => k.Symbol == symbol && k.Date == "2022-09-18");
+
+                    // Returns stockChange if its already in the database. If not it will access the API
+                    if (stockChange2 != null)
+                    {
+                        return stockChange2;
+                    }
+
+                    //Adds to stock change table
+                    _db.StockChangeValues.Add(stockChange);
+                    await _db.SaveChangesAsync();
+
+                    return stockChange;
+                }
+                return null;
             }
-
-            return list;
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
-    public async Task<Customer?> GetCustomerPortofolio(string socialSecurityNumber)
-    {
-        // Return name, cumtomer info, combined list of transactions, total value of portofolio
-
-        var customerFromDB = await _db.Customers.FindAsync(socialSecurityNumber);
-        var transactions = await _db.TransactionsBought.Where(k => k.SocialSecurityNumber == socialSecurityNumber && k.IsActive == true).ToListAsync();
-        if (customerFromDB == null)
-        {
-            return null;
-        }
-        var customer = new Customer()
-        {
-            SocialSecurityNumber = customerFromDB.SocialSecurityNumber,
-            FirstName = customerFromDB.FirstName,
-            LastName = customerFromDB.LastName,
-            Address = customerFromDB.Address,
-            Balance = customerFromDB.Balance,
-            Transactions = customerFromDB.TransactionsBought,
-            PostalCode = customerFromDB.PostalArea.PostalCode,
-            PostCity = customerFromDB.PostalArea.PostCity,
-        };
-        var portfolio = new Portfolio();
-        var portfolioList = new List<StockOverview>();
-
-        // Find the amount of each stock the customer has
-        foreach (var transaction in transactions)
-        {
-            int index = portfolioList.FindIndex(k => k.Symbol.Equals(transaction.Symbol));
-            // Sums the amount of stocks if found
-            if (index >= 0)
+            catch
             {
-                portfolioList[index].Amount += transaction.Amount;
+                return null;
             }
-            // Adds the first of this symbol to portofolio list
-            else
+        }
+
+        public async Task<List<StockOverview>> GetStockOverview()
+        {
+            try
             {
-                var portfolioItem = new StockOverview()
+                var list = new List<StockOverview>();
+
+                var stocks = await _db.Stocks.ToListAsync();
+
+                foreach (var stock in stocks)
                 {
-                    Symbol = transaction.Symbol,
-                    Amount = transaction.Amount,
-                };
-                portfolioList.Add(portfolioItem);
+                    var myStock = await StockChange(stock.Symbol);
+                    if (myStock == null)
+                        continue;
+                    var stockObject = new StockOverview()
+                    {
+                        Symbol = stock.Symbol,
+                        Name = stock.Name,
+                        Value = myStock.Value,
+                        Change = myStock.Change
+
+                    };
+                    list.Add(stockObject);
+                }
+
+                return list;
+            }
+            catch
+            {
+                return null;
             }
         }
-        portfolio.StockPortfolio = portfolioList;
-        foreach (var stock in portfolio.StockPortfolio)
+        public async Task<bool> UpdatePortfolio(string socialSecurityNumber)
         {
-            var stockChange = await StockChange(stock.Symbol);
-            stock.Value = stockChange.Value * stock.Amount;
-            stock.Change = stockChange.Change;
-            portfolio.Value += stockChange.Value * stock.Amount;
-        }
-        customer.Portfolio = portfolio;
-        return customer;
-    }
+            var transactionsBought = await _db.TransactionsBought.Where(k=>k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
+            var transactionsSold = await _db.TransactionsSold.Where(k=>k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
 
-    public async Task<List<StockChangeValue>> GetWinners()
-    {
-        var Winners = await _db.StockChangeValues.OrderByDescending(k => k.Change).Where(k => k.Date == GetTodaysDate().ToString("yyyy-MM-dd") && k.Change > 0).Take(7).ToListAsync();
+            var portfolio = new Portfolio();
+            var portfolioList = new List<StockOverview>();
 
-        return Winners;
-    }
-    public async Task<List<StockChangeValue>> GetLosers()
-    {
-        var Losers = await _db.StockChangeValues.OrderBy(k => k.Change).Where(k => k.Date == GetTodaysDate().ToString("yyyy-MM-dd") && k.Change < 0).Take(7).ToListAsync();
-
-        return Losers;
-    }
-
-    public async Task<News> GetNews(string symbol)
-    {
-        var News = await PolygonAPI.GetNews(symbol);
-        return News;
-    }
-
-    public static DateTime GetTodaysDate()
-    {
-        //DateTime date1 = DateTime.Now;
-        //date1 = date1.AddMonths(-1);//Uses one month old data since polygon cant get todays date
-        var date1 = new DateTime(2022, 09, 25);
-
-        // If day of week is a weekend then the last price if from friday
-        if (date1.DayOfWeek.Equals(DayOfWeek.Saturday))
-        {
-            date1 = date1.AddDays(-1);
-        }
-        if (date1.DayOfWeek.Equals(DayOfWeek.Sunday))
-        {
-            date1 = date1.AddDays(-2);
+            foreach (var transaction in transactionsBought)
+            {
+                int index = transactionsBought.FindIndex(k => k.Symbol.Equals(transaction.Symbol));
+                // Sums the amount of stocks if found
+                if (index >= 0)
+                {
+                    portfolioList[index].Amount += transaction.Amount;
+                }
+                // Adds the first of this symbol to portofolio list
+                else
+                {
+                    var portfolioItem = new StockOverview()
+                    {
+                        Symbol = transaction.Symbol,
+                        Amount = transaction.Amount,
+                    };
+                    portfolioList.Add(portfolioItem);
+                }
+            }
+            portfolio.StockPortfolio = portfolioList;
+            foreach (var stock in portfolio.StockPortfolio)
+            {
+                var stockChange = await StockChange(stock.Symbol);
+                stock.Value = stockChange.Value * stock.Amount;
+                stock.Change = stockChange.Change;
+                portfolio.Value += stockChange.Value * stock.Amount;
+            }
+            _db.Portfolios.Add(portfolio);
+            await _db.SaveChangesAsync();
+            return true;
         }
 
-        return date1;
+        public async Task<Customer?> GetCustomerPortofolio(string socialSecurityNumber)
+        {
+            // Return name, cumtomer info, combined list of transactions, total value of portofolio
+
+            var customerFromDB = await _db.Customers.FindAsync(socialSecurityNumber);
+
+            if (customerFromDB == null)
+            {
+                return null;
+            }
+
+            var transactionsfromDB = await _db.TransactionsBought.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
+            List<Transaction> transactions = new List<Transaction>();
+
+            // Builds transaction list
+            foreach (var transactionDB in transactionsfromDB)
+            {
+                var transaction1 = new Transaction
+                {
+                    Id = transactionDB.Id,
+                    SocialSecurityNumber = transactionDB.SocialSecurityNumber,
+                    Date = transactionDB.Date,
+                    Symbol = transactionDB.Symbol,
+                    Amount = transactionDB.Amount,
+                    TotalPrice = transactionDB.TotalPrice
+                };
+                transactions.Add(transaction1);
+            }
+
+            var customer = new Customer()
+            {
+                SocialSecurityNumber = customerFromDB.SocialSecurityNumber,
+                FirstName = customerFromDB.FirstName,
+                LastName = customerFromDB.LastName,
+                Address = customerFromDB.Address,
+                Balance = customerFromDB.Balance,
+                Transactions = transactions,
+                PostalCode = customerFromDB.PostalArea.PostalCode,
+                PostCity = customerFromDB.PostalArea.PostCity,
+            };
+            var portfolio = new Portfolio();
+            var portfolioList = new List<StockOverview>();
+
+            // Find the amount of each stock the customer has
+            foreach (var transaction in transactions)
+            {
+                int index = portfolioList.FindIndex(k => k.Symbol.Equals(transaction.Symbol));
+                // Sums the amount of stocks if found
+                if (index >= 0)
+                {
+                    portfolioList[index].Amount += transaction.Amount;
+                }
+                // Adds the first of this symbol to portofolio list
+                else
+                {
+                    var portfolioItem = new StockOverview()
+                    {
+                        Symbol = transaction.Symbol,
+                        Amount = transaction.Amount,
+                    };
+                    portfolioList.Add(portfolioItem);
+                }
+            }
+            portfolio.StockPortfolio = portfolioList;
+            foreach (var stock in portfolio.StockPortfolio)
+            {
+                var stockChange = await StockChange(stock.Symbol);
+                stock.Value = stockChange.Value * stock.Amount;
+                stock.Change = stockChange.Change;
+                portfolio.Value += stockChange.Value * stock.Amount;
+            }
+            customer.Portfolio = portfolio;
+            return customer;
+        }
+
+        public async Task<List<StockChangeValue>> GetWinners()
+        {
+            var Winners = await _db.StockChangeValues.OrderByDescending(k => k.Change).Where(k => k.Date == GetTodaysDate().ToString("yyyy-MM-dd") && k.Change > 0).Take(7).ToListAsync();
+
+            return Winners;
+        }
+        public async Task<List<StockChangeValue>> GetLosers()
+        {
+            var Losers = await _db.StockChangeValues.OrderBy(k => k.Change).Where(k => k.Date == GetTodaysDate().ToString("yyyy-MM-dd") && k.Change < 0).Take(7).ToListAsync();
+
+            return Losers;
+        }
+
+        public async Task<News> GetNews(string symbol)
+        {
+            var News = await PolygonAPI.GetNews(symbol);
+            return News;
+        }
+
+        public static DateTime GetTodaysDate()
+        {
+            //DateTime date1 = DateTime.Now;
+            //date1 = date1.AddMonths(-1);//Uses one month old data since polygon cant get todays date
+            var date1 = new DateTime(2022, 09, 25);
+
+            // If day of week is a weekend then the last price if from friday
+            if (date1.DayOfWeek.Equals(DayOfWeek.Saturday))
+            {
+                date1 = date1.AddDays(-1);
+            }
+            if (date1.DayOfWeek.Equals(DayOfWeek.Sunday))
+            {
+                date1 = date1.AddDays(-2);
+            }
+
+            return date1;
+
+        }
+
 
     }
-
-
-}
 
 }

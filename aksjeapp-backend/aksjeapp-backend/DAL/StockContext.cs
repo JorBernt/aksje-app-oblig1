@@ -37,6 +37,7 @@ namespace aksjeapp_backend.DAL
         public string Symbol { get; set; }
         public int Amount { get; set; }
         public double TotalPrice { get; set; }
+
     }
     public class TransactionSold
     {

@@ -18,5 +18,6 @@ namespace aksjeapp_backend.Models
         public int Amount { get; set; }
         //[RegularExpression(@"^^(?!0*[.]0*$|[.]0*$|0*$)\d+[.]?\d{0,2}$")]
         public double TotalPrice { get; set; }
+        public bool Awaiting { get; set; }
     }
 }

@@ -16,5 +16,6 @@
                 this.value = Math.Round(value, 2);
             }
         }
+        public string LastUpdated { get; set; }
     }
 }

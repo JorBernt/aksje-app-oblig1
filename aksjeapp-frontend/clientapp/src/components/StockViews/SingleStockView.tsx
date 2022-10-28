@@ -11,6 +11,7 @@ interface Results {
     openPrice: number;
     highestPrice: number;
     lowestPrice: number;
+    date: string;
 }
 
 export interface MappableData {
@@ -53,14 +54,13 @@ const SingleStockView: React.FC<Props> = (props) => {
     const [loading, setLoading] = useState(true)
     const [name, setName] = useState("")
     const mappableStockPriceData: Array<MappableData> = []
-    let weekNumber = 0;
     useEffect(() => {
         fetch(API.GET_STOCK_PRICES(props.symbol, props.fromDate, props.toDate))
             .then(response => response.json()
                 .then((response: StockData) => {
-                    response.results.map(r => r.closePrice).forEach(r => mappableStockPriceData.push({
-                        name: (weekNumber++).toString(),
-                        uv: r
+                    response.results.forEach(r => mappableStockPriceData.push({
+                        name: r.date,
+                        uv: r.closePrice
                     }))
                     setStockPrices(mappableStockPriceData)
                     if (props.setStockPrice)

@@ -22,7 +22,7 @@ const Chart: React.FC<Props> = (props) => {
         if (active) {
             return (
                 <div className="bg-white p-2 rounded-2xl">
-                    <p className="label">{`Week ${label}`}</p>
+                    <p className="label">{label}</p>
                     <p>{`$${payload?.[0].value}`}</p>
                 </div>
             );

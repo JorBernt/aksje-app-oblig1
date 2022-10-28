@@ -15,6 +15,7 @@ namespace aksjeapp_backend.DAL
         public double Balance { get; set; }
         virtual public List<TransactionBought> TransactionsBought { get; set; }
         virtual public List<TransactionSold> TransactionsSold { get; set; }
+        virtual public Portfolio Portfolio { get; set; }
         virtual public PostalAreas PostalArea { get; set; }
     }
     public class PostalAreas
@@ -75,6 +76,8 @@ namespace aksjeapp_backend.DAL
         public DbSet<StockChangeValue> StockChangeValues { get; set; }
 
         public DbSet<Portfolio> Portfolios { get; set; }
+
+        public DbSet<StockOverview> PortfolioList { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

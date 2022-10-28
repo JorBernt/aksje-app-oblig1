@@ -1,7 +1,10 @@
-﻿namespace aksjeapp_backend.Models;
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace aksjeapp_backend.Models;
 
 public class StockOverview
 {
+    [Key]
     public string Symbol { get; set; }
     public string Name { get; set; }
     public int Amount { get; set; } = 0;

@@ -1,8 +1,15 @@
-﻿namespace aksjeapp_backend.Models
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
+
+namespace aksjeapp_backend.Models
 {
     public class Portfolio
     {
-        public List<StockOverview> StockPortfolio { get; set; }
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+        public string SocialSecurityNumber { get; set; }
+        virtual public List<StockOverview> StockPortfolio { get; set; }
 
         private double value;
         public double Value

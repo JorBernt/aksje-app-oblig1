@@ -517,6 +517,14 @@ namespace aksjeapp_backend.DAL
         }
         public async Task<bool> UpdatePortfolio(string socialSecurityNumber)
         {
+            var customerFromDB = await _db.Customers.FindAsync(socialSecurityNumber);
+
+            if (customerFromDB == null)
+            {
+                return false;
+            }
+
+
             var transactionsBought = await _db.TransactionsBought.Where(k=>k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
             var transactionsSold = await _db.TransactionsSold.Where(k=>k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
 
@@ -539,7 +547,7 @@ namespace aksjeapp_backend.DAL
                         Symbol = transaction.Symbol,
                         Amount = transaction.Amount,
                     };
-                    portfolioList.Add(portfolioItem);
+                    await _db.PortfolioList.AddAsync(portfolioItem);
                 }
             }
             portfolio.StockPortfolio = portfolioList;
@@ -550,12 +558,15 @@ namespace aksjeapp_backend.DAL
                 stock.Change = stockChange.Change;
                 portfolio.Value += stockChange.Value * stock.Amount;
             }
-            _db.Portfolios.Add(portfolio);
+            portfolio.SocialSecurityNumber = socialSecurityNumber;
+            portfolio.LastUpdated = GetTodaysDate().ToString("yyyy-MM-dd");
+            await _db.Portfolios.AddAsync(portfolio);
+            customerFromDB.Portfolio = portfolio;
             await _db.SaveChangesAsync();
             return true;
         }
 
-        public async Task<Customer?> GetCustomerPortofolio(string socialSecurityNumber)
+        /*public async Task<Customer?> GetCustomerPortofolio(string socialSecurityNumber)
         {
             // Return name, cumtomer info, combined list of transactions, total value of portofolio
 
@@ -628,6 +639,51 @@ namespace aksjeapp_backend.DAL
             }
             customer.Portfolio = portfolio;
             return customer;
+        }*/
+
+        public async Task<Customer?> GetCustomerPortofolio(string socialSecurityNumber)
+        {
+            // Return name, cumtomer info, combined list of transactions, total value of portofolio
+
+            var customerFromDB = await _db.Customers.FindAsync(socialSecurityNumber);
+
+            if (customerFromDB == null)
+            {
+                return null;
+            }
+
+            var transactionsfromDB = await _db.TransactionsBought.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
+            List<Transaction> transactions = new List<Transaction>();
+
+            // Builds transaction list
+            foreach (var transactionDB in transactionsfromDB)
+            {
+                var transaction1 = new Transaction
+                {
+                    Id = transactionDB.Id,
+                    SocialSecurityNumber = transactionDB.SocialSecurityNumber,
+                    Date = transactionDB.Date,
+                    Symbol = transactionDB.Symbol,
+                    Amount = transactionDB.Amount,
+                    TotalPrice = transactionDB.TotalPrice
+                };
+                transactions.Add(transaction1);
+            }
+
+            var customer = new Customer()
+            {
+                SocialSecurityNumber = customerFromDB.SocialSecurityNumber,
+                FirstName = customerFromDB.FirstName,
+                LastName = customerFromDB.LastName,
+                Address = customerFromDB.Address,
+                Balance = customerFromDB.Balance,
+                Transactions = transactions,
+                PostalCode = customerFromDB.PostalArea.PostalCode,
+                PostCity = customerFromDB.PostalArea.PostCity,
+            };
+
+            return customer;
+           
         }
 
         public async Task<List<StockChangeValue>> GetWinners()

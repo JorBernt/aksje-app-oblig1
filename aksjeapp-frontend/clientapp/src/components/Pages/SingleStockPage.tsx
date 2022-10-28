@@ -12,6 +12,9 @@ const SingleStockPage = () => {
     const [searchParams] = useSearchParams();
     const [symbol, setSymbol] = useState("")
 
+    const [stockPrice, setStockprice] = useState(0)
+
+
     const [name, setName] = useState("")
     useEffect(() => {
         fetch(API.GET_STOCK_NAME(symbol)).then(response => response.text().then(text => setName(text)))
@@ -24,7 +27,8 @@ const SingleStockPage = () => {
                 <h1 className="text-center font-semi text-5xl bold py-10">{name}</h1>
                 <div className="flex flex-row justify-center">
                     <div className="flex justify-center">
-                        <SingleStockView symbol={symbol} fromDate={"2022-09-24"} toDate={"2022-10-24"}/>
+                        <SingleStockView symbol={symbol} fromDate={"2022-09-24"} toDate={"2022-10-24"}
+                                         setStockPrice={setStockprice}/>
                     </div>
                     <div className="flex flex-col">
                         <Card customCss="h-1/2 p-5 m-5">
@@ -32,12 +36,14 @@ const SingleStockPage = () => {
                         </Card>
                         <Card>
                             <div className="flex flex-col justify-between">
-                                <StockBuySell data={"Buy"} className="bg-green-500 hover:shadow-green-300"/>
+                                <StockBuySell data={"Buy"} className="bg-green-500 hover:shadow-green-300"
+                                              symbol={symbol} cost={stockPrice}/>
                             </div>
                         </Card>
                         <Card>
                             <div className="flex flex-col justify-between">
-                                <StockBuySell data={"Sell"} className="bg-red-500 hover:shadow-red-300"/>
+                                <StockBuySell data={"Sell"} className="bg-red-500 hover:shadow-red-300" symbol={symbol}
+                                              cost={stockPrice}/>
                             </div>
                         </Card>
                     </div>

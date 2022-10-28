@@ -28,12 +28,12 @@ const ProfilePage = () => {
                 <h1 className="text-center text-4xl pt-10 pb-5">Your profile</h1>
                 <div className="flex flex-row justify-center">
                     <div className="w-96">
-                        <Card color={"default"}>
+                        <Card color={"default"} customCss={"p-5 m-5 h-[30rem]"}>
                             <ProfileInfoContainer profileInfo={profileInfo}/>
                         </Card>
                     </div>
                     <div>
-                        <Card color={"default"}>
+                        <Card color={"default"} customCss={"p-5 m-5 h-[30rem]"}>
                             <StockContainer text="Your stocks" showAmount={true} sorted="valAsc" height="h-[24rem]"
                                             data={profileInfo?.portfolio.stockPortfolio}/>
                         </Card>

@@ -55,6 +55,8 @@ const SingleStockView: React.FC<Props> = (props) => {
     const [name, setName] = useState("")
     const mappableStockPriceData: Array<MappableData> = []
     useEffect(() => {
+        setLoading(true)
+        console.log(loading)
         fetch(API.GET_STOCK_PRICES(props.symbol, props.fromDate, props.toDate))
             .then(response => response.json()
                 .then((response: StockData) => {

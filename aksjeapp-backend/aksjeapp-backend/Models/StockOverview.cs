@@ -1,6 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
-
-namespace aksjeapp_backend.Models;
+﻿namespace aksjeapp_backend.Models;
 
 public class StockOverview
 {

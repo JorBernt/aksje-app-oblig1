@@ -7,31 +7,31 @@ namespace aksjeapp_backend.Models
     {
         [JsonProperty("name")]
         public string Name { get; set; }
-        
+
         [JsonProperty("Last")]
         public double Last { get; set; }
-        
+
         [JsonProperty("change")]
         public double Change { get; set; }
-        
+
         [JsonProperty("todayDifference")]
         public double TodayDifference { get; set; }
-        
+
         [JsonProperty("buy")]
         public double Buy { get; set; }
-        
+
         [JsonProperty("sell")]
         public double Sell { get; set; }
-        
+
         [JsonProperty("high")]
         public double High { get; set; }
-        
+
         [JsonProperty("low")]
         public double Low { get; set; }
-        
+
         [JsonProperty("turnover")]
         public double Turnover { get; set; }
-        
+
         [JsonProperty("ticker")]
         public string Symbol { get; set; }
 

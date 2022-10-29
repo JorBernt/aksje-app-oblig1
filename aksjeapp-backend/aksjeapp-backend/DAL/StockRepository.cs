@@ -218,7 +218,7 @@ namespace aksjeapp_backend.DAL
             if (customer != null)
             {
                 // Lists all transactions that belongs to the owner
-                var transactions = customer.Transactions.Where(k => k.IsActive == true).ToList();
+                var transactions = customer.Transactions.OrderByDescending(k => k.Id).Where(k => k.IsActive == true).ToList();
 
                 foreach (var transaction in transactions)
                 {

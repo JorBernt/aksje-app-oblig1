@@ -85,10 +85,10 @@ const TransactionsView: React.FC<Props> = (props) => {
                                         <table className="min-w-full divide-y divide-gray-200">
                                             <thead>
                                             <tr>
-                                                <th className="px-6 py-2 text-xl text-black-500">Navn</th>
-                                                <th className="px-6 py-2 text-xl text-black-500">Antall</th>
-                                                <th className="px-6 py-2 text-xl text-black-500">Kjøpsris</th>
-                                                <th className="px-6 py-2 text-xl text-black-500">Dato</th>
+                                                <th className="px-6 py-2 text-xl text-black-500">Name</th>
+                                                <th className="px-6 py-2 text-xl text-black-500">Amount</th>
+                                                <th className="px-6 py-2 text-xl text-black-500">Date</th>
+                                                <th className="px-6 py-2 text-xl text-black-500">Buy Price $</th>
                                             </tr>
                                             </thead>
 

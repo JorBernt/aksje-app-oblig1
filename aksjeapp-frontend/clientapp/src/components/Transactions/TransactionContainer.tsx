@@ -49,8 +49,8 @@ const TransactionContainer = (props: Props) => {
                 scrollbar scrollbar-track-white scrollbar-thumb-rounded-3xl scrollbar-thin scrollbar-thumb-blue-700">
                     {transactionView.map((val) => {
                         counter++;
-                        if (val.socialSecurityNumber.length === 0) return <p className="text-center">Det er ikke
-                            gjort noen transaksjoner på denne aksjen.</p>
+                        if (val.socialSecurityNumber.length === 0) return <p className="text-center">No transactions to
+                            show.</p>
                         else
                             return counter % 2 !== 0 ?
                                 <div

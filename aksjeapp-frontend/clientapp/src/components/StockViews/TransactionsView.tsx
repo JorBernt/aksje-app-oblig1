@@ -85,10 +85,10 @@ const TransactionsView: React.FC<Props> = (props) => {
                                         <table className="min-w-full divide-y divide-gray-200">
                                             <thead>
                                             <tr>
-                                                <th className="px-6 py-2 text-xl text-black-500">Name</th>
-                                                <th className="px-6 py-2 text-xl text-black-500">Amount</th>
                                                 <th className="px-6 py-2 text-xl text-black-500">Date</th>
+                                                <th className="px-6 py-2 text-xl text-black-500">Name</th>
                                                 <th className="px-6 py-2 text-xl text-black-500">Buy Price $</th>
+                                                <th className="px-6 py-2 text-xl text-black-500">Amount</th>
                                             </tr>
                                             </thead>
 
@@ -97,7 +97,9 @@ const TransactionsView: React.FC<Props> = (props) => {
 
                                                     <tbody>
                                                     <tr className={"text-center"} key={val.id}>
+                                                        <td className="px-6 py-4 whitespace-nowrap">{val.date}</td>
                                                         <td className="px-6 py-4 whitespace-nowrap ">{val.symbol}</td>
+                                                        <td className="px-6 py-4 whitespace-nowrap">{val.totalPrice}</td>
                                                         {
                                                             editTransactionArray[val.id] ?
                                                                 <td className="px-6 py-4 whitespace-nowrap mt-6 w-12">
@@ -107,8 +109,6 @@ const TransactionsView: React.FC<Props> = (props) => {
                                                                         onChange={handleInputOnChange}/></td> :
                                                                 <td className="px-6 py-4 whitespace-nowrap"> {val.amount}</td>
                                                         }
-                                                        <td className="px-6 py-4 whitespace-nowrap">{val.totalPrice}</td>
-                                                        <td className="px-6 py-4 whitespace-nowrap">{val.date}</td>
                                                         {val.awaiting &&
                                                             <>
                                                                 <td className="px-6 py-4 whitespace-nowrap">

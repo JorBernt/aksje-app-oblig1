@@ -27,7 +27,7 @@ const StockPreview : FC<Props> = (props: Props) => {
                 {props.showAmount &&
                     <p className="py-1 pl-4 text-center">{props.items.amount}</p>
                 }
-                <p className="py-1 text-center">{"Stonks"}</p>
+                <p className="py-1 text-center">{"TBA"}</p>
                 <p className={"py-1 text-center " + textColor}>{changeValue}</p>
                 <p className="py-1 pr-4 text-center">{`${props.items.value}$`}</p>
             </div>

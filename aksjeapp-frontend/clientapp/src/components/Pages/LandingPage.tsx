@@ -22,8 +22,8 @@ const LandingPage = () => {
                 <div className="flex flex-row justify-center mt-5">
                     <div className="basis-1">
                         <div className="flex flex-auto">
-                            {stockName.length > 0 && <SingleStockView symbol={"" + stockName} fromDate={"2022-08-20"}
-                                                                      toDate={"2022-09-20"}/>}
+                            <SingleStockView symbol={"" + stockName} fromDate={"2022-08-20"}
+                                             toDate={"2022-09-20"}/>
                         </div>
                     </div>
                     <div className="basis-1">

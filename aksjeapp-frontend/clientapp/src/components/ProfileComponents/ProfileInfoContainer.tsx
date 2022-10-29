@@ -20,7 +20,7 @@ const ProfileInfoContainer: React.FC<Props> = (props) => {
                     <div className="grid-cols-1">
                         <h1 className="flex justify-center py-1 text-text-display">{profileInfo.socialSecurityNumber}</h1>
                         <hr className="border-text-display"/>
-                        <DataDisplay title="Account balance"
+                        <DataDisplay title="Name"
                                      content={`${profileInfo.firstName} ${profileInfo.lastName}`}/>
                         <DataDisplay title="Account balance" content={`${profileInfo.balance}$`}/>
                         <DataDisplay title="Portfolio Value" content={`${profileInfo.portfolio.value}$`}/>

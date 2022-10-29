@@ -46,6 +46,7 @@ namespace aksjeapp_backend.DAL
                     LastName = "Jensen",
                     Address = "Karl Johansgate 3",
                     Balance = 100_000,
+                    Transactions = new List<Transaction>(),
                     PostalArea = postalArea1
                 };
                 var transaction1 = new Transaction()
@@ -99,6 +100,11 @@ namespace aksjeapp_backend.DAL
                     Awaiting = false
                 };
 
+                customer1.Transactions.Add(transaction1);
+                customer1.Transactions.Add(transaction2);
+                customer1.Transactions.Add(transaction3);
+                customer1.Transactions.Add(transaction4);
+                customer1.Transactions.Add(transaction5);
                 context.Transactions.Add(transaction1);
                 context.Transactions.Add(transaction2);
                 context.Transactions.Add(transaction3);

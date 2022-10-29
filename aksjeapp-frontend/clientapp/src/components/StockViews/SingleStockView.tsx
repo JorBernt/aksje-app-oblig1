@@ -68,6 +68,7 @@ const SingleStockView: React.FC<Props> = (props) => {
                         props.setStockPrice(response.last)
                     setMax(Math.max(...mappableStockPriceData.map(d => d.uv)))
                     setMin(Math.min(...mappableStockPriceData.map(d => d.uv)))
+                    console.log(response)
                     setStockData(response)
                     setLoading(false)
                 }))
@@ -96,8 +97,8 @@ const SingleStockView: React.FC<Props> = (props) => {
                                          color={colorHandler(stockData?.change)}></DataDisplay>
                             <DataDisplay title={"Today +/-"} content={stockData?.todayDifference.toFixed(2)}
                                          color={colorHandler(stockData?.todayDifference)}></DataDisplay>
-                            <DataDisplay title={"Buy"} content={stockData?.buy}></DataDisplay>
-                            <DataDisplay title={"Sell"} content={stockData?.sell}></DataDisplay>
+                            <DataDisplay title={"Buy"} content={"TBA"}></DataDisplay>
+                            <DataDisplay title={"Sell"} content={"TBA"}></DataDisplay>
                             <DataDisplay title={"High"} content={stockData?.high}></DataDisplay>
                             <DataDisplay title={"Low"} content={stockData?.low}></DataDisplay>
                             <DataDisplay title={"Turnover"} content={stockData?.turnover}></DataDisplay>

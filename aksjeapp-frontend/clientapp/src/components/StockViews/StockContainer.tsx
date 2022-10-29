@@ -54,8 +54,8 @@ const StockContainer = (props: Props) => {
                         <p className="text-center">Amount</p>
                     }
                     <p className="text-center">Chart</p>
-                    <p className="text-center">Change</p>
-                    <p className="text-center">Value</p>
+                    <p className="text-center">Change %</p>
+                    <p className="text-center">Value $</p>
                 </div>
                 <hr className="pb-1 border-black pb-3"/>
                 <div className={className}>

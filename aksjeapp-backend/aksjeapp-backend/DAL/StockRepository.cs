@@ -1,6 +1,5 @@
 ﻿using aksjeapp_backend.Models;
 using aksjeapp_backend.Models.News;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace aksjeapp_backend.DAL
@@ -39,6 +38,16 @@ namespace aksjeapp_backend.DAL
             {
                 foreach (var stocks in results)
                 {
+                    if (date.DayOfWeek.Equals(DayOfWeek.Saturday))
+                    {
+                        date = date.AddDays(2);
+                    }
+
+                    if (date.DayOfWeek.Equals(DayOfWeek.Sunday))
+                    {
+                        date = date.AddDays(1);
+                    }
+
                     stocks.Date = date.ToString("yyyy-MM-dd");
                     date = date.AddDays(1);
                 }
@@ -335,8 +344,17 @@ namespace aksjeapp_backend.DAL
                 }
 
 
-                var date = GetTodaysDate().AddDays(-7);
-                ;
+                var date = GetTodaysDate().AddDays(-1);
+
+                if (date.DayOfWeek.Equals(DayOfWeek.Saturday))
+                {
+                    date = date.AddDays(2);
+                }
+
+                if (date.DayOfWeek.Equals(DayOfWeek.Sunday))
+                {
+                    date = date.AddDays(1);
+                }
 
                 var fromDate = date.ToString("yyyy-MM-dd");
 
@@ -361,7 +379,7 @@ namespace aksjeapp_backend.DAL
 
                     var stockChange2 =
                         await _db.StockChangeValues.FirstOrDefaultAsync(k =>
-                            k.Symbol == symbol && k.Date == "2022-09-19");
+                            k.Symbol == symbol && k.Date == "2022-09-20");
 
                     // Returns stockChange if its already in the database. If not it will access the API
                     if (stockChange2 != null)
@@ -503,7 +521,7 @@ namespace aksjeapp_backend.DAL
         {
             //DateTime date1 = DateTime.Now;
             //date1 = date1.AddMonths(-1);//Uses one month old data since polygon cant get todays date
-            var date1 = new DateTime(2022, 09, 19);
+            var date1 = new DateTime(2022, 09, 20);
 
             // If day of week is a weekend then the last price if from friday
             if (date1.DayOfWeek.Equals("Saturday"))
@@ -516,7 +534,7 @@ namespace aksjeapp_backend.DAL
                 date1 = date1.AddDays(-2);
             }
 
-            return new DateTime(2022, 09, 19);
+            return new DateTime(2022, 09, 20);
             ;
         }
 

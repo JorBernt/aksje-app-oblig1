@@ -59,31 +59,44 @@ const StockContainer = (props: Props) => {
                 </div>
                 <hr className="pb-1 border-black pb-3"/>
                 <div className={className}>
-                    {error &&
-                        <p className={"w-96 flex justify-center mt-48 text-6xl"}>ERROR!</p>
-                    }
-                    {showLoading && !error &&
-                        <div className="flex justify-center items-center w-64 h-48">
-                            <LoadingSpinner/>
-                        </div>
-                    }
-                    {!showLoading && !error &&
+                    {stockView.length === 0 ?
                         <>
-                            {stockView.map((val) => {
-                                counter++;
-                                    return counter % 2 === 0 ?
-                                        <div
-                                            className="cursor-pointer hover:scale-105 hover:bg-gradient-to-br hover:from-white hover:to-gray-200 hover:rounded-lg rounded-lg transition duration-150 ease-in-out text-stock-preview-text-1 font-semibold"
-                                            ref={view}>
-                                            <StockPreview key={val.symbol} items={val} showAmount={props.showAmount}/>
-                                        </div> :
-                                        <div
-                                            className="cursor-pointer hover:scale-105 transition duration-150 ease-in-out bg-gradient-to-tl rounded-lg from-green-500 to-blue-700 text-stock-preview-text-2 font-semibold">
-                                            <StockPreview key={val.symbol} items={val} showAmount={props.showAmount}/>
-                                        </div>
-                                }
-                            )}
+                            <div className="ml-28">
+                                <p>No stocks to show.</p>
+                            </div>
                         </>
+                        :
+                        <>
+                            {error &&
+                                <p className={"w-96 flex justify-center mt-48 text-6xl"}>ERROR!</p>
+                            }
+                            {showLoading && !error &&
+                                <div className="flex justify-center items-center w-64 h-48">
+                                    <LoadingSpinner/>
+                                </div>
+                            }
+                            {!showLoading && !error &&
+                                <>
+                                    {stockView.map((val) => {
+                                            counter++;
+                                            return counter % 2 === 0 ?
+                                                <div
+                                                    className="cursor-pointer hover:scale-105 hover:bg-gradient-to-br hover:from-white hover:to-gray-200 hover:rounded-lg rounded-lg transition duration-150 ease-in-out text-stock-preview-text-1 font-semibold"
+                                                    ref={view}>
+                                                    <StockPreview key={val.symbol} items={val}
+                                                                  showAmount={props.showAmount}/>
+                                                </div> :
+                                                <div
+                                                    className="cursor-pointer hover:scale-105 transition duration-150 ease-in-out bg-gradient-to-tl rounded-lg from-green-500 to-blue-700 text-stock-preview-text-2 font-semibold">
+                                                    <StockPreview key={val.symbol} items={val}
+                                                                  showAmount={props.showAmount}/>
+                                                </div>
+                                        }
+                                    )}
+                                </>
+                            }
+                        </>
+
                     }
                 </div>
             </div>

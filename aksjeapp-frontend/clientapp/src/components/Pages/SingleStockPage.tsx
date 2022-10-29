@@ -5,21 +5,17 @@ import TransactionContainer from "../Transactions/TransactionContainer";
 import {useSearchParams} from "react-router-dom";
 import StockBuySell from "../StockViews/StockBuySell";
 import React, {useEffect, useState} from "react";
-import {API} from "../../Constants";
 
 
 const SingleStockPage = () => {
     const [searchParams] = useSearchParams();
     const [symbol, setSymbol] = useState(String(searchParams.get("symbol")))
-
     const [stockPrice, setStockprice] = useState(0)
 
-
-    const [name, setName] = useState("")
     useEffect(() => {
-        fetch(API.GET_STOCK_NAME(symbol)).then(response => response.text().then(text => setName(text)))
         setSymbol(String(searchParams.get("symbol")))
-    }, [searchParams, symbol])
+    }, [searchParams])
+
     return (
         <>
             <div>

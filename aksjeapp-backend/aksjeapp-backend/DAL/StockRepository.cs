@@ -361,7 +361,7 @@ namespace aksjeapp_backend.DAL
 
                     var stockChange2 =
                         await _db.StockChangeValues.FirstOrDefaultAsync(k =>
-                            k.Symbol == symbol && k.Date == "2022-09-18");
+                            k.Symbol == symbol && k.Date == "2022-09-19");
 
                     // Returns stockChange if its already in the database. If not it will access the API
                     if (stockChange2 != null)
@@ -503,7 +503,7 @@ namespace aksjeapp_backend.DAL
         {
             //DateTime date1 = DateTime.Now;
             //date1 = date1.AddMonths(-1);//Uses one month old data since polygon cant get todays date
-            var date1 = new DateTime(2022, 09, 25);
+            var date1 = new DateTime(2022, 09, 19);
 
             // If day of week is a weekend then the last price if from friday
             if (date1.DayOfWeek.Equals("Saturday"))
@@ -516,7 +516,7 @@ namespace aksjeapp_backend.DAL
                 date1 = date1.AddDays(-2);
             }
 
-            return new DateTime(2022, 09, 18);
+            return new DateTime(2022, 09, 19);
             ;
         }
 

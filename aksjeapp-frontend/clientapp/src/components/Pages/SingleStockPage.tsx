@@ -11,10 +11,15 @@ const SingleStockPage = () => {
     const [searchParams] = useSearchParams();
     const [symbol, setSymbol] = useState(String(searchParams.get("symbol")))
     const [stockPrice, setStockprice] = useState(0)
+    const [reload, setReload] = useState(false)
 
     useEffect(() => {
         setSymbol(String(searchParams.get("symbol")))
     }, [searchParams])
+
+    const handleCallback = () => {
+        setReload(val => !val)
+    }
 
     return (
         <>
@@ -27,18 +32,18 @@ const SingleStockPage = () => {
                     </div>
                     <div className="flex flex-col">
                         <Card customCss="h-1/2 p-5 m-5">
-                            <TransactionContainer symbol={symbol}/>
+                            <TransactionContainer reloadComponent={reload} symbol={symbol}/>
                         </Card>
                         <Card>
                             <div className="flex flex-col justify-between">
                                 <StockBuySell data={"Buy"} className="bg-green-500 hover:shadow-green-300"
-                                              symbol={symbol} cost={stockPrice}/>
+                                              symbol={symbol} cost={stockPrice} callBack={handleCallback}/>
                             </div>
                         </Card>
                         <Card>
                             <div className="flex flex-col justify-between">
                                 <StockBuySell data={"Sell"} className="bg-red-500 hover:shadow-red-300" symbol={symbol}
-                                              cost={stockPrice}/>
+                                              cost={stockPrice} callBack={handleCallback}/>
                             </div>
                         </Card>
                     </div>

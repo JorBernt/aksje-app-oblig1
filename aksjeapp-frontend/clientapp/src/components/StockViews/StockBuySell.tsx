@@ -7,6 +7,7 @@ type Props = {
     className: string
     symbol: string
     cost: number
+    callBack: any
 };
 
 const StockBuySell = (props: Props) => {
@@ -31,6 +32,7 @@ const StockBuySell = (props: Props) => {
                         setSuccessTransaction(response)
                         setOkButton("Buy More")
                         setShowLoading(false)
+                        props.callBack();
                     }))
 
         else
@@ -43,7 +45,7 @@ const StockBuySell = (props: Props) => {
                         setSuccessTransaction(response)
                         setOkButton("Sell More")
                         setShowLoading(false)
-
+                        props.callBack();
                     }))
     }
 

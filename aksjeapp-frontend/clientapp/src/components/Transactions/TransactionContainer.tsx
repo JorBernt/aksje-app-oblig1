@@ -4,6 +4,7 @@ import {API} from "../../Constants";
 
 type Props = {
     symbol: string
+    reloadComponent: boolean
 }
 
 const TransactionContainer = (props: Props) => {
@@ -29,7 +30,7 @@ const TransactionContainer = (props: Props) => {
                     setTransactionView(testTransaction)
                     console.log(e)
                 }))
-    }, [props.symbol])
+    }, [props.symbol, props.reloadComponent])
 
 
     let counter: number = -1;

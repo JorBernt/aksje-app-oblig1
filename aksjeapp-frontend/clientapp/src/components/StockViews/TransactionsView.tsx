@@ -104,7 +104,7 @@ const TransactionsView: React.FC<Props> = (props) => {
                                                             editTransactionArray[val.id] ?
                                                                 <td className="px-6 py-4 whitespace-nowrap mt-6 w-12">
                                                                     <input
-                                                                        className="w-[4.55rem] bg-gray-200 pl-[1.2rem] pr-1 rounded-xl text-center"
+                                                                        className="w-[4.55rem] bg-gray-200 pl-[1.2rem] pr-1 rounded-xl text-center border border-green-500"
                                                                         type="number" ref={inputRef} value={value}
                                                                         onChange={handleInputOnChange}/></td> :
                                                                 <td className="px-6 py-4 whitespace-nowrap"> {val.amount}</td>

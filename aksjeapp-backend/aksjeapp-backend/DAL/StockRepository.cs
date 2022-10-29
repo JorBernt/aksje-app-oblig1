@@ -55,14 +55,20 @@ namespace aksjeapp_backend.DAL
                 stock.results = results;
             }
 
+            double res1 = results[^1].ClosePrice;
+            double res2 = results[^2].ClosePrice;
+            double resDiff = res1 - res2;
+            double resAvg = (res1 + res2) / 2;
+            double resPercent = (resDiff / ((resAvg) / 2) * 100) / 2;
+
             stock.Name = symbol;
-            stock.Last = results[0].ClosePrice;
-            stock.Change = results[0].ClosePrice / results[^1].ClosePrice;
-            stock.TodayDifference = results[0].ClosePrice - results[^1].ClosePrice;
-            stock.Buy = 10;
-            stock.Sell = 100;
-            stock.High = results[0].LowestPrice;
-            stock.Low = results[0].HighestPrice;
+            stock.Last = results[^1].ClosePrice;
+            stock.Change = resPercent;
+            stock.TodayDifference = results[^1].ClosePrice - results[^2].ClosePrice;
+            stock.Buy = 0;
+            stock.Sell = 0;
+            stock.High = results[^1].HighestPrice;
+            stock.Low = results[^1].LowestPrice;
             return stock;
         }
 
@@ -366,8 +372,13 @@ namespace aksjeapp_backend.DAL
                     List<Models.Results> results = stockPrice1.results;
 
                     Console.WriteLine(stockPrice1.results);
-                    double change = ((results.Last().ClosePrice - results.First().ClosePrice) /
-                                     results.Last().ClosePrice) * 100;
+
+                    double res1 = results[^1].ClosePrice;
+                    double res2 = results[^2].ClosePrice;
+                    double resDiff = res1 - res2;
+                    double resAvg = (res1 + res2) / 2;
+                    double change = (resDiff / ((resAvg) / 2) * 100) / 2;
+                    Console.WriteLine(change);
 
                     stockChange = new StockChangeValue()
                     {

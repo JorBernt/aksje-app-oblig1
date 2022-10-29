@@ -537,6 +537,8 @@ namespace aksjeapp_backend.DAL
                 if (portfolio == null)
                 {
                     portfolio = new Portfolio();
+                    portfolio.SocialSecurityNumber = socialSecurityNumber;
+                    portfolio.LastUpdated = GetTodaysDate().ToString("yyyy-MM-dd");
                 }
 
                 // Resets portfolio value
@@ -544,15 +546,17 @@ namespace aksjeapp_backend.DAL
                 portfolio.LastUpdated = GetTodaysDate().ToString("yyyy-MM-dd");
 
                 var portfolioList = await _db.PortfolioList.Where(k=> k.PortfolioId == portfolio.PortfolioId).ToListAsync();
-                
+
                 // Initilizes a portfoliolist object if it does not exist
                 if (portfolioList == null)
                 {
                     portfolioList = new List<PortfolioList>();
+
+
                 }
 
                 // Sets amount and value to 0
-                foreach(var portfolioListItem in portfolioList)
+                foreach (var portfolioListItem in portfolioList)
                 {
                     portfolioListItem.Value = 0;
                     portfolioListItem.Amount = 0;
@@ -583,6 +587,7 @@ namespace aksjeapp_backend.DAL
                             PortfolioId = portfolio.PortfolioId,
                         };
                         portfolioList.Add(portfolioItem); // Adds the new portfolio item to the portfolio list. It will be added to the DB when we save later
+                       
                     }
                 }
                 portfolio.StockPortfolio = portfolioList;
@@ -611,9 +616,11 @@ namespace aksjeapp_backend.DAL
                 {
                     portfolio.Value += stock.Value;
                 }
-                
-                await _db.Portfolios.AddAsync(portfolio);
+
+
                 customerFromDB.Portfolio = portfolio;
+                await _db.Portfolios.AddAsync(portfolio);
+                await _db.PortfolioList.AddRangeAsync(portfolioList);
                 await _db.SaveChangesAsync();
                 return true;
             }
@@ -662,8 +669,13 @@ namespace aksjeapp_backend.DAL
                 var portofolioList = await _db.PortfolioList.ToListAsync();
 
                 // Adds portfoliolist to portfolio
-                portofolio.StockPortfolio = portofolioList;
-
+                if(portofolio == null) {
+                    portofolio = new Portfolio();
+                }
+                else
+                {
+                    portofolio.StockPortfolio = portofolioList;
+                }
                 //Converts Customers to Customer
                 var customer = new Customer()
                 {

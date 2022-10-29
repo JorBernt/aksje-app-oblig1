@@ -79,7 +79,7 @@ const StockBuySell = (props: Props) => {
             }
             {!showTransactionResponse && !showLoading &&
                 <div className="flex flex-col ">
-                    <div className="grid grid-cols-3 ">
+                    <div className="grid grid-cols-3 ml-4">
                         <p className="text-2xl ">{amount} </p>
                         <input
                             className="mx-4 w-24 bg-transparent focus:border focus:border-pink-500 rounded pl-4 border border-black"

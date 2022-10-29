@@ -109,33 +109,36 @@ const TransactionsView: React.FC<Props> = (props) => {
                                                         }
                                                         <td className="px-6 py-4 whitespace-nowrap">{val.totalPrice}</td>
                                                         <td className="px-6 py-4 whitespace-nowrap">{val.date}</td>
-                                                        <td className="px-6 py-4 whitespace-nowrap">
-                                                            {!editTransactionArray[val.id] ?
-                                                                <>
-                                                                    <button id={String(val.id)}
-                                                                            className="text-white font-bold py-2 rounded-full hover:shadow-xl w-24 transition duration-300 bg-yellow-500 hover:shadow-yellow-300"
-                                                                            onClick={() => handleOnClickUpdate(val)}
-                                                                    >{"Edit"}
+                                                        {val.awaiting &&
+                                                            <>
+                                                                <td className="px-6 py-4 whitespace-nowrap">
+                                                                    {!editTransactionArray[val.id] ?
+                                                                        <>
+                                                                            <button id={String(val.id)}
+                                                                                    className="text-white font-bold py-2 rounded-full hover:shadow-xl w-24 transition duration-300 bg-yellow-500 hover:shadow-yellow-300"
+                                                                                    onClick={() => handleOnClickUpdate(val)}
+                                                                            >{"Edit"}
+                                                                            </button>
+                                                                        </>
+                                                                        :
+                                                                        <>
+                                                                            <button id={String(val.id)}
+                                                                                    className="text-white font-bold py-2 rounded-full hover:shadow-xl w-24 transition duration-300 bg-green-500 hover:shadow-green-500"
+                                                                                    onClick={() => handleOnClickUpdate(val)}
+                                                                            >{"Save"}
+                                                                            </button>
+                                                                        </>
+                                                                    }
+                                                                </td>
+                                                                <td className="py-4 whitespace-nowrap">
+                                                                    <button
+                                                                        className="text-white font-bold py-2 rounded-full hover:shadow-xl w-24 transition duration-300 bg-red-500 hover:shadow-red-500"
+                                                                        onClick={() => handleOnClickDelete(val.id)}>
+                                                                        Delete
                                                                     </button>
-                                                                </>
-                                                                :
-                                                                <>
-                                                                    <button id={String(val.id)}
-                                                                            className="text-white font-bold py-2 rounded-full hover:shadow-xl w-24 transition duration-300 bg-green-500 hover:shadow-green-500"
-                                                                            onClick={() => handleOnClickUpdate(val)}
-                                                                    >{"Save"}
-                                                                    </button>
-                                                                </>
-                                                            }
-                                                        </td>
-                                                        <td className="py-4 whitespace-nowrap">
-                                                            <button
-                                                                className="text-white font-bold py-2 rounded-full hover:shadow-xl w-24 transition duration-300 bg-red-500 hover:shadow-red-500"
-                                                                onClick={() => handleOnClickDelete(val.id)}
-                                                                style={{visibility: val.awaiting ? 'visible' : 'hidden'}}>Delete
-                                                            </button>
-
-                                                        </td>
+                                                                </td>
+                                                            </>
+                                                        }
                                                     </tr>
                                                     </tbody>
                                                 )

@@ -27,7 +27,7 @@ const SingleStockPage = () => {
                 <Navbar/>
                 <div className="flex flex-row justify-center">
                     <div className="flex justify-center">
-                        <SingleStockView symbol={symbol} fromDate={"2022-09-24"} toDate={"2022-10-24"}
+                        <SingleStockView symbol={symbol} fromDate={"2022-08-20"} toDate={"2022-09-20"}
                                          setStockPrice={setStockprice}/>
                     </div>
                     <div className="flex flex-col">

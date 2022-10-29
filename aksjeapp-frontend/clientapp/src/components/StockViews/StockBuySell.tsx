@@ -64,6 +64,11 @@ const StockBuySell = (props: Props) => {
         if (!inputRef.current)
             return
         const sum = props.cost * inputRef.current.valueAsNumber
+        const min = 1, max = 1000
+        inputRef.current.value = (Math.max(min, Math.min(max, Number(inputRef.current.valueAsNumber)))).toString();
+        if (inputRef.current.value === "") {
+            setTotalSum(0);
+        }
 
         if (sum >= 0)
             setTotalSum(sum)
@@ -87,7 +92,7 @@ const StockBuySell = (props: Props) => {
                             className="mx-4 w-24 bg-transparent focus:border focus:border-pink-500 rounded pl-4 border border-black"
                             type="number" ref={inputRef} onChange={handleOnChange}/>
 
-                        <p className="ml-5 self-end text-2xl">{totalSum.toFixed(2)} $</p>
+                        <p className="ml-1 self-end text-2xl">{totalSum.toFixed(2)} $</p>
                     </div>
                     <div className="flex justify-center">
                         <button

@@ -74,7 +74,7 @@ const SingleStockView: React.FC<Props> = (props) => {
                 }))
         fetch(API.GET_STOCK_NAME(props.symbol)).then(response => response.text().then(text => setName(text)))
 
-    }, [props])
+    }, [props.symbol])
 
     return (
         <>

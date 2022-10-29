@@ -35,7 +35,6 @@ const StockContainer = (props: Props) => {
                             props.setName(response[0].symbol)
                         }
                     }).catch(e => {
-                        console.log(e)
                         setShowLoading(false)
                         setError(true)
                     }))

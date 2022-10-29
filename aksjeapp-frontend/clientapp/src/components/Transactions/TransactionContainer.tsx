@@ -28,7 +28,6 @@ const TransactionContainer = (props: Props) => {
                     setTransactionView(p => [...response])
                 }).catch(e => {
                     setTransactionView(testTransaction)
-                    console.log(e)
                 }))
     }, [props.symbol, props.reloadComponent])
 
@@ -50,7 +49,6 @@ const TransactionContainer = (props: Props) => {
                 scrollbar scrollbar-track-white scrollbar-thumb-rounded-3xl scrollbar-thin scrollbar-thumb-blue-700">
                     {transactionView.map((val) => {
                         counter++;
-                        console.log(transactionView)
                         if (val.socialSecurityNumber.length === 0) return <p className="text-center">Det er ikke
                             gjort noen transaksjoner på denne aksjen.</p>
                         else

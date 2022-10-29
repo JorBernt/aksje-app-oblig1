@@ -15,13 +15,10 @@ const NewsContainer = () => {
                 .then((res) => {
                     setNews(p => [...res.results])
                     setLoading(false)
-                    console.log(res)
                 }).catch(e => {
                     console.log(e.message)
                 }))
     }, [])
-    console.log(news[0])
-
 
     return (
         <>

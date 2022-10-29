@@ -20,7 +20,6 @@ const ProfilePage = () => {
             .then(response => response.json()
                 .then(res => {
                     setProfileInfo(res)
-                    console.log(res)
                 }).catch(e => {
                     console.log(e.message)
                 })

@@ -65,7 +65,6 @@ const TransactionsView: React.FC<Props> = (props) => {
                 body: JSON.stringify(transaction)
 
             }).then(result => props.callBack())
-            console.log(transaction)
         }
     }
 

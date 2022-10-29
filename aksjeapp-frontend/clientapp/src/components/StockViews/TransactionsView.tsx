@@ -5,8 +5,11 @@ import {Simulate} from "react-dom/test-utils";
 import Card from "../UI/Card/Card";
 import input = Simulate.input;
 
+type Props = {
+    callBack: any;
+}
 
-const TransactionsView = () => {
+const TransactionsView: React.FC<Props> = (props) => {
 
     const [transactionView, setTransactionView] = useState<Transaction[]>([]);
     const inputRef = useRef<HTMLInputElement>(null);
@@ -34,7 +37,10 @@ const TransactionsView = () => {
     }, [])
     const handleOnClickDelete = (id: number) => {
         fetch(API.DELETE_TRANSACTION(SSN, id))
-            .then(result => loadAllTransactions())
+            .then(result => {
+                loadAllTransactions()
+                props.callBack();
+            })
     }
     const handleOnClickUpdate = (transaction: Transaction) => {
         if (!editTransactionArray[transaction.id]) {
@@ -58,7 +64,7 @@ const TransactionsView = () => {
                 },
                 body: JSON.stringify(transaction)
 
-            })
+            }).then(result => props.callBack())
             console.log(transaction)
         }
     }

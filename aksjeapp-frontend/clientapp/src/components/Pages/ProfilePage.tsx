@@ -10,6 +10,11 @@ import TransactionsView from "../StockViews/TransactionsView";
 const ProfilePage = () => {
     const [profileInfo, setProfileInfo] = useState<ProfileInfo>();
 
+    const [reload, setReload] = useState(false)
+    const handleCallback = () => {
+        setReload(val => !val)
+    }
+
     useEffect(() => {
         fetch(API.GET_CUSTOMER_PORTOFOLIO("12345678910"))
             .then(response => response.json()
@@ -20,7 +25,7 @@ const ProfilePage = () => {
                     console.log(e.message)
                 })
             )
-    }, [])
+    }, [reload])
     return (
         <>
             <div>
@@ -41,7 +46,7 @@ const ProfilePage = () => {
                     
                 </div>
                 <div className="flex justify-center">
-                    <TransactionsView/>
+                    <TransactionsView callBack={handleCallback}/>
                 </div>
             </div>
         </>

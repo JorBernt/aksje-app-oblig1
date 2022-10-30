@@ -221,8 +221,10 @@ namespace aksjeapp_backend.DAL
             // Checks if socialSecuritynumber is correct
             var customer = await _db.Customers.FindAsync(socialSecurityNumber);
 
-            if (customer != null)
+            if (customer == null)
             {
+                return null;
+            }
                 // Lists all transactions that belongs to the owner
                 var transactionsfromDb = await _db.TransactionsBought.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
 
@@ -266,15 +268,49 @@ namespace aksjeapp_backend.DAL
                     transactions.Add(transaction1);
 
                 }
+                return transactions;
 
-            return null;
         }
 
         public async Task<List<Transaction>> GetSpecificTransactions(string symbol)
         {
             if (symbol != null)
             {
-                var transactions = await _db.Transactions.Where(k => k.Symbol == symbol).ToListAsync();
+                var transactionsfromDb = await _db.TransactionsBought.Where(k => k.Symbol == symbol).ToListAsync();
+                var transactions = new List<Transaction>();
+
+
+                foreach (var transactionDB in transactionsfromDb)
+                {
+                    var transaction1 = new Transaction
+                    {
+                        Id = transactionDB.BoughtId,
+                        SocialSecurityNumber = transactionDB.SocialSecurityNumber,
+                        Date = transactionDB.Date,
+                        Symbol = transactionDB.Symbol,
+                        Amount = transactionDB.Amount,
+                        TotalPrice = transactionDB.TotalPrice
+                    };
+                    transactions.Add(transaction1);
+
+                }
+
+                var transactionsfromDbSold = await _db.TransactionsSold.Where(k => k.Symbol == symbol).ToListAsync();
+                foreach (var transactionDB in transactionsfromDbSold)
+                {
+                    var transaction1 = new Transaction
+                    {
+                        Id = transactionDB.SoldId,
+                        SocialSecurityNumber = transactionDB.SocialSecurityNumber,
+                        Date = transactionDB.Date,
+                        Symbol = transactionDB.Symbol,
+                        Amount = transactionDB.Amount,
+                        TotalPrice = transactionDB.TotalPrice
+                    };
+                    transactions.Add(transaction1);
+
+                }
+
                 return transactions;
             }
 
@@ -319,7 +355,7 @@ namespace aksjeapp_backend.DAL
                     customer.Balance += transaction.TotalPrice;
 
                     // Gets todays price for the new stock
-                    var stockPrice = await PolygonAPI.GetOpenClosePrice(changeTransaction.Symbol, GetTodaysDate().ToString("yyyy-mm-dd"));
+                    var stockPrice = await PolygonAPI.GetOpenClosePrice(changeTransaction.Symbol, GetTodaysDate().ToString("yyyy-MM-dd"));
 
                     transaction.Symbol = changeTransaction.Symbol;
                     transaction.Amount = changeTransaction.Amount;
@@ -511,6 +547,7 @@ namespace aksjeapp_backend.DAL
                     portfolio = new Portfolio();
                     portfolio.SocialSecurityNumber = socialSecurityNumber;
                     portfolio.LastUpdated = GetTodaysDate().ToString("yyyy-MM-dd");
+                    await _db.Portfolios.AddAsync(portfolio);
                 }
 
                 // Resets portfolio value
@@ -587,10 +624,11 @@ namespace aksjeapp_backend.DAL
                     portfolio.Value += stock.Value;
                 }
 
-
                 customerFromDB.Portfolio = portfolio;
-                await _db.Portfolios.AddAsync(portfolio);
+                
                 await _db.PortfolioList.AddRangeAsync(portfolioList);
+
+
                 await _db.SaveChangesAsync();
                 return true;
             }

@@ -27,6 +27,10 @@ namespace aksjeapp_backend.DAL
                     Console.WriteLine(json);
                     if (json.Contains("error"))
                     {
+                        if(json.Contains("could not parse"))
+                        {
+                            return null;
+                        }
                         Console.WriteLine("API cooldown");
                         Thread.Sleep(10000);
 

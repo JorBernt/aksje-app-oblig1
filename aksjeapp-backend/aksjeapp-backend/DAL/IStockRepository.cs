@@ -17,7 +17,7 @@ namespace aksjeapp_backend.DAL
         Task<bool> DeleteTransaction(string socialSecurityNumber, int id);
         Task<StockChangeValue> StockChange(string symbol);
         Task<List<StockOverview>> GetStockOverview();
-        Task<Customer> GetCustomerPortofolio(string socialSecurityNumber);
+        Task<Customer> GetCustomerPortfolio(string socialSecurityNumber);
         Task<List<StockChangeValue>> GetWinners();
         Task<List<StockChangeValue>> GetLosers();
         Task<News> GetNews(string symbol);

@@ -191,7 +191,7 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> GetCustomerPortofolio(string socialSecurityNumber)
         {
-            var customer = await _db.GetCustomerPortofolio(socialSecurityNumber);
+            var customer = await _db.GetCustomerPortfolio(socialSecurityNumber);
             if (customer == null)
             {
                 _logger.LogInformation("Customer not found");

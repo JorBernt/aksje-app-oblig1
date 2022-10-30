@@ -629,7 +629,7 @@ namespace aksjeapp_backend.DAL
         }
 
 
-        public async Task<Customer> GetCustomerPortofolio(string socialSecurityNumber)
+        public async Task<Customer> GetCustomerPortfolio(string socialSecurityNumber)
         {
             try
             {

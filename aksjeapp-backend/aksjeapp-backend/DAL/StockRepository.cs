@@ -133,10 +133,10 @@ namespace aksjeapp_backend.DAL
                 };
 
                 await _db.TransactionsBought.AddAsync(stockTransaction);
-                customer.Balance -= stockTransaction.TotalPrice - 5; //5 dollars in brokerage fee
-
+                customer.Balance -= stockTransaction.TotalPrice - 5; //5 dollars in brokerage 
                 await _db.SaveChangesAsync();
 
+                await UpdatePortfolio(socialSecurityNumber);
                 return true;
             }
             catch
@@ -238,6 +238,27 @@ namespace aksjeapp_backend.DAL
                 {
                     return false;
                 }
+
+                await UpdatePortfolio(socialSecurityNumber);
+
+                // Finds the stock we want to sell
+                var portfolio = await _db.Portfolios.FirstOrDefaultAsync(k => k.SocialSecurityNumber == socialSecurityNumber && k.LastUpdated == GetTodaysDate().ToString("yyyy-MM-dd"));
+                if (portfolio == null)
+                {
+                    return false;
+                }
+
+                var portfolioList = await _db.PortfolioList.FirstOrDefaultAsync(k => k.PortfolioId == portfolio.PortfolioId && k.Symbol == symbol);
+                if (portfolioList == null)
+                {
+                    return false;
+                }
+                // If we does not have enough of that stock
+                if (portfolioList.Amount < number)
+                {
+                    return false;
+                }
+
                 //Get todays price and and set the todays date
                 var stockPrice = await PolygonAPI.GetOpenClosePrice(symbol, date);
 
@@ -250,7 +271,7 @@ namespace aksjeapp_backend.DAL
                 double totalPrice = stockPrice.ClosePrice * number;
 
                 //Creates transaction
-                var stockTransaction = new TransactionBought
+                var stockTransaction = new TransactionSold
                 {
                     Date = date,
                     SocialSecurityNumber = socialSecurityNumber,
@@ -259,7 +280,7 @@ namespace aksjeapp_backend.DAL
                     TotalPrice = totalPrice
                 };
 
-                await _db.TransactionsBought.AddAsync(stockTransaction);
+                await _db.TransactionsSold.AddAsync(stockTransaction);
                 customer.Balance += stockTransaction.TotalPrice;
 
                 await _db.SaveChangesAsync();
@@ -446,39 +467,40 @@ namespace aksjeapp_backend.DAL
 
                 var stockPrice1 = await PolygonAPI.GetStockPrices(symbol, fromDate, GetTodaysDate().ToString("yyyy-MM-dd"), 1);
 
-                if (stockPrice1.results != null)
+                if (stockPrice1.results == null)
                 {
-                    List<Models.Results> results = stockPrice1.results;
-
-                    Console.WriteLine(stockPrice1.results);
-                    double change = ((results.Last().ClosePrice - results.First().ClosePrice) / results.Last().ClosePrice) * 100;
-
-                    stockChange = new StockChangeValue()
-                    {
-                        Date = GetTodaysDate().ToString("yyyy-MM-dd"),
-                        Symbol = symbol,
-                        Change = change,
-                        Value = results.Last().ClosePrice
-                    };
-
-                    var stockChange2 = await _db.StockChangeValues.FirstOrDefaultAsync(k => k.Symbol == symbol && k.Date == "2022-09-18");
-
-                    // Returns stockChange if its already in the database. If not it will access the API
-                    if (stockChange2 != null)
-                    {
-                        return stockChange2;
-                    }
-
-                    //Adds to stock change table
-                    _db.StockChangeValues.Add(stockChange);
-                    await _db.SaveChangesAsync();
-
-                    return stockChange;
+                    return null;
                 }
-                return null;
+                List<Models.Results> results = stockPrice1.results;
+
+                double change = ((results.Last().ClosePrice - results.First().ClosePrice) / results.Last().ClosePrice) * 100;
+
+                stockChange = new StockChangeValue()
+                {
+                    Date = GetTodaysDate().ToString("yyyy-MM-dd"),
+                    Symbol = symbol,
+                    Change = change,
+                    Value = results.Last().ClosePrice
+                };
+
+                var stockChange2 = await _db.StockChangeValues.FirstOrDefaultAsync(k => k.Symbol == symbol && k.Date == GetTodaysDate().ToString("yyyy-MM-dd"));
+
+                // Returns stockChange if its already in the database. If not it will access the API
+                if (stockChange2 != null)
+                {
+                    return stockChange2;
+                }
+
+                //Adds to stock change table
+                _db.StockChangeValues.Add(stockChange);
+                await _db.SaveChangesAsync();
+
+                return stockChange;
+
             }
             catch
             {
+                Console.WriteLine("Returnerer null");
                 return null;
             }
         }
@@ -529,10 +551,10 @@ namespace aksjeapp_backend.DAL
                 // Gets transaction objects from DB
                 var transactionsBought = await _db.TransactionsBought.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
                 var transactionsSold = await _db.TransactionsSold.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
-                
+
                 StockChangeValue stockChange;
 
-                var portfolio = await _db.Portfolios.FirstOrDefaultAsync(k=> k.SocialSecurityNumber == socialSecurityNumber);
+                var portfolio = await _db.Portfolios.FirstOrDefaultAsync(k => k.SocialSecurityNumber == socialSecurityNumber);
                 // Initilizes a portfolio object if it does not exist
                 if (portfolio == null)
                 {
@@ -545,7 +567,7 @@ namespace aksjeapp_backend.DAL
                 portfolio.Value = 0;
                 portfolio.LastUpdated = GetTodaysDate().ToString("yyyy-MM-dd");
 
-                var portfolioList = await _db.PortfolioList.Where(k=> k.PortfolioId == portfolio.PortfolioId).ToListAsync();
+                var portfolioList = await _db.PortfolioList.Where(k => k.PortfolioId == portfolio.PortfolioId).ToListAsync();
 
                 // Initilizes a portfoliolist object if it does not exist
                 if (portfolioList == null)
@@ -587,7 +609,7 @@ namespace aksjeapp_backend.DAL
                             PortfolioId = portfolio.PortfolioId,
                         };
                         portfolioList.Add(portfolioItem); // Adds the new portfolio item to the portfolio list. It will be added to the DB when we save later
-                       
+
                     }
                 }
                 portfolio.StockPortfolio = portfolioList;
@@ -610,7 +632,7 @@ namespace aksjeapp_backend.DAL
                         portfolioList.RemoveAt(index);
                     }
                 }
-                
+
                 // Calculates the total value of the portfolio
                 foreach (var stock in portfolioList)
                 {
@@ -630,7 +652,7 @@ namespace aksjeapp_backend.DAL
             }
         }
 
-        
+
         public async Task<Customer?> GetCustomerPortofolio(string socialSecurityNumber)
         {
             try
@@ -669,7 +691,8 @@ namespace aksjeapp_backend.DAL
                 var portofolioList = await _db.PortfolioList.ToListAsync();
 
                 // Adds portfoliolist to portfolio
-                if(portofolio == null) {
+                if (portofolio == null)
+                {
                     portofolio = new Portfolio();
                 }
                 else

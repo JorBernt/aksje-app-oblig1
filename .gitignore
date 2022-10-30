@@ -391,3 +391,4 @@ yarn-error.log*
 # Db tmp files
 *.db-shm
 *.db-wal
+*.db

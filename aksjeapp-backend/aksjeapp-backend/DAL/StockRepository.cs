@@ -615,9 +615,6 @@ namespace aksjeapp_backend.DAL
                 }
 
                 customerFromDB.Portfolio = portfolio;
-                
-                await _db.PortfolioList.AddRangeAsync(portfolioList);
-
 
                 await _db.SaveChangesAsync();
                 return true;

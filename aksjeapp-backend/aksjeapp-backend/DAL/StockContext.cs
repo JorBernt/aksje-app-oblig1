@@ -107,8 +107,6 @@ namespace aksjeapp_backend.DAL
 
         public DbSet<PostalAreas> PostalAreas { get; set; }
 
-        //public DbSet<Transaction> Transactions { get; set; }
-
         public DbSet<TransactionBought> TransactionsBought { get; set; }
 
         public DbSet<TransactionSold> TransactionsSold { get; set; }

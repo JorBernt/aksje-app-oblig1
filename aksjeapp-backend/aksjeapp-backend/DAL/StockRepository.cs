@@ -254,7 +254,7 @@ namespace aksjeapp_backend.DAL
                 {
                     var transaction1 = new Transaction
                     {
-                        Id = transactionDBSold.SoldId,
+                        Id = -1,
                         SocialSecurityNumber = transactionDBSold.SocialSecurityNumber,
                         Date = transactionDBSold.Date,
                         Symbol = transactionDBSold.Symbol,
@@ -285,7 +285,7 @@ namespace aksjeapp_backend.DAL
                         SocialSecurityNumber = transactionDB.SocialSecurityNumber,
                         Date = transactionDB.Date,
                         Symbol = transactionDB.Symbol,
-                        Amount = transactionDB.Amount,
+                        Amount = -transactionDB.Amount,
                         TotalPrice = transactionDB.TotalPrice
                     };
                     transactions.Add(transaction1);

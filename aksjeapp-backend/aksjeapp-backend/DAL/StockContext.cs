@@ -38,7 +38,19 @@ namespace aksjeapp_backend.DAL
         public string Date { get; set; }
         public string Symbol { get; set; }
         public int Amount { get; set; }
-        public double TotalPrice { get; set; }
+
+        private double totalPrice;
+        public double TotalPrice
+        {
+            get
+            {
+                return this.totalPrice;
+            }
+            set
+            {
+                this.totalPrice = Math.Round(value, 2);
+            }
+        }
 
     }
     public class TransactionSold
@@ -52,7 +64,19 @@ namespace aksjeapp_backend.DAL
         public string Date { get; set; }
         public string Symbol { get; set; }
         public int Amount { get; set; }
-        public double TotalPrice { get; set; }
+
+        private double totalPrice;
+        public double TotalPrice
+        {
+            get
+            {
+                return this.totalPrice;
+            }
+            set
+            {
+                this.totalPrice = Math.Round(value, 2);
+            }
+        }
     }
     public class PortfolioList
     {

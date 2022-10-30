@@ -7,7 +7,7 @@ namespace aksjeapp_backend.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public string StockId { get; set; }
+        public int StockId { get; set; }
         public string Date { get; set; }
         public string Symbol { get; set; }
 

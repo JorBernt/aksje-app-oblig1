@@ -13,8 +13,11 @@ namespace aksjeapp_backend.DAL
         public string LastName { get; set; }
         public string Address { get; set; }
         public double Balance { get; set; }
-        virtual public List<Transaction> Transactions { get; set; }
+        public virtual List<TransactionBought>? TransactionsBought { get; set; }
+        virtual public List<TransactionSold>? TransactionsSold { get; set; }
+        virtual public Portfolio? Portfolio { get; set; }
         virtual public PostalAreas PostalArea { get; set; }
+
     }
     public class PostalAreas
     {
@@ -24,6 +27,71 @@ namespace aksjeapp_backend.DAL
         public string PostCity { get; set; }
     }
 
+    public class TransactionBought
+    {
+
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int BoughtId { get; set; }
+
+        public string SocialSecurityNumber { get; set; }
+        public string Date { get; set; }
+        public string Symbol { get; set; }
+        public int Amount { get; set; }
+        public double TotalPrice { get; set; }
+
+    }
+    public class TransactionSold
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int SoldId { get; set; }
+
+        [ForeignKey("Customers")]
+        public string SocialSecurityNumber { get; set; }
+        public string Date { get; set; }
+        public string Symbol { get; set; }
+        public int Amount { get; set; }
+        public double TotalPrice { get; set; }
+    }
+    public class PortfolioList
+    {
+
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int PortfolioListId { get; set; }
+        public string Symbol { get; set; }
+        public string? Name { get; set; }
+        public int Amount { get; set; } = 0;
+
+        private double change;
+        private double value;
+        public double Change
+        {
+            get
+            {
+                return this.change;
+            }
+            set
+            {
+                this.change = Math.Round(value, 2);
+            }
+        }
+
+        public double Value
+        {
+            get
+            {
+                return this.value;
+            }
+            set
+            {
+                this.value = Math.Round(value, 2);
+            }
+        }
+        [ForeignKey("PortfolioId")]
+        public int PortfolioId { get; set; }
+    }
     public class StockContext : DbContext
     {
 
@@ -39,9 +107,17 @@ namespace aksjeapp_backend.DAL
 
         public DbSet<PostalAreas> PostalAreas { get; set; }
 
-        public DbSet<Transaction> Transactions { get; set; }
+        //public DbSet<Transaction> Transactions { get; set; }
+
+        public DbSet<TransactionBought> TransactionsBought { get; set; }
+
+        public DbSet<TransactionSold> TransactionsSold { get; set; }
 
         public DbSet<StockChangeValue> StockChangeValues { get; set; }
+
+        public DbSet<Portfolio> Portfolios { get; set; }
+
+        public DbSet<PortfolioList> PortfolioList { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {

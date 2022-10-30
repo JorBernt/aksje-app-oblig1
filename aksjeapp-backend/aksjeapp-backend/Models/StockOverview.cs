@@ -1,12 +1,11 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace aksjeapp_backend.Models;
 
 public class StockOverview
 {
     public string Symbol { get; set; }
-    public string Name { get; set; }
-    public int Amount { get; set; } = 0;
+    public string? Name { get; set; }
 
     private double change;
     private double value;

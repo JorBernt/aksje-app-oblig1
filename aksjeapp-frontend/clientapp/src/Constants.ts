@@ -4,6 +4,8 @@ export const DATE_TODAY = new Date().toLocaleDateString("nb-NO").replace("/", "-
 
 const url = "https://localhost:7187/Stock/"
 
+export const SSN = "12345678910";
+
 export const API = {
     GET_ALL_STOCKS: url + "GetAllStocks",
     GET_STOCK_PRICES:
@@ -11,7 +13,7 @@ export const API = {
             return url + `GetStockPrices?symbol=${symbol}&fromDate=${fromDate}&toDate=${toDate}`
         },
     BUY_STOCK:
-        (socialSecurityNumber: string, symbol: string, number: number) : string => {
+        (socialSecurityNumber: string, symbol: string, number: number): string => {
             return url + `BuyStock?socialSecurityNumber=${socialSecurityNumber}&symbol=${symbol}&number=${number}`
         },
     SELL_STOCK:
@@ -19,20 +21,20 @@ export const API = {
             return url + `SellStock?socialSecurityNumber=${socialSecurityNumber}&symbol=${symbol}&number=${number}`
         },
     SEARCH_RESULTS:
-        (keyPhrase: string) : string => {
+        (keyPhrase: string): string => {
             return url + "SearchResults?keyPhrase=" + keyPhrase;
         },
     GET_ALL_TRANSACTIONS:
-        (socialSecurityNumber: string) : string => {
+        (socialSecurityNumber: string): string => {
             return url + "GetAllTransactions?socialSecurityNumber=" + socialSecurityNumber
         },
-    GET_TRANSACTION:
-        (socialSecurityNumber: string, id: number) : string => {
-            return url + `GetTransaction?socialSecurityNumber=${socialSecurityNumber}&id=${id}`
+    GET_SPECIFIC_TRANSACTIONS:
+        (symbol: string): string => {
+            return url + "GetSpecificTransactions?symbol=" + symbol
         },
-    UPDATE_TRANSACTION:
-        (transaction: Transaction) : string => {
-            return url + `GetTransaction?transaction=${transaction}`
+    GET_TRANSACTION:
+        (socialSecurityNumber: string, id: number): string => {
+            return url + `GetTransaction?socialSecurityNumber=${socialSecurityNumber}&id=${id}`
         },
     DELETE_TRANSACTION:
         (socialSecurityNumber: string, id: number): string => {
@@ -42,6 +44,7 @@ export const API = {
         (symbol: string): string => {
             return url + `StockChange?symbol=${symbol}`
         },
+    UPDATE_TRANSACTION: url + "UpdateTransaction",
     GET_STOCK_OVERVIEW: url + "GetStockOverview",
     GET_WINNERS: url + "GetWinners",
     GET_LOSERS: url + "GetLosers",

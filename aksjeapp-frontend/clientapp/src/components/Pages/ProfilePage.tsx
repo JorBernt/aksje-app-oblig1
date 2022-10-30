@@ -10,17 +10,21 @@ import TransactionsView from "../StockViews/TransactionsView";
 const ProfilePage = () => {
     const [profileInfo, setProfileInfo] = useState<ProfileInfo>();
 
+    const [reload, setReload] = useState(false)
+    const handleCallback = () => {
+        setReload(val => !val)
+    }
+
     useEffect(() => {
         fetch(API.GET_CUSTOMER_PORTOFOLIO("12345678910"))
             .then(response => response.json()
                 .then(res => {
                     setProfileInfo(res)
-                    console.log(res)
                 }).catch(e => {
                     console.log(e.message)
                 })
             )
-    }, [])
+    }, [reload])
     return (
         <>
             <div>
@@ -40,13 +44,8 @@ const ProfilePage = () => {
                     </div>
                     
                 </div>
-                <h1 className="text-center font-semi text-5xl bold py-10">Placeholder name</h1>
                 <div className="flex justify-center">
-                    <Card customCss={"w-[74rem] p-5 m-5"}>
-                        <div className="flex flex-col justify-between">
-                            <TransactionsView/>
-                        </div>
-                    </Card>
+                    <TransactionsView callBack={handleCallback}/>
                 </div>
             </div>
         </>

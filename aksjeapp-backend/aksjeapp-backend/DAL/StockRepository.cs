@@ -15,12 +15,12 @@ namespace aksjeapp_backend.DAL
 
         public async Task<List<Stock>> GetAllStocks()
         {
-
             List<Stock> aksjeListe = await _db.Stocks.ToListAsync();
             return aksjeListe;
-
         }
-        public async Task<StockPrices> GetStockPrices(string symbol, string fromDate, string toDate) // dato skal skrives som "YYYY-MM-DD"
+
+        public async Task<StockPrices>
+            GetStockPrices(string symbol, string fromDate, string toDate) // dato skal skrives som "YYYY-MM-DD"
         {
             var stock = await PolygonAPI.GetStockPrices(symbol, fromDate, toDate, 1);
 
@@ -32,28 +32,43 @@ namespace aksjeapp_backend.DAL
             }
 
 
-
             DateTime date;
 
             if (DateTime.TryParse(fromDate, out date))
             {
-
                 foreach (var stocks in results)
                 {
+                    if (date.DayOfWeek.Equals(DayOfWeek.Saturday))
+                    {
+                        date = date.AddDays(2);
+                    }
+
+                    if (date.DayOfWeek.Equals(DayOfWeek.Sunday))
+                    {
+                        date = date.AddDays(1);
+                    }
+
                     stocks.Date = date.ToString("yyyy-MM-dd");
                     date = date.AddDays(1);
                 }
+
                 stock.results = results;
             }
 
+            double res1 = results[^1].ClosePrice;
+            double res2 = results[^2].ClosePrice;
+            double resDiff = res1 - res2;
+            double resAvg = (res1 + res2) / 2;
+            double resPercent = (resDiff / ((resAvg) / 2) * 100) / 2;
+
             stock.Name = symbol;
-            stock.Last = results[0].ClosePrice;
-            stock.Change = results[0].ClosePrice / results[^1].ClosePrice;
-            stock.TodayDifference = results[0].ClosePrice - results[^1].ClosePrice;
-            stock.Buy = 10;
-            stock.Sell = 100;
-            stock.High = results[0].LowestPrice;
-            stock.Low = results[0].HighestPrice;
+            stock.Last = results[^1].ClosePrice;
+            stock.Change = resPercent;
+            stock.TodayDifference = results[^1].ClosePrice - results[^2].ClosePrice;
+            stock.Buy = 0;
+            stock.Sell = 0;
+            stock.High = results[^1].HighestPrice;
+            stock.Low = results[^1].LowestPrice;
             return stock;
         }
 
@@ -103,7 +118,6 @@ namespace aksjeapp_backend.DAL
             {
                 return false;
             }
-
         }
         
         public async Task<bool> SellStock(string socialSecurityNumber, string symbol, int number)
@@ -189,9 +203,12 @@ namespace aksjeapp_backend.DAL
                 {
                     return null;
                 }
-                var stocks = await _db.Stocks.Where(k => k.Symbol.Contains(keyPhrase) || k.Name.ToUpper().Contains(keyPhrase) || k.Country.ToUpper().Contains(keyPhrase) || k.Sector.ToUpper().Contains(keyPhrase)).OrderBy(k => k.Name).ToListAsync();
-                return stocks;
 
+                var stocks = await _db.Stocks
+                    .Where(k => k.Symbol.Contains(keyPhrase) || k.Name.ToUpper().Contains(keyPhrase) ||
+                                k.Country.ToUpper().Contains(keyPhrase) || k.Sector.ToUpper().Contains(keyPhrase))
+                    .OrderBy(k => k.Name).ToListAsync();
+                return stocks;
             }
             catch
             {
@@ -250,8 +267,17 @@ namespace aksjeapp_backend.DAL
 
                 }
 
+            return null;
+        }
+
+        public async Task<List<Transaction>> GetSpecificTransactions(string symbol)
+        {
+            if (symbol != null)
+            {
+                var transactions = await _db.Transactions.Where(k => k.Symbol == symbol).ToListAsync();
                 return transactions;
             }
+
             return null;
         }
 
@@ -311,6 +337,7 @@ namespace aksjeapp_backend.DAL
                 return false;
             }
         }
+
         public async Task<bool> DeleteTransaction(string socialSecurityNumber, int id)
         {
             try
@@ -333,7 +360,6 @@ namespace aksjeapp_backend.DAL
                         customer.Balance += transaction.TotalPrice + 5; //Updates balance for customer and refunds brokerage fee
                         await _db.SaveChangesAsync();
                         return true;
-
                     }
                     else
                     {
@@ -342,6 +368,7 @@ namespace aksjeapp_backend.DAL
                         return true;
                     }
                 }
+
                 // If the customer is not in the database
                 return false;
             }
@@ -357,8 +384,8 @@ namespace aksjeapp_backend.DAL
         {
             try
             {
-
-                var stockChange = await _db.StockChangeValues.FirstOrDefaultAsync(k => k.Symbol == symbol && k.Date == GetTodaysDate().ToString("yyyy-MM-dd"));
+                var stockChange = await _db.StockChangeValues.FirstOrDefaultAsync(k =>
+                    k.Symbol == symbol && k.Date == GetTodaysDate().ToString("yyyy-MM-dd"));
 
                 // Returns stockChange if its already in the database. If not it will access the API
                 if (stockChange != null)
@@ -367,11 +394,22 @@ namespace aksjeapp_backend.DAL
                 }
 
 
-                var date = GetTodaysDate().AddDays(-7); ;
+                var date = GetTodaysDate().AddDays(-1);
+
+                if (date.DayOfWeek.Equals(DayOfWeek.Saturday))
+                {
+                    date = date.AddDays(2);
+                }
+
+                if (date.DayOfWeek.Equals(DayOfWeek.Sunday))
+                {
+                    date = date.AddDays(1);
+                }
 
                 var fromDate = date.ToString("yyyy-MM-dd");
 
-                var stockPrice1 = await PolygonAPI.GetStockPrices(symbol, fromDate, GetTodaysDate().ToString("yyyy-MM-dd"), 1);
+                var stockPrice1 =
+                    await PolygonAPI.GetStockPrices(symbol, fromDate, GetTodaysDate().ToString("yyyy-MM-dd"), 1);
 
                 if (stockPrice1.results == null)
                 {
@@ -379,7 +417,14 @@ namespace aksjeapp_backend.DAL
                 }
                 List<Models.Results> results = stockPrice1.results;
 
-                double change = ((results.Last().ClosePrice - results.First().ClosePrice) / results.Last().ClosePrice) * 100;
+                    Console.WriteLine(stockPrice1.results);
+
+                    double res1 = results[^1].ClosePrice;
+                    double res2 = results[^2].ClosePrice;
+                    double resDiff = res1 - res2;
+                    double resAvg = (res1 + res2) / 2;
+                    double change = (resDiff / ((resAvg) / 2) * 100) / 2;
+                    Console.WriteLine(change);
 
                 stockChange = new StockChangeValue()
                 {
@@ -430,7 +475,6 @@ namespace aksjeapp_backend.DAL
                         Name = stock.Name,
                         Value = myStock.Value,
                         Change = myStock.Change
-
                     };
                     list.Add(stockObject);
                 }
@@ -630,13 +674,18 @@ namespace aksjeapp_backend.DAL
 
         public async Task<List<StockChangeValue>> GetWinners()
         {
-            var Winners = await _db.StockChangeValues.OrderByDescending(k => k.Change).Where(k => k.Date == GetTodaysDate().ToString("yyyy-MM-dd") && k.Change > 0).Take(7).ToListAsync();
+            await GetStockOverview();
+            var Winners = await _db.StockChangeValues.OrderByDescending(k => k.Change)
+                .Where(k => k.Date == GetTodaysDate().ToString("yyyy-MM-dd") && k.Change > 0).Take(7).ToListAsync();
 
             return Winners;
         }
+
         public async Task<List<StockChangeValue>> GetLosers()
         {
-            var Losers = await _db.StockChangeValues.OrderBy(k => k.Change).Where(k => k.Date == GetTodaysDate().ToString("yyyy-MM-dd") && k.Change < 0).Take(7).ToListAsync();
+            await GetStockOverview();
+            var Losers = await _db.StockChangeValues.OrderBy(k => k.Change)
+                .Where(k => k.Date == GetTodaysDate().ToString("yyyy-MM-dd") && k.Change < 0).Take(7).ToListAsync();
 
             return Losers;
         }
@@ -673,5 +722,4 @@ namespace aksjeapp_backend.DAL
         }
 
     }
-
 }

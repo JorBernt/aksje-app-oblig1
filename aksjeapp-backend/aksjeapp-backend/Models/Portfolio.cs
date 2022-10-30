@@ -11,7 +11,7 @@ namespace aksjeapp_backend.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int PortfolioId { get; set; }
 
-        [NotNull]
+        
         public string SocialSecurityNumber { get; set; }
 
         public virtual List<PortfolioList> StockPortfolio { get; set; }
@@ -28,9 +28,5 @@ namespace aksjeapp_backend.Models
                 this.value = Math.Round(value, 2);
             }
         }
-        public string LastUpdated { get; set; }
-
-        [ForeignKey("PortfolioList")]
-        public int PortfolioListId { get; set; }
     }
 }

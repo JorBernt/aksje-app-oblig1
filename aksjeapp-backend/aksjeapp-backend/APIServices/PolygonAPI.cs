@@ -24,7 +24,6 @@ namespace aksjeapp_backend.DAL
 
 
                     }
-                    Console.WriteLine(json);
                     if (json.Contains("error"))
                     {
                         if(json.Contains("could not parse"))
@@ -32,7 +31,7 @@ namespace aksjeapp_backend.DAL
                             return null;
                         }
                         Console.WriteLine("API cooldown");
-                        Thread.Sleep(10000);
+                        Thread.Sleep(5000);
 
                         return await GetStockPrices(symbol, fromDate, toDate, interval); // Starts over
                     }
@@ -66,7 +65,6 @@ namespace aksjeapp_backend.DAL
 
                     }
 
-                    Console.WriteLine(json);
 
                     // Checks if the API returns a bad response
                     if (json.Contains("error"))
@@ -106,7 +104,6 @@ namespace aksjeapp_backend.DAL
 
                     }
 
-                    Console.WriteLine(json);
 
                     // Checks if the API returns a bad response
                     if (json.Contains("error"))

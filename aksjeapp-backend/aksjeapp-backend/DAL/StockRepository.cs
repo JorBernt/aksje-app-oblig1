@@ -139,17 +139,15 @@ namespace aksjeapp_backend.DAL
                 }
 
                 // Finds the stock we want to sell
-                var portfolio = await _db.Portfolios.FirstOrDefaultAsync(k => k.SocialSecurityNumber == socialSecurityNumber && k.LastUpdated == GetTodaysDate().ToString("yyyy-MM-dd"));
+                var portfolio = await _db.Portfolios.FirstOrDefaultAsync(k => k.SocialSecurityNumber == socialSecurityNumber);
                 if (portfolio == null)
                 {
-                    Console.WriteLine("Finner ikke portfolio");
                     return false;
                 }
 
                 var portfolioList = await _db.PortfolioList.FirstOrDefaultAsync(k => k.PortfolioId == portfolio.PortfolioId && k.Symbol == symbol);
                 if (portfolioList == null)
                 {
-                    Console.WriteLine("Finner ikke portfolioListe");
                     return false;
                 }
                 // If we does not have enough of that stock
@@ -189,7 +187,6 @@ namespace aksjeapp_backend.DAL
             }
             catch
             {
-                Console.WriteLine("Noe annet som er feil");
                 return false;
             }
 
@@ -453,14 +450,11 @@ namespace aksjeapp_backend.DAL
                 }
                 List<Models.Results> results = stockPrice1.results;
 
-                    Console.WriteLine(stockPrice1.results);
-
                     double res1 = results[^1].ClosePrice;
                     double res2 = results[^2].ClosePrice;
                     double resDiff = res1 - res2;
                     double resAvg = (res1 + res2) / 2;
                     double change = (resDiff / ((resAvg) / 2) * 100) / 2;
-                    Console.WriteLine(change);
 
                 stockChange = new StockChangeValue()
                 {
@@ -487,7 +481,6 @@ namespace aksjeapp_backend.DAL
             }
             catch
             {
-                Console.WriteLine("Returnerer null");
                 return null;
             }
         }
@@ -546,13 +539,11 @@ namespace aksjeapp_backend.DAL
                 {
                     portfolio = new Portfolio();
                     portfolio.SocialSecurityNumber = socialSecurityNumber;
-                    portfolio.LastUpdated = GetTodaysDate().ToString("yyyy-MM-dd");
                     await _db.Portfolios.AddAsync(portfolio);
                 }
 
                 // Resets portfolio value
                 portfolio.Value = 0;
-                portfolio.LastUpdated = GetTodaysDate().ToString("yyyy-MM-dd");
 
                 var portfolioList = await _db.PortfolioList.Where(k => k.PortfolioId == portfolio.PortfolioId).ToListAsync();
 
@@ -577,7 +568,6 @@ namespace aksjeapp_backend.DAL
                     // Sums the amount of stocks if found
                     if (index >= 0)
                     {
-                        Console.WriteLine(transaction.Amount);
                         portfolioList[index].Amount += transaction.Amount;
                         portfolioList[index].Value += stockChange.Value * transaction.Amount;
                     }
@@ -673,7 +663,7 @@ namespace aksjeapp_backend.DAL
                 // Runs UpdatePortfolio to update it
                 await UpdatePortfolio(socialSecurityNumber);
 
-                var portofolio = await _db.Portfolios.FirstOrDefaultAsync(k => k.SocialSecurityNumber == socialSecurityNumber && k.LastUpdated == GetTodaysDate().ToString("yyyy-MM-dd"));
+                var portofolio = await _db.Portfolios.FirstOrDefaultAsync(k => k.SocialSecurityNumber == socialSecurityNumber);
                 var portofolioList = await _db.PortfolioList.ToListAsync();
 
                 // Adds portfoliolist to portfolio
@@ -742,20 +732,22 @@ namespace aksjeapp_backend.DAL
         public static DateTime GetTodaysDate()
         {
             //DateTime date1 = DateTime.Now;
-            //date1 = date1.AddMonths(-1);//Uses one month old data since polygon cant get todays date
-            var date1 = new DateTime(2022, 09, 25);
+            //date1 = date.AddDays(-1)
+
+
+            var date = new DateTime(2022, 09, 20);  // Using fixed date since it takes a couple of minutes to get the stock change
 
             // If day of week is a weekend then the last price if from friday
-            if (date1.DayOfWeek.Equals(DayOfWeek.Saturday))
+            if (date.DayOfWeek.Equals(DayOfWeek.Saturday))
             {
-                date1 = date1.AddDays(-1);
+                date = date.AddDays(-1);
             }
-            if (date1.DayOfWeek.Equals(DayOfWeek.Sunday))
+            if (date.DayOfWeek.Equals(DayOfWeek.Sunday))
             {
-                date1 = date1.AddDays(-2);
+                date = date.AddDays(-2);
             }
 
-            return date1;
+            return date;
 
         }
 

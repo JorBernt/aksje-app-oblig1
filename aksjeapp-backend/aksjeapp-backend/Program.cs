@@ -33,7 +33,7 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
 
-//InitDb.Initialize(app);
+InitDb.Initialize(app);
 
 
 app.Run();

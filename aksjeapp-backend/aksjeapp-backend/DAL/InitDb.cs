@@ -15,14 +15,14 @@ namespace aksjeapp_backend.DAL
 
             // Translates the JSON file to a list and adds the list to the database
 
-            /*using (StreamReader r = new StreamReader("stockChangeValuesSheet.json"))
+            using (StreamReader r = new StreamReader("StockChangeValuesSheet.json"))
             {
                 string json = r.ReadToEnd();
                 List<StockChangeValue> stockList = JsonConvert.DeserializeObject<List<StockChangeValue>>(json);
 
                 context.StockChangeValues.AddRange(stockList);
             }
-            */
+
             using (StreamReader r = new StreamReader("nasdaqSheet.json"))
             {
                 string json = r.ReadToEnd();

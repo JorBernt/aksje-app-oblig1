@@ -58,45 +58,6 @@ namespace aksjeapp_backend.DAL
             return stock;
         }
 
-        /* public async Task<bool> BuyStock2(string socialSecurityNumber, string symbol, int number)
-         {
-             // Gets todays date
-             string date = GetTodaysDate().ToString("yyyy-MM-dd");
-
-             try
-             {
-                 //Get todays price and and set the todays date
-                 var stockPrice = await PolygonAPI.GetOpenClosePrice(symbol, date);
-
-                 double totalPrice = stockPrice.ClosePrice * number;
-                 //Creates transaction
-                 var stockTransaction = new Transaction
-                 {
-                     Date = date,
-                     SocialSecurityNumber = socialSecurityNumber,
-                     Symbol = symbol,
-                     Amount = number,
-                     TotalPrice = totalPrice
-                 };
-
-                 var customer = await _db.Customers.FindAsync(socialSecurityNumber);
-
-                 if (customer == null)
-                 {
-                     return false;
-                 }
-                 customer.Transactions.Add(stockTransaction);
-                 customer.Balance -= stockTransaction.TotalPrice - 5; //5 dollars in brokerage fee
-                 await _db.SaveChangesAsync();
-
-                 return true;
-             }
-             catch
-             {
-                 return false;
-             }
-
-         }*/
         public async Task<bool> BuyStock(string socialSecurityNumber, string symbol, int number)
         {
             // Gets todays date
@@ -271,6 +232,25 @@ namespace aksjeapp_backend.DAL
 
                 }
 
+                // Lists all the transactions that is sold too, just as negative number
+                var transactionsfromDbSold = await _db.TransactionsSold.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
+
+                foreach (var transactionDBSold in transactionsfromDbSold)
+                {
+                    var transaction1 = new Transaction
+                    {
+                        Id = transactionDBSold.SoldId,
+                        SocialSecurityNumber = transactionDBSold.SocialSecurityNumber,
+                        Date = transactionDBSold.Date,
+                        Symbol = transactionDBSold.Symbol,
+                        Amount = -transactionDBSold.Amount,
+                        TotalPrice = transactionDBSold.TotalPrice
+                    };
+
+                    transactions.Add(transaction1);
+
+                }
+
                 return transactions;
             }
             return null;
@@ -308,7 +288,7 @@ namespace aksjeapp_backend.DAL
                     return false;
                 }
                 var transaction = await _db.TransactionsBought.FindAsync(changeTransaction.Id);
-                if (GetTodaysDate().ToString("yyyy-MM-dd") == transaction.Date)
+                if (transaction.Date.Equals(GetTodaysDate().ToString("yyyy-MM-dd")))
                 {
                     //Removes transaction price from customers balance
                     customer.Balance += transaction.TotalPrice;
@@ -348,7 +328,7 @@ namespace aksjeapp_backend.DAL
                     }
 
                     // Deletes transaction that is still active
-                    if (GetTodaysDate().ToString("yyyy-MM-dd") == transaction.Date)
+                    if (transaction.Date.Equals(GetTodaysDate().ToString("yyyy-MM-dd")))
                     {
                         _db.TransactionsBought.Remove(transaction);
                         customer.Balance += transaction.TotalPrice + 5; //Updates balance for customer and refunds brokerage fee

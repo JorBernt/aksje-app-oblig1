@@ -136,7 +136,7 @@ namespace aksjeapp_backend.DAL
                 customer.Balance -= stockTransaction.TotalPrice - 5; //5 dollars in brokerage 
                 await _db.SaveChangesAsync();
 
-                await UpdatePortfolio(socialSecurityNumber);
+                //await UpdatePortfolio(socialSecurityNumber);
                 return true;
             }
             catch
@@ -145,83 +145,7 @@ namespace aksjeapp_backend.DAL
             }
 
         }
-        /*  public async Task<bool> SellStock2(string socialSecurityNumber, string symbol, int number)
-          {
-              OpenCloseStockPrice stockPrice;
-              int number1 = number;
-              try
-              {
-                  var customer = await _db.Customers.FindAsync(socialSecurityNumber);
-
-                  //Breaks if we cant find customer
-                  if (customer == null)
-                  {
-                      return false;
-                  }
-
-                  // Finds transactions
-                  List<Transaction> transactions = await _db.Transactions.Where(k => k.Symbol == symbol && k.IsActive == true).ToListAsync();
-
-                  stockPrice = await PolygonAPI.GetOpenClosePrice(symbol, GetTodaysDate().ToString("yyyy-MM-dd"));
-
-                  for (int i = 0; i < transactions.Count; i++)
-                  {
-
-                      if (transactions[i].Amount > number)
-                      {
-                          // Need to split transaction since we are not selling the same amount we bought.
-                          var transaction = new Transaction()
-                          {
-                              SocialSecurityNumber = transactions[i].SocialSecurityNumber,
-                              Date = GetTodaysDate().ToString("yyyy-MM-dd"),
-                              Symbol = transactions[i].Symbol,
-                              Amount = transactions[i].Amount - number
-                          };
-                          transaction.TotalPrice = stockPrice.ClosePrice * transaction.Amount; // Updates after since we need stock number to be updated
-
-                          transactions[i].IsActive = false;
-
-                          customer.Transactions.Add(transaction);
-                          number = 0;
-                          break;
-                      }
-                      else if (transactions[i].Amount < number)
-                      {
-                          var transaction = transactions[i];
-                          number -= transaction.Amount;
-                          transactions[i].IsActive = false;
-
-                      }
-                      else if (transactions[i].Amount == number)
-                      {
-                          transactions[i].IsActive = false;
-                          number = 0;
-                          break;
-                      }
-                      else
-                      {
-                          Console.WriteLine("Fault in sell stock method");
-                          return false;
-                      }
-
-                  }
-
-                  if (number == 0)
-                  {
-                      customer.Balance += stockPrice.ClosePrice * (double)number1;
-                      await _db.SaveChangesAsync();
-
-                      return true;
-                  }
-
-                  return false;
-              }
-              catch
-              {
-                  return false;
-              }
-          }
-  */
+        
         public async Task<bool> SellStock(string socialSecurityNumber, string symbol, int number)
         {
             int number1 = number;
@@ -230,6 +154,7 @@ namespace aksjeapp_backend.DAL
 
             try
             {
+                await UpdatePortfolio(socialSecurityNumber);
                 var customer = await _db.Customers.FindAsync(socialSecurityNumber);
                 //var portfolio = _db.Portfolios
 
@@ -239,18 +164,18 @@ namespace aksjeapp_backend.DAL
                     return false;
                 }
 
-                await UpdatePortfolio(socialSecurityNumber);
-
                 // Finds the stock we want to sell
                 var portfolio = await _db.Portfolios.FirstOrDefaultAsync(k => k.SocialSecurityNumber == socialSecurityNumber && k.LastUpdated == GetTodaysDate().ToString("yyyy-MM-dd"));
                 if (portfolio == null)
                 {
+                    Console.WriteLine("Finner ikke portfolio");
                     return false;
                 }
 
                 var portfolioList = await _db.PortfolioList.FirstOrDefaultAsync(k => k.PortfolioId == portfolio.PortfolioId && k.Symbol == symbol);
                 if (portfolioList == null)
                 {
+                    Console.WriteLine("Finner ikke portfolioListe");
                     return false;
                 }
                 // If we does not have enough of that stock
@@ -280,6 +205,7 @@ namespace aksjeapp_backend.DAL
                     TotalPrice = totalPrice
                 };
 
+                //customer.TransactionsSold.Add(stockTransaction);
                 await _db.TransactionsSold.AddAsync(stockTransaction);
                 customer.Balance += stockTransaction.TotalPrice;
 
@@ -289,6 +215,7 @@ namespace aksjeapp_backend.DAL
             }
             catch
             {
+                Console.WriteLine("Noe annet som er feil");
                 return false;
             }
 
@@ -573,8 +500,6 @@ namespace aksjeapp_backend.DAL
                 if (portfolioList == null)
                 {
                     portfolioList = new List<PortfolioList>();
-
-
                 }
 
                 // Sets amount and value to 0
@@ -653,7 +578,7 @@ namespace aksjeapp_backend.DAL
         }
 
 
-        public async Task<Customer?> GetCustomerPortofolio(string socialSecurityNumber)
+        public async Task<Customer> GetCustomerPortofolio(string socialSecurityNumber)
         {
             try
             {

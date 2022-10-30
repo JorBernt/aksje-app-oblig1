@@ -1,6 +1,7 @@
 import React, {useRef, useState} from 'react';
 import {Stock} from "../../models";
 import {API} from "../../../Constants";
+import {useNavigate} from "react-router-dom";
 
 type Props = {}
 
@@ -9,6 +10,16 @@ const SearchBar: React.FC<Props> = () => {
     const inputRef = useRef<HTMLInputElement>(null)
     const [input, setInput] = useState("")
     const [searchResult, setSearchResult] = useState(Array<Stock>)
+
+    let navigate = useNavigate();
+    const handleOnClick = (data: Stock) => {
+        setSearchResult([])
+        setInput("")
+        if (inputRef.current != null)
+            inputRef.current.value = ""
+        search()
+        navigate(`/singleStock?symbol=${data.symbol}&name=${data.name}`)
+    }
 
     const search = () => {
         let query = inputRef.current?.value;
@@ -23,7 +34,6 @@ const SearchBar: React.FC<Props> = () => {
                 .then(response => setSearchResult(() => [...response]))
             )
     }
-
     return (
         <>
             <div
@@ -43,12 +53,12 @@ const SearchBar: React.FC<Props> = () => {
                             {searchResult.map(data => {
                                 return (
                                     <div
-                                        className={"flex flex-row justify-between hover:bg-gradient-to-br hover:from-white hover:to-gray-200 hover:rounded-lg transition duration-150 ease-in-out group hover:animate-pulse"}>
-                                        <a href={`/singleStock?symbol=${data.symbol}&name=${data.name}`}
-                                           className="text-gray-700 block px-4 py-2 text-sm hover:scale-105 truncate w-96 group-hover:font-bold"
-                                           role="menuitem"
-                                           id="menu-item-0">{data.name}
-                                        </a>
+                                        className={"cursor-pointer flex flex-row justify-between hover:bg-gradient-to-br hover:from-white hover:to-gray-200 hover:rounded-lg transition duration-150 ease-in-out group hover:animate-pulse"}>
+                                        <div onClick={() => handleOnClick(data)}
+                                             className="text-gray-700 block px-4 py-2 text-sm hover:scale-105 truncate w-96 group-hover:font-bold"
+                                             role="menuitem"
+                                             id="menu-item-0">{data.name}
+                                        </div>
                                         <a href="#"
                                            className=" block px-4 py-2 text-sm text-green-500 font-bold group-hover:text-blue-700 group-hover:animate-spin"
                                            role="menuitem"

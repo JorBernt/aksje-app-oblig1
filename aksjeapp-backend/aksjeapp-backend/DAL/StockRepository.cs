@@ -54,7 +54,6 @@ namespace aksjeapp_backend.DAL
             stock.Sell = 100;
             stock.High = results[0].LowestPrice;
             stock.Low = results[0].HighestPrice;
-            stock.Turnover = 10000;
             return stock;
         }
 
@@ -666,6 +665,12 @@ namespace aksjeapp_backend.DAL
 
             return date1;
 
+        }
+
+        public async Task<String> GetStockName(string symbol)
+        {
+            var stock = await _db.Stocks.FindAsync(symbol);
+            return stock == null ? "" : stock.Name;
         }
 
 

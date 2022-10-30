@@ -1,0 +1,1465 @@
+[
+  {
+    "StockId": "2f2d3d08-cb24-4135-8962-a01f364f595b",
+    "Date": "2022-09-18",
+    "Symbol": "AAPL",
+    "Change": -8.44724618447247,
+    "Value": 150.7
+  },
+  {
+    "StockId": "e5e3122e-e6a8-43cd-99b2-ad95fae352d6",
+    "Date": "2022-09-18",
+    "Symbol": "ABMD",
+    "Change": -7.92128967410214,
+    "Value": 258.67
+  },
+  {
+    "StockId": "732d7afe-e137-4a24-aebf-50d365d64427",
+    "Date": "2022-09-18",
+    "Symbol": "ABNB",
+    "Change": -5.08631578947369,
+    "Value": 118.75
+  },
+  {
+    "StockId": "b95ffe91-03a6-44bf-8df4-e8ad5389092c",
+    "Date": "2022-09-18",
+    "Symbol": "ACGL",
+    "Change": -1.22527944969905,
+    "Value": 46.52
+  },
+  {
+    "StockId": "e68d0fb9-725d-4fa8-a007-f8dfa9781dc9",
+    "Date": "2022-09-18",
+    "Symbol": "ADBE",
+    "Change": -32.3405676126878,
+    "Value": 299.5
+  },
+  {
+    "StockId": "9d93bd4e-131f-4614-bdb4-7ed9406fa8af",
+    "Date": "2022-09-18",
+    "Symbol": "ADI",
+    "Change": -4.24619918290805,
+    "Value": 149.31
+  },
+  {
+    "StockId": "b6b7a09f-248d-4c5b-93d0-05047a306143",
+    "Date": "2022-09-18",
+    "Symbol": "ADP",
+    "Change": -4.41277178565314,
+    "Value": 233.64
+  },
+  {
+    "StockId": "8f40e71d-44a1-4978-b317-a9cdca4d6217",
+    "Date": "2022-09-18",
+    "Symbol": "ADSK",
+    "Change": -10.3554392983536,
+    "Value": 194.97
+  },
+  {
+    "StockId": "b3cab53e-f5c4-4969-8623-a4615ce72ea8",
+    "Date": "2022-09-18",
+    "Symbol": "AEP",
+    "Change": -4.80271024312476,
+    "Value": 100.36
+  },
+  {
+    "StockId": "d3997ccc-0534-4efe-a508-9c1bb79a8c26",
+    "Date": "2022-09-18",
+    "Symbol": "AKAM",
+    "Change": -6.82652592932538,
+    "Value": 87.16
+  },
+  {
+    "StockId": "4e760032-13ab-49fb-813a-345a2cb58063",
+    "Date": "2022-09-18",
+    "Symbol": "ALGN",
+    "Change": -7.53754718496507,
+    "Value": 249.02
+  },
+  {
+    "StockId": "cd7e546f-aba4-4c73-8d25-e5d5cba8cfd4",
+    "Date": "2022-09-18",
+    "Symbol": "ALNY",
+    "Change": 0.469483568075117,
+    "Value": 213
+  },
+  {
+    "StockId": "ca716e49-e3c5-4770-b179-f22c169c1c9a",
+    "Date": "2022-09-18",
+    "Symbol": "AMAT",
+    "Change": -8.36052661190502,
+    "Value": 88.87
+  },
+  {
+    "StockId": "746d8e63-2de4-4de0-8d1b-d8aefe27637d",
+    "Date": "2022-09-18",
+    "Symbol": "AMD",
+    "Change": -10.6260619526859,
+    "Value": 76.51
+  },
+  {
+    "StockId": "c46ca3a1-62eb-4556-a56f-e387f14e59e3",
+    "Date": "2022-09-18",
+    "Symbol": "AMGN",
+    "Change": -2.80349571688155,
+    "Value": 231.14
+  },
+  {
+    "StockId": "96449346-e69e-4349-a12a-a99ba2d4b225",
+    "Date": "2022-09-18",
+    "Symbol": "AMZN",
+    "Change": -10.4589978142961,
+    "Value": 123.53
+  },
+  {
+    "StockId": "bb0cb3d6-9aed-40e1-a23f-d5299aea901d",
+    "Date": "2022-09-18",
+    "Symbol": "ANSS",
+    "Change": -8.59018027747778,
+    "Value": 240.74
+  },
+  {
+    "StockId": "af06832f-ceec-4ce9-8eee-a2325ae1b87c",
+    "Date": "2022-09-18",
+    "Symbol": "APA",
+    "Change": 1.13692535837865,
+    "Value": 40.46
+  },
+  {
+    "StockId": "d6f0262a-ba6e-4825-b983-957da6ef28e8",
+    "Date": "2022-09-18",
+    "Symbol": "ARGX",
+    "Change": -4.04543749665113,
+    "Value": 373.26
+  },
+  {
+    "StockId": "d84e5555-e58e-4734-9936-b1421eebfec4",
+    "Date": "2022-09-18",
+    "Symbol": "ASML",
+    "Change": -8.06420545746389,
+    "Value": 467.25
+  },
+  {
+    "StockId": "c75f8f1a-1d1d-4b7b-9b1b-dce193b74e31",
+    "Date": "2022-09-18",
+    "Symbol": "ATVI",
+    "Change": -2.77558537227045,
+    "Value": 76.02
+  },
+  {
+    "StockId": "4db65450-2707-4bcb-a666-81a6c9d02606",
+    "Date": "2022-09-18",
+    "Symbol": "AVGO",
+    "Change": -5.28557213930347,
+    "Value": 502.5
+  },
+  {
+    "StockId": "7005d310-f844-45db-93af-c829b5fa3c82",
+    "Date": "2022-09-18",
+    "Symbol": "AZN",
+    "Change": -6.37381567614126,
+    "Value": 58.05
+  },
+  {
+    "StockId": "ddf8a710-2fe3-44c4-8cce-00da5653c91d",
+    "Date": "2022-09-18",
+    "Symbol": "AZPN",
+    "Change": 0.326898440606091,
+    "Value": 226.37
+  },
+  {
+    "StockId": "f9512c7a-c13d-43ff-9e30-4ef61007e00b",
+    "Date": "2022-09-18",
+    "Symbol": "BGNE",
+    "Change": -10.6053854478325,
+    "Value": 157.09
+  },
+  {
+    "StockId": "52f1d975-1a54-4570-b22a-e77d7dc00b78",
+    "Date": "2022-09-18",
+    "Symbol": "BIDU",
+    "Change": -12.8304632549115,
+    "Value": 123.69
+  },
+  {
+    "StockId": "4d3ba2d4-77a9-4443-acb0-6a9405af26bd",
+    "Date": "2022-09-18",
+    "Symbol": "BIIB",
+    "Change": -2.21838087006627,
+    "Value": 208.26
+  },
+  {
+    "StockId": "31ef1cbb-0502-4526-a182-1d17934fc6e1",
+    "Date": "2022-09-18",
+    "Symbol": "BKNG",
+    "Change": -7.29409256841375,
+    "Value": 1876.45
+  },
+  {
+    "StockId": "17f27ccf-2cba-43ca-b6cb-39bbc361ce88",
+    "Date": "2022-09-18",
+    "Symbol": "BKR",
+    "Change": -6.97478991596639,
+    "Value": 23.8
+  },
+  {
+    "StockId": "7a13c761-612d-4fb8-b1cb-913f60410c7b",
+    "Date": "2022-09-18",
+    "Symbol": "BMRN",
+    "Change": -2.301326380229,
+    "Value": 88.21
+  },
+  {
+    "StockId": "88a5a80d-5f9b-4619-af77-4553a7f8f8a3",
+    "Date": "2022-09-18",
+    "Symbol": "BNTX",
+    "Change": -1.72200878155874,
+    "Value": 145.76
+  },
+  {
+    "StockId": "c58f5e49-b191-4d22-85ac-bab247d2783e",
+    "Date": "2022-09-18",
+    "Symbol": "CCEP",
+    "Change": -6.06574761399788,
+    "Value": 47.15
+  },
+  {
+    "StockId": "0760634a-4ce2-4394-a45b-bb59ad794305",
+    "Date": "2022-09-18",
+    "Symbol": "CDNS",
+    "Change": -6.54410421866439,
+    "Value": 164.27
+  },
+  {
+    "StockId": "c472ea7e-ea73-4277-9349-2cf1860370b8",
+    "Date": "2022-09-18",
+    "Symbol": "CDW",
+    "Change": -4.0683720657964,
+    "Value": 170.83
+  },
+  {
+    "StockId": "f22f3876-3c21-4647-b50a-46c781408c98",
+    "Date": "2022-09-18",
+    "Symbol": "CEG",
+    "Change": -2.99170269954424,
+    "Value": 85.57
+  },
+  {
+    "StockId": "00403be8-f8c3-4aa8-9b56-ab5f8cfd96ef",
+    "Date": "2022-09-18",
+    "Symbol": "CHK",
+    "Change": -3.23125869954265,
+    "Value": 100.58
+  },
+  {
+    "StockId": "f721e250-1345-47d6-a0a9-7e36b65cebc7",
+    "Date": "2022-09-18",
+    "Symbol": "CHKP",
+    "Change": -5.43283582089553,
+    "Value": 117.25
+  },
+  {
+    "StockId": "7f35468a-76cd-4a5b-9570-f6b62a2bc699",
+    "Date": "2022-09-18",
+    "Symbol": "CHRW",
+    "Change": -9.40360343000288,
+    "Value": 103.79
+  },
+  {
+    "StockId": "e2d8ca44-0a8a-4220-a367-dada2feccd77",
+    "Date": "2022-09-18",
+    "Symbol": "CHTR",
+    "Change": -7.64606176174586,
+    "Value": 377.58
+  },
+  {
+    "StockId": "363db69d-8d76-41f3-be8a-e38c7057b43b",
+    "Date": "2022-09-18",
+    "Symbol": "CINF",
+    "Change": -5.3485268452931,
+    "Value": 97.41
+  },
+  {
+    "StockId": "dbc44c15-d9c7-4377-a19b-c45ff8ac52fe",
+    "Date": "2022-09-18",
+    "Symbol": "CMCSA",
+    "Change": -3.38933951332559,
+    "Value": 34.52
+  },
+  {
+    "StockId": "a59b2082-d770-4064-afba-e06ef4bfe8b7",
+    "Date": "2022-09-18",
+    "Symbol": "CME",
+    "Change": -4.51555648360827,
+    "Value": 191.56
+  },
+  {
+    "StockId": "f8620689-ddfd-4d55-bf51-63d8e05e2069",
+    "Date": "2022-09-18",
+    "Symbol": "COIN",
+    "Change": -11.554054054054,
+    "Value": 74
+  },
+  {
+    "StockId": "c84b7a0d-342f-41f5-8d8e-4188821273e3",
+    "Date": "2022-09-18",
+    "Symbol": "COST",
+    "Change": -7.01789185543698,
+    "Value": 504.14
+  },
+  {
+    "StockId": "3440c49f-ea4e-484d-92fe-5fa86c0f0ccb",
+    "Date": "2022-09-18",
+    "Symbol": "CPRT",
+    "Change": -6.26702997275205,
+    "Value": 110.1
+  },
+  {
+    "StockId": "42de579f-fe26-41a3-ade7-c5d312495aea",
+    "Date": "2022-09-18",
+    "Symbol": "CRWD",
+    "Change": -14.0868955031869,
+    "Value": 171.01
+  },
+  {
+    "StockId": "5b6b6a32-94cb-4f12-b690-6f2d5d543413",
+    "Date": "2022-09-18",
+    "Symbol": "CSCO",
+    "Change": -7.1593533487298,
+    "Value": 43.3
+  },
+  {
+    "StockId": "519eada7-0a78-425c-9e52-03d34b8d7d0e",
+    "Date": "2022-09-18",
+    "Symbol": "CSGP",
+    "Change": -11.3413768630234,
+    "Value": 70.45
+  },
+  {
+    "StockId": "2072319b-02c9-4136-bb0b-431a7c855d0a",
+    "Date": "2022-09-18",
+    "Symbol": "CSX",
+    "Change": -11.3597829772805,
+    "Value": 29.49
+  },
+  {
+    "StockId": "c0dd0cab-a1b9-43a7-b627-4a7ac1ee3119",
+    "Date": "2022-09-18",
+    "Symbol": "CTAS",
+    "Change": -6.07919273860462,
+    "Value": 404.33
+  },
+  {
+    "StockId": "2b77aaf1-ffbb-4dbd-8066-0f7ac18e20b4",
+    "Date": "2022-09-18",
+    "Symbol": "CTSH",
+    "Change": -6.62379421221863,
+    "Value": 62.2
+  },
+  {
+    "StockId": "a95163fa-747b-472a-bbae-174ab95b6c3c",
+    "Date": "2022-09-18",
+    "Symbol": "CTXS",
+    "Change": -0.135226504394862,
+    "Value": 103.53
+  },
+  {
+    "StockId": "037ac37d-582a-4dbf-b974-23ce45bee9ee",
+    "Date": "2022-09-18",
+    "Symbol": "DDOG",
+    "Change": -14.4,
+    "Value": 91.25
+  },
+  {
+    "StockId": "d7355513-f745-4aaf-b8af-71a27f3fbf72",
+    "Date": "2022-09-18",
+    "Symbol": "DLTR",
+    "Change": -2.69870349492673,
+    "Value": 141.92
+  },
+  {
+    "StockId": "7ef27455-acb9-41b7-bcde-c7a6c0e191b6",
+    "Date": "2022-09-18",
+    "Symbol": "DOCU",
+    "Change": -16.0480735242135,
+    "Value": 56.58
+  },
+  {
+    "StockId": "316451ef-d552-4f91-8257-c6b43708fa84",
+    "Date": "2022-09-18",
+    "Symbol": "DXCM",
+    "Change": -4.53990453990454,
+    "Value": 90.09
+  },
+  {
+    "StockId": "d689caad-d7c8-420c-8669-742c2fae7c14",
+    "Date": "2022-09-18",
+    "Symbol": "EA",
+    "Change": -7.48316083456547,
+    "Value": 121.74
+  },
+  {
+    "StockId": "171bc9d3-235c-4164-adb9-35ac82394174",
+    "Date": "2022-09-18",
+    "Symbol": "EBAY",
+    "Change": -8.38095238095239,
+    "Value": 42
+  },
+  {
+    "StockId": "05fda6e9-afd8-408a-83fa-55e767e67af5",
+    "Date": "2022-09-18",
+    "Symbol": "ENPH",
+    "Change": 2.85525612402125,
+    "Value": 318.01
+  },
+  {
+    "StockId": "6ffe848e-d4aa-4d12-9cc8-a341d9a13167",
+    "Date": "2022-09-18",
+    "Symbol": "ENTG",
+    "Change": -10.8081896551724,
+    "Value": 92.8
+  },
+  {
+    "StockId": "029c4751-9a89-4256-9c27-360faabe221e",
+    "Date": "2022-09-18",
+    "Symbol": "EQIX",
+    "Change": -6.51780712284914,
+    "Value": 624.75
+  },
+  {
+    "StockId": "b1a01415-7801-47b8-beed-fdf9b58a2b9c",
+    "Date": "2022-09-18",
+    "Symbol": "ERIC",
+    "Change": -10.5185185185185,
+    "Value": 6.75
+  },
+  {
+    "StockId": "fcb478c6-0b71-426b-9cb3-71576fdc2556",
+    "Date": "2022-09-18",
+    "Symbol": "ERIE",
+    "Change": -0.87863061094419,
+    "Value": 219.66
+  },
+  {
+    "StockId": "721f407d-9f8c-41db-a147-1a754eb90a67",
+    "Date": "2022-09-18",
+    "Symbol": "ETSY",
+    "Change": -5.60029621401462,
+    "Value": 108.03
+  },
+  {
+    "StockId": "d9043833-0037-4691-b770-0fb4f1a8115a",
+    "Date": "2022-09-18",
+    "Symbol": "EXC",
+    "Change": -6.71140939597315,
+    "Value": 43.21
+  },
+  {
+    "StockId": "f142bafa-5296-40b5-be07-80fb081d313a",
+    "Date": "2022-09-18",
+    "Symbol": "EXPD",
+    "Change": -12.6818230794095,
+    "Value": 92.81
+  },
+  {
+    "StockId": "fbe66af0-0c9a-4454-8189-2c7186eaed7e",
+    "Date": "2022-09-18",
+    "Symbol": "EXPE",
+    "Change": -9.6672882520365,
+    "Value": 101.89
+  },
+  {
+    "StockId": "caae838f-a01a-4794-a762-7f53bd001d68",
+    "Date": "2022-09-18",
+    "Symbol": "FANG",
+    "Change": -3.58166189111748,
+    "Value": 132.62
+  },
+  {
+    "StockId": "8771d868-a927-4661-bf56-5717449b7c6d",
+    "Date": "2022-09-18",
+    "Symbol": "FAST",
+    "Change": -7.20016891891893,
+    "Value": 47.36
+  },
+  {
+    "StockId": "4ef267fb-f39c-4d8f-97df-a05718e165c1",
+    "Date": "2022-09-18",
+    "Symbol": "FCNCA",
+    "Change": -4.49557821894772,
+    "Value": 826.59
+  },
+  {
+    "StockId": "9e763c98-16a8-4282-9d3a-bc49172f8fda",
+    "Date": "2022-09-18",
+    "Symbol": "FISV",
+    "Change": -5.25045844995657,
+    "Value": 103.61
+  },
+  {
+    "StockId": "9a420cef-b853-4754-b054-051a449c7398",
+    "Date": "2022-09-18",
+    "Symbol": "FITB",
+    "Change": -4.25349700256923,
+    "Value": 35.03
+  },
+  {
+    "StockId": "9b2dde74-bf28-442c-a7e6-9e2f0ae9e4c6",
+    "Date": "2022-09-18",
+    "Symbol": "FOX",
+    "Change": -3.55883295928181,
+    "Value": 31.19
+  },
+  {
+    "StockId": "86c9a27a-7dc2-49c4-8e32-02ed02fc7cd6",
+    "Date": "2022-09-18",
+    "Symbol": "FOXA",
+    "Change": -3.35610335610334,
+    "Value": 33.67
+  },
+  {
+    "StockId": "996ae812-8c99-4177-bf87-cfd0d5cffb76",
+    "Date": "2022-09-18",
+    "Symbol": "FSLR",
+    "Change": -0.721596347838885,
+    "Value": 135.81
+  },
+  {
+    "StockId": "6334ae82-d21d-44d1-967f-1c8a0a3d2d5d",
+    "Date": "2022-09-18",
+    "Symbol": "FTNT",
+    "Change": -10.7497024990083,
+    "Value": 50.42
+  },
+  {
+    "StockId": "7acbfeb4-a7a4-4d5b-9629-d22c750f8732",
+    "Date": "2022-09-18",
+    "Symbol": "FWONA",
+    "Change": -8.84425651867513,
+    "Value": 56.76
+  },
+  {
+    "StockId": "ee965b4a-ed54-4771-8a0b-284165fb675d",
+    "Date": "2022-09-18",
+    "Symbol": "FWONK",
+    "Change": -8.17399617590823,
+    "Value": 62.76
+  },
+  {
+    "StockId": "99efd83d-c381-4a52-a208-b579fa8ef34f",
+    "Date": "2022-09-18",
+    "Symbol": "GFS",
+    "Change": -4.73876063183476,
+    "Value": 57.61
+  },
+  {
+    "StockId": "fc22e818-9138-4ce9-9239-4e09b6136997",
+    "Date": "2022-09-18",
+    "Symbol": "GILD",
+    "Change": -3.67378048780489,
+    "Value": 65.6
+  },
+  {
+    "StockId": "3b0b612f-1693-4788-9da9-2b651ec068cd",
+    "Date": "2022-09-18",
+    "Symbol": "GLPI",
+    "Change": -3.12179092216061,
+    "Value": 48.69
+  },
+  {
+    "StockId": "d0cd33e2-6ac9-4d45-b98a-0eb867ff5922",
+    "Date": "2022-09-18",
+    "Symbol": "GMAB",
+    "Change": -2.33132199670873,
+    "Value": 36.46
+  },
+  {
+    "StockId": "76ae3998-1a53-4f83-be53-67b21a5af1ef",
+    "Date": "2022-09-18",
+    "Symbol": "GOOG",
+    "Change": -7.95136543471968,
+    "Value": 103.63
+  },
+  {
+    "StockId": "31f6462b-93ad-4bdd-9a5a-c0b624ef1300",
+    "Date": "2022-09-18",
+    "Symbol": "GOOGL",
+    "Change": -7.84046692607004,
+    "Value": 102.8
+  },
+  {
+    "StockId": "1da081ba-6114-4783-86b0-f7df5ee537c7",
+    "Date": "2022-09-18",
+    "Symbol": "HBAN",
+    "Change": -5.47045951859956,
+    "Value": 13.71
+  },
+  {
+    "StockId": "432a3a48-4f12-49d4-8a0a-b9c2aba922cb",
+    "Date": "2022-09-18",
+    "Symbol": "HOLX",
+    "Change": -4.62436396288537,
+    "Value": 66.82
+  },
+  {
+    "StockId": "5bc7b564-1383-4813-ae17-b80a6fe13d61",
+    "Date": "2022-09-18",
+    "Symbol": "HON",
+    "Change": -8.27741753594587,
+    "Value": 177.35
+  },
+  {
+    "StockId": "55cf83e4-c663-4cb0-8fe3-dac66ac52158",
+    "Date": "2022-09-18",
+    "Symbol": "HST",
+    "Change": -4.0517726505346,
+    "Value": 17.77
+  },
+  {
+    "StockId": "efa8aa86-5ba4-46ca-9800-2b15496ec74c",
+    "Date": "2022-09-18",
+    "Symbol": "HTHT",
+    "Change": -2.13783403656823,
+    "Value": 35.55
+  },
+  {
+    "StockId": "09a9868a-af4a-4787-92b1-657c06f4b396",
+    "Date": "2022-09-18",
+    "Symbol": "HZNP",
+    "Change": -6.41557612511971,
+    "Value": 62.66
+  },
+  {
+    "StockId": "991698b1-8c17-4279-9e61-53c2552e8e6a",
+    "Date": "2022-09-18",
+    "Symbol": "ICLR",
+    "Change": -13.9371118392097,
+    "Value": 204.49
+  },
+  {
+    "StockId": "7c330df9-eb9a-4b71-8b7c-a9544226a4b8",
+    "Date": "2022-09-18",
+    "Symbol": "IDXX",
+    "Change": -9.93402615600186,
+    "Value": 342.56
+  },
+  {
+    "StockId": "63971e50-49c4-4063-8b5b-2dc5e630277f",
+    "Date": "2022-09-18",
+    "Symbol": "IEP",
+    "Change": -0.444272744832909,
+    "Value": 51.77
+  },
+  {
+    "StockId": "b1af941e-afed-48e9-8c3a-ead876533faf",
+    "Date": "2022-09-18",
+    "Symbol": "ILMN",
+    "Change": -6.30878527116271,
+    "Value": 199.88
+  },
+  {
+    "StockId": "bfbb0942-0bca-42a3-811d-bf2c82a14bfe",
+    "Date": "2022-09-18",
+    "Symbol": "INCY",
+    "Change": -2.46985326165916,
+    "Value": 68.83
+  },
+  {
+    "StockId": "4c5f2524-3e97-4f61-b96a-a11080a975df",
+    "Date": "2022-09-18",
+    "Symbol": "INTC",
+    "Change": -7.9343365253078,
+    "Value": 29.24
+  },
+  {
+    "StockId": "45de5c1d-f420-412f-886b-e58be2ffea66",
+    "Date": "2022-09-18",
+    "Symbol": "INTU",
+    "Change": -7.65248226950355,
+    "Value": 423
+  },
+  {
+    "StockId": "2fce33d9-916b-4e72-b214-f40a08c1d0b9",
+    "Date": "2022-09-18",
+    "Symbol": "ISRG",
+    "Change": -7.63040527438434,
+    "Value": 206.28
+  },
+  {
+    "StockId": "37d626da-abc0-4742-b07b-01e38c0db6b9",
+    "Date": "2022-09-18",
+    "Symbol": "JBHT",
+    "Change": -4.8597344866943,
+    "Value": 166.47
+  },
+  {
+    "StockId": "2046742f-7364-4570-af53-33aadc42173e",
+    "Date": "2022-09-18",
+    "Symbol": "JD",
+    "Change": -11.5947263861297,
+    "Value": 55.37
+  },
+  {
+    "StockId": "ce85b6b3-e3c2-4fb7-ae10-a21db7cf05a5",
+    "Date": "2022-09-18",
+    "Symbol": "JKHY",
+    "Change": -4.49467529755689,
+    "Value": 191.56
+  },
+  {
+    "StockId": "9e0fec28-2bc7-4123-a3fa-b3e914d61252",
+    "Date": "2022-09-18",
+    "Symbol": "KDP",
+    "Change": -4.95022867904223,
+    "Value": 37.17
+  },
+  {
+    "StockId": "c49056ca-8381-4262-ad90-edd75e376b7c",
+    "Date": "2022-09-18",
+    "Symbol": "KHC",
+    "Change": -5.81964851627772,
+    "Value": 34.71
+  },
+  {
+    "StockId": "44d2b55d-8475-4d07-b5bc-04567b97e009",
+    "Date": "2022-09-18",
+    "Symbol": "KLAC",
+    "Change": -6.53890859237626,
+    "Value": 335.53
+  },
+  {
+    "StockId": "9a1d9a7f-826b-4fe3-b4e5-4b98200d69d4",
+    "Date": "2022-09-18",
+    "Symbol": "LBRDA",
+    "Change": -7.799016930639,
+    "Value": 91.55
+  },
+  {
+    "StockId": "0b37aa80-36f4-4fb6-8209-215847582565",
+    "Date": "2022-09-18",
+    "Symbol": "LBRDK",
+    "Change": -8.84703821307347,
+    "Value": 91.33
+  },
+  {
+    "StockId": "6c01e378-7e4d-4abb-abd7-2d01e64aa210",
+    "Date": "2022-09-18",
+    "Symbol": "LCID",
+    "Change": -2.28677379480841,
+    "Value": 16.18
+  },
+  {
+    "StockId": "ba5a645b-872c-4aae-bb11-002b9a66197a",
+    "Date": "2022-09-18",
+    "Symbol": "LI",
+    "Change": -8.17766708177667,
+    "Value": 24.09
+  },
+  {
+    "StockId": "04d81b6d-8dd1-4820-97c3-0828a4d28ee5",
+    "Date": "2022-09-18",
+    "Symbol": "LKQ",
+    "Change": -10.1395730706075,
+    "Value": 48.72
+  },
+  {
+    "StockId": "8f85072a-11e3-4fb7-9ae0-0c0de120c9f0",
+    "Date": "2022-09-18",
+    "Symbol": "LNT",
+    "Change": -4.30496220834702,
+    "Value": 60.86
+  },
+  {
+    "StockId": "8ad0b4d7-2d12-4516-8559-6edafabd1d06",
+    "Date": "2022-09-18",
+    "Symbol": "LPLA",
+    "Change": -0.909051367926582,
+    "Value": 229.91
+  },
+  {
+    "StockId": "60c46bbd-6d09-40d9-be46-c7c410688718",
+    "Date": "2022-09-18",
+    "Symbol": "LRCX",
+    "Change": -9.30550803968525,
+    "Value": 409.22
+  },
+  {
+    "StockId": "98b09c31-eed7-43eb-9bd0-00e77500bb46",
+    "Date": "2022-09-18",
+    "Symbol": "LSXMA",
+    "Change": -5.91992139523458,
+    "Value": 40.71
+  },
+  {
+    "StockId": "b019fac6-b837-4f1e-a37e-b18572e7c16b",
+    "Date": "2022-09-18",
+    "Symbol": "LSXMB",
+    "Change": -6.1023622047244,
+    "Value": 40.64
+  },
+  {
+    "StockId": "943a3b94-14f0-4f9c-8802-36fdc950f35b",
+    "Date": "2022-09-18",
+    "Symbol": "LSXMK",
+    "Change": -6.21287128712871,
+    "Value": 40.4
+  },
+  {
+    "StockId": "fd4a5899-4b13-4f86-8f95-bf87ab7365bf",
+    "Date": "2022-09-18",
+    "Symbol": "LULU",
+    "Change": -5.85163845876846,
+    "Value": 333.24
+  },
+  {
+    "StockId": "c9d543d9-47ca-488e-8a73-d49c9448301c",
+    "Date": "2022-09-18",
+    "Symbol": "MAR",
+    "Change": -5.71908081590499,
+    "Value": 154.92
+  },
+  {
+    "StockId": "4632a890-c71e-4d55-9478-9a16e454bef6",
+    "Date": "2022-09-18",
+    "Symbol": "MCHP",
+    "Change": -2.6179604261796,
+    "Value": 65.7
+  },
+  {
+    "StockId": "033f2056-048c-455b-a8b4-5c8fd264c7f1",
+    "Date": "2022-09-18",
+    "Symbol": "MDB",
+    "Change": -26.2625804696709,
+    "Value": 220.58
+  },
+  {
+    "StockId": "61fb3180-9a28-4faf-950a-4bed2db31bd6",
+    "Date": "2022-09-18",
+    "Symbol": "MDLZ",
+    "Change": -2.65339966832504,
+    "Value": 60.3
+  },
+  {
+    "StockId": "eb66bf52-0bba-4c21-b5ed-8d0b130cfceb",
+    "Date": "2022-09-18",
+    "Symbol": "MELI",
+    "Change": -9.01959504303076,
+    "Value": 919.11
+  },
+  {
+    "StockId": "2a27d892-6918-4a7c-9abc-383f2e6582e3",
+    "Date": "2022-09-18",
+    "Symbol": "META",
+    "Change": -15.4966163100691,
+    "Value": 146.29
+  },
+  {
+    "StockId": "9c3fbdc3-3fca-477b-8f10-172a6a28c512",
+    "Date": "2022-09-18",
+    "Symbol": "MNST",
+    "Change": -7.24438331040808,
+    "Value": 87.24
+  },
+  {
+    "StockId": "110eff35-bb09-4f44-be26-864a4ad8f33b",
+    "Date": "2022-09-18",
+    "Symbol": "MPWR",
+    "Change": -6.92889271700642,
+    "Value": 417.96
+  },
+  {
+    "StockId": "e6d693e0-9b58-4517-900b-8c6f24cd81e0",
+    "Date": "2022-09-18",
+    "Symbol": "MRNA",
+    "Change": -1.87309423551618,
+    "Value": 137.74
+  },
+  {
+    "StockId": "477aeb3d-a009-4391-92aa-bc4f96fee2e6",
+    "Date": "2022-09-18",
+    "Symbol": "MRVL",
+    "Change": -8.41423948220064,
+    "Value": 46.35
+  },
+  {
+    "StockId": "6f3447da-30df-4903-b4dc-41920a3cc193",
+    "Date": "2022-09-18",
+    "Symbol": "MSFT",
+    "Change": -8.95235760398789,
+    "Value": 244.74
+  },
+  {
+    "StockId": "dbbeee3c-c7eb-4c1e-a9de-b26d748d9a9e",
+    "Date": "2022-09-18",
+    "Symbol": "MTCH",
+    "Change": -13.852266570345,
+    "Value": 55.37
+  },
+  {
+    "StockId": "d278cb28-5b04-43f8-ab19-971399e36340",
+    "Date": "2022-09-18",
+    "Symbol": "MU",
+    "Change": -9.63103122043519,
+    "Value": 52.85
+  },
+  {
+    "StockId": "2ae230da-5b61-4cc8-a3d2-d9eb30cab446",
+    "Date": "2022-09-18",
+    "Symbol": "NDAQ",
+    "Change": -5.08113424028848,
+    "Value": 61.01
+  },
+  {
+    "StockId": "17240a8b-f087-4b04-8a86-19dc3a374c1e",
+    "Date": "2022-09-18",
+    "Symbol": "NDSN",
+    "Change": -7.43903552835876,
+    "Value": 218.98
+  },
+  {
+    "StockId": "20e5eab4-ade1-4d8b-8822-42ee04222e01",
+    "Date": "2022-09-18",
+    "Symbol": "NFLX",
+    "Change": 1.4991879398659,
+    "Value": 240.13
+  },
+  {
+    "StockId": "c3daded8-aacc-4a57-aeb5-9f159a33943d",
+    "Date": "2022-09-18",
+    "Symbol": "NICE",
+    "Change": -7.77344531093782,
+    "Value": 200.04
+  },
+  {
+    "StockId": "a0f136b1-120f-4d2a-8ae4-58be9af446a9",
+    "Date": "2022-09-18",
+    "Symbol": "NLOK",
+    "Change": -7.00846660395107,
+    "Value": 21.26
+  },
+  {
+    "StockId": "29036f9b-3951-4f67-aa77-b294bbfbe597",
+    "Date": "2022-09-18",
+    "Symbol": "NTAP",
+    "Change": -6.87245195107746,
+    "Value": 68.68
+  },
+  {
+    "StockId": "b104ad7e-a66c-49e2-94f4-d46fbe41f8f7",
+    "Date": "2022-09-18",
+    "Symbol": "NTES",
+    "Change": -5.74295732075928,
+    "Value": 82.71
+  },
+  {
+    "StockId": "f627600a-e481-43d9-a35c-8e2385100498",
+    "Date": "2022-09-18",
+    "Symbol": "NTRS",
+    "Change": -5.75539568345324,
+    "Value": 93.13
+  },
+  {
+    "StockId": "0a40aeed-d565-42ef-9e31-dfad567b2143",
+    "Date": "2022-09-18",
+    "Symbol": "NVDA",
+    "Change": -9.90301560842554,
+    "Value": 131.98
+  },
+  {
+    "StockId": "34888bdc-e828-4998-bf72-71d4d14159ce",
+    "Date": "2022-09-18",
+    "Symbol": "NXPI",
+    "Change": -5.70839064649243,
+    "Value": 159.94
+  },
+  {
+    "StockId": "9db5e8dd-5b99-46c3-a30f-e951fca6e2ba",
+    "Date": "2022-09-18",
+    "Symbol": "ODFL",
+    "Change": -8.64858481281738,
+    "Value": 254.03
+  },
+  {
+    "StockId": "e7f72eeb-3fe6-4c3a-ba58-6e414a4efcd4",
+    "Date": "2022-09-18",
+    "Symbol": "ON",
+    "Change": -4.2935886277923,
+    "Value": 68.94
+  },
+  {
+    "StockId": "b56d7532-b60d-4240-b84c-f581c5496b9a",
+    "Date": "2022-09-18",
+    "Symbol": "ORLY",
+    "Change": -4.88961947196147,
+    "Value": 693.51
+  },
+  {
+    "StockId": "8cc09b22-ec9a-49ba-838a-1329390a2343",
+    "Date": "2022-09-18",
+    "Symbol": "PANW",
+    "Change": -8.77132517663278,
+    "Value": 174.09
+  },
+  {
+    "StockId": "756df40f-75ab-412c-933c-daba85861506",
+    "Date": "2022-09-18",
+    "Symbol": "PARA",
+    "Change": -6.73119225692917,
+    "Value": 22.73
+  },
+  {
+    "StockId": "5ea9a737-5fe0-4b94-905c-3e51e094a7c4",
+    "Date": "2022-09-18",
+    "Symbol": "PARAA",
+    "Change": -9.45674044265593,
+    "Value": 24.85
+  },
+  {
+    "StockId": "bbf8bd68-a455-42d7-97fb-2918c8fc1bbd",
+    "Date": "2022-09-18",
+    "Symbol": "PAYX",
+    "Change": -5.99350703404645,
+    "Value": 120.13
+  },
+  {
+    "StockId": "d339fce5-fe9b-468b-91ac-bf987ac6cd11",
+    "Date": "2022-09-18",
+    "Symbol": "PCAR",
+    "Change": -5.03875968992249,
+    "Value": 85.14
+  },
+  {
+    "StockId": "005e7188-237c-4e09-a194-c2cc5d4e45ff",
+    "Date": "2022-09-18",
+    "Symbol": "PCTY",
+    "Change": -5.09244372990354,
+    "Value": 248.8
+  },
+  {
+    "StockId": "d22c81bd-c628-4f1f-8502-5a9b45d6e41d",
+    "Date": "2022-09-18",
+    "Symbol": "PDD",
+    "Change": -8.96908786356023,
+    "Value": 65.67
+  },
+  {
+    "StockId": "28429ba8-0a57-426e-bfac-97223dc16c8d",
+    "Date": "2022-09-18",
+    "Symbol": "PEP",
+    "Change": -4.15044618793796,
+    "Value": 166.97
+  },
+  {
+    "StockId": "c6f73de7-8f68-42e6-8d3f-1ccdfb3d1c9b",
+    "Date": "2022-09-18",
+    "Symbol": "PFG",
+    "Change": -3.59693546292689,
+    "Value": 77.01
+  },
+  {
+    "StockId": "b9be37e1-286c-47ba-b117-72568d26df5b",
+    "Date": "2022-09-18",
+    "Symbol": "PLUG",
+    "Change": -6.30088495575222,
+    "Value": 28.25
+  },
+  {
+    "StockId": "66595bea-1dd0-4d4e-8f93-f3b9ab4adad9",
+    "Date": "2022-09-18",
+    "Symbol": "PODD",
+    "Change": -5.09803921568627,
+    "Value": 255
+  },
+  {
+    "StockId": "2782f5f5-418e-43e0-9c11-08c4a5746e4e",
+    "Date": "2022-09-18",
+    "Symbol": "POOL",
+    "Change": -7.76769291077405,
+    "Value": 331.63
+  },
+  {
+    "StockId": "e9b47f52-821d-4e02-8944-59df520ee3dc",
+    "Date": "2022-09-18",
+    "Symbol": "PSNY",
+    "Change": 0.394736842105255,
+    "Value": 7.6
+  },
+  {
+    "StockId": "e75f0b3a-7df8-4ef4-af99-1742eea81384",
+    "Date": "2022-09-18",
+    "Symbol": "PTC",
+    "Change": -5.20452567449956,
+    "Value": 114.9
+  },
+  {
+    "StockId": "c0f2ff96-f015-4636-9d4c-5ce295b508ad",
+    "Date": "2022-09-18",
+    "Symbol": "PYPL",
+    "Change": -3.88297872340426,
+    "Value": 94
+  },
+  {
+    "StockId": "c8b4045d-a202-4730-aef7-b5ef732fd338",
+    "Date": "2022-09-18",
+    "Symbol": "QCOM",
+    "Change": -6.44257703081232,
+    "Value": 124.95
+  },
+  {
+    "StockId": "958554e4-de85-4e26-b658-2573a0eddd2c",
+    "Date": "2022-09-18",
+    "Symbol": "REGN",
+    "Change": -0.061945656764755,
+    "Value": 710.3
+  },
+  {
+    "StockId": "9c9f3329-cad8-4d6a-8b5f-b59194998385",
+    "Date": "2022-09-18",
+    "Symbol": "RGEN",
+    "Change": -5.03343574914152,
+    "Value": 221.32
+  },
+  {
+    "StockId": "83ca9be8-be4f-4a01-85b4-2290c65a4ab9",
+    "Date": "2022-09-18",
+    "Symbol": "RIVN",
+    "Change": 1.32450331125827,
+    "Value": 39.26
+  },
+  {
+    "StockId": "05634a33-a19f-46a4-8fb0-f4f60f07c380",
+    "Date": "2022-09-18",
+    "Symbol": "ROST",
+    "Change": -5.2409972299169,
+    "Value": 90.25
+  },
+  {
+    "StockId": "e3123510-bd71-463b-88c1-94d68fb3fc5d",
+    "Date": "2022-09-18",
+    "Symbol": "RPRX",
+    "Change": -4.02860548271751,
+    "Value": 41.95
+  },
+  {
+    "StockId": "07e24bc6-07e9-4764-9961-2ae1f8a55a09",
+    "Date": "2022-09-18",
+    "Symbol": "RYAAY",
+    "Change": -9.42508454639023,
+    "Value": 68.01
+  },
+  {
+    "StockId": "3207fded-6aff-4d5a-b151-ef1fe55dc2d5",
+    "Date": "2022-09-18",
+    "Symbol": "SBAC",
+    "Change": -6.93825180433039,
+    "Value": 311.75
+  },
+  {
+    "StockId": "5002a216-aad4-4239-a1a5-1dfbc6151c5d",
+    "Date": "2022-09-18",
+    "Symbol": "SBUX",
+    "Change": 2.45318146971855,
+    "Value": 91.31
+  },
+  {
+    "StockId": "16589b81-e5f1-4733-a8ec-f07b0c579548",
+    "Date": "2022-09-18",
+    "Symbol": "SEDG",
+    "Change": -1.83246916363402,
+    "Value": 310.51
+  },
+  {
+    "StockId": "20545236-8e94-413a-b887-9b0e530dc85a",
+    "Date": "2022-09-18",
+    "Symbol": "SGEN",
+    "Change": -5.68189819052312,
+    "Value": 142.03
+  },
+  {
+    "StockId": "bf00c17c-1622-4f9c-8421-73166cba5c02",
+    "Date": "2022-09-18",
+    "Symbol": "SIRI",
+    "Change": -4.85762144053601,
+    "Value": 5.97
+  },
+  {
+    "StockId": "506ee614-7ac0-45a1-b876-501d0d6d2a4a",
+    "Date": "2022-09-18",
+    "Symbol": "SIVB",
+    "Change": -12.0661111417692,
+    "Value": 362.42
+  },
+  {
+    "StockId": "2290eda3-0e5e-414b-9ac5-b80f4e549c63",
+    "Date": "2022-09-18",
+    "Symbol": "SNPS",
+    "Change": -8.06785270997105,
+    "Value": 314.21
+  },
+  {
+    "StockId": "b13c280a-c69d-4dcd-856e-b4f4bfbd6da2",
+    "Date": "2022-09-18",
+    "Symbol": "SNY",
+    "Change": -1.64135227829496,
+    "Value": 40.82
+  },
+  {
+    "StockId": "68d2a5a0-ad71-4408-acc2-d646f902c76e",
+    "Date": "2022-09-18",
+    "Symbol": "SPLK",
+    "Change": -9.74776957814737,
+    "Value": 90.79
+  },
+  {
+    "StockId": "5110c8ae-bb0a-4b4d-b47a-6d16de96c9a4",
+    "Date": "2022-09-18",
+    "Symbol": "SSNC",
+    "Change": -8.27521206409048,
+    "Value": 53.05
+  },
+  {
+    "StockId": "dbabad22-1462-4ded-bd2a-c31bf5f9d6f2",
+    "Date": "2022-09-18",
+    "Symbol": "STLD",
+    "Change": -11.2903225806452,
+    "Value": 75.02
+  },
+  {
+    "StockId": "4f5126f8-8464-41da-b9e2-0ca29f6fd491",
+    "Date": "2022-09-18",
+    "Symbol": "STX",
+    "Change": -9.66353053739435,
+    "Value": 62.71
+  },
+  {
+    "StockId": "26641d65-9aa2-4f42-967e-fa177b6dc64a",
+    "Date": "2022-09-18",
+    "Symbol": "SWKS",
+    "Change": -3.74449339207049,
+    "Value": 99.88
+  },
+  {
+    "StockId": "46155fd9-0f6d-47ca-a112-491b361d1cf2",
+    "Date": "2022-09-18",
+    "Symbol": "TCOM",
+    "Change": -3.30282530839635,
+    "Value": 25.13
+  },
+  {
+    "StockId": "5d533866-80f6-4504-8ece-b8329b9ee291",
+    "Date": "2022-09-18",
+    "Symbol": "TEAM",
+    "Change": -9.01193906957596,
+    "Value": 242.9
+  },
+  {
+    "StockId": "89edb717-4a8d-4f9b-8c83-f47613388123",
+    "Date": "2022-09-18",
+    "Symbol": "TECH",
+    "Change": -12.1005234240385,
+    "Value": 307.59
+  },
+  {
+    "StockId": "cdd03cf8-55e3-4e03-b60f-499242389448",
+    "Date": "2022-09-18",
+    "Symbol": "TER",
+    "Change": -6.43118148599269,
+    "Value": 82.1
+  },
+  {
+    "StockId": "e36d128d-30eb-42a8-8648-a77cbb0538e1",
+    "Date": "2022-09-18",
+    "Symbol": "TMUS",
+    "Change": -3.71561271882817,
+    "Value": 139.95
+  },
+  {
+    "StockId": "ecc31715-0475-4110-b95a-f7a3db5a58fe",
+    "Date": "2022-09-18",
+    "Symbol": "TRMB",
+    "Change": -9.79890933878665,
+    "Value": 58.68
+  },
+  {
+    "StockId": "657bf88e-0279-4c44-a36b-7527b0449155",
+    "Date": "2022-09-18",
+    "Symbol": "TROW",
+    "Change": -13.4477435757741,
+    "Value": 110.13
+  },
+  {
+    "StockId": "a8f0d165-3ba7-4947-8263-042e57e67f98",
+    "Date": "2022-09-18",
+    "Symbol": "TSCO",
+    "Change": -6.64666877170824,
+    "Value": 190.02
+  },
+  {
+    "StockId": "87324217-07d9-4b15-8cdf-c9c1b8eeec2c",
+    "Date": "2022-09-18",
+    "Symbol": "TSLA",
+    "Change": -0.352727872094938,
+    "Value": 303.35
+  },
+  {
+    "StockId": "97a11797-d9fb-4b64-8142-5769c8439f5b",
+    "Date": "2022-09-18",
+    "Symbol": "TTD",
+    "Change": -8.95136532557765,
+    "Value": 61.89
+  },
+  {
+    "StockId": "c501dd1a-0f79-4a92-922d-ff0f85b0555f",
+    "Date": "2022-09-18",
+    "Symbol": "TTWO",
+    "Change": -4.30791529108623,
+    "Value": 124.19
+  },
+  {
+    "StockId": "692e0a9d-484b-4745-ac90-1734ed220caf",
+    "Date": "2022-09-18",
+    "Symbol": "TW",
+    "Change": -5.70229956494717,
+    "Value": 64.36
+  },
+  {
+    "StockId": "7cf5894b-bedb-4567-82d6-cf62a68bcf20",
+    "Date": "2022-09-18",
+    "Symbol": "TXN",
+    "Change": -3.21916979305338,
+    "Value": 165.26
+  },
+  {
+    "StockId": "70c13818-0a18-437e-b410-c05312ead9af",
+    "Date": "2022-09-18",
+    "Symbol": "UAL",
+    "Change": -4.64247598719318,
+    "Value": 37.48
+  },
+  {
+    "StockId": "c9121225-9608-46d8-b050-c754a8cc52c9",
+    "Date": "2022-09-18",
+    "Symbol": "ULTA",
+    "Change": -6.56379878660487,
+    "Value": 418.66
+  },
+  {
+    "StockId": "198c7263-2d0c-4bdf-a77b-7e37587bc387",
+    "Date": "2022-09-18",
+    "Symbol": "VOD",
+    "Change": -3.76602564102563,
+    "Value": 12.48
+  },
+  {
+    "StockId": "3ad44427-ac4a-4aca-b9cf-60b1d41cfe34",
+    "Date": "2022-09-18",
+    "Symbol": "VRSK",
+    "Change": -4.55457355094074,
+    "Value": 184.43
+  },
+  {
+    "StockId": "79da705a-7c09-41c8-8db6-be2d70894320",
+    "Date": "2022-09-18",
+    "Symbol": "VRSN",
+    "Change": -8.00434211278066,
+    "Value": 175.03
+  },
+  {
+    "StockId": "930014a5-994f-4c89-817c-e11845f2fc4c",
+    "Date": "2022-09-18",
+    "Symbol": "VRTX",
+    "Change": -1.30130130130131,
+    "Value": 289.71
+  },
+  {
+    "StockId": "017cff52-8ad9-4289-977f-8fd2f9bee391",
+    "Date": "2022-09-18",
+    "Symbol": "VTRS",
+    "Change": -8.70967741935483,
+    "Value": 9.3
+  },
+  {
+    "StockId": "2b084877-1be1-4974-ace8-cbf288c68732",
+    "Date": "2022-09-18",
+    "Symbol": "WBA",
+    "Change": -6.8864896410855,
+    "Value": 34.27
+  },
+  {
+    "StockId": "e2a5d466-fa87-4363-a78f-c7b9fb4135e3",
+    "Date": "2022-09-18",
+    "Symbol": "WBD",
+    "Change": -4.47409733124019,
+    "Value": 12.74
+  },
+  {
+    "StockId": "5999fbb4-2609-46ec-9f4d-9e0f4c68a3b5",
+    "Date": "2022-09-18",
+    "Symbol": "WDAY",
+    "Change": -11.4649681528662,
+    "Value": 152.29
+  },
+  {
+    "StockId": "cbfb5e1b-843c-4423-ae74-419700b7a36b",
+    "Date": "2022-09-18",
+    "Symbol": "WDC",
+    "Change": -16.2547017732402,
+    "Value": 37.22
+  },
+  {
+    "StockId": "8396dd79-2ca5-48fe-b82f-a39129538c03",
+    "Date": "2022-09-18",
+    "Symbol": "WMG",
+    "Change": -6.81564245810055,
+    "Value": 26.85
+  },
+  {
+    "StockId": "aa6aad5d-1a78-4fbb-a140-96692fdce92c",
+    "Date": "2022-09-18",
+    "Symbol": "WTW",
+    "Change": -4.3883495145631,
+    "Value": 206
+  },
+  {
+    "StockId": "7bd395a7-07c0-4515-9fc4-e24ad4683bc1",
+    "Date": "2022-09-18",
+    "Symbol": "XEL",
+    "Change": -4.74966170500675,
+    "Value": 73.9
+  },
+  {
+    "StockId": "5e7c7888-0803-4849-ab05-0f108bd912c7",
+    "Date": "2022-09-18",
+    "Symbol": "XP",
+    "Change": -11.1578947368421,
+    "Value": 19
+  },
+  {
+    "StockId": "ec4bd1db-b305-41a7-a55b-38009532c48f",
+    "Date": "2022-09-18",
+    "Symbol": "ZBRA",
+    "Change": -8.08609455150424,
+    "Value": 288.52
+  },
+  {
+    "StockId": "73920f47-f337-4ffc-b4c0-d53db4b064ef",
+    "Date": "2022-09-18",
+    "Symbol": "ZI",
+    "Change": -8.74017623243628,
+    "Value": 41.99
+  },
+  {
+    "StockId": "358b1486-fc54-44ef-a3f4-35bdc141ed9e",
+    "Date": "2022-09-18",
+    "Symbol": "ZM",
+    "Change": -6.86324351804778,
+    "Value": 78.68
+  },
+  {
+    "StockId": "d5b1de90-931e-4b66-a377-a0dba7ad8c53",
+    "Date": "2022-09-18",
+    "Symbol": "ZS",
+    "Change": -14.2250280252522,
+    "Value": 169.49
+  }
+]

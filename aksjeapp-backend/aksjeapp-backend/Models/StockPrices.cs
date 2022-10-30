@@ -28,8 +28,8 @@ namespace aksjeapp_backend.Models
 
         [JsonProperty("low")]
         public double Low { get; set; }
-
-        [JsonProperty("turnover")]
+        
+        [JsonProperty("volume")]
         public double Turnover { get; set; }
 
         [JsonProperty("ticker")]

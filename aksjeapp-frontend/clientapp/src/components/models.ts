@@ -45,5 +45,6 @@ export interface News {
     title: string,
     author: string,
     date: string,
-    stocks: string[]
+    stocks: string[],
+    url: string
 }

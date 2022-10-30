@@ -168,5 +168,16 @@ namespace aksjeapp_backend.Controller
             return Ok(news);
 
         }
+
+        public async Task<ActionResult> GetStockName(string symbol)
+        {
+            var name = await _db.GetStockName(symbol);
+            if (name == null)
+            {
+                _logger.LogInformation("Fault");
+                return BadRequest();
+            }
+            return Ok(name);
+        }
     }
 }

@@ -285,8 +285,9 @@ namespace aksjeapp_backend.DAL
                         SocialSecurityNumber = transactionDB.SocialSecurityNumber,
                         Date = transactionDB.Date,
                         Symbol = transactionDB.Symbol,
-                        Amount = -transactionDB.Amount,
+                        Amount = transactionDB.Amount,
                         TotalPrice = transactionDB.TotalPrice
+
                     };
                     transactions.Add(transaction1);
 
@@ -301,7 +302,7 @@ namespace aksjeapp_backend.DAL
                         SocialSecurityNumber = transactionDB.SocialSecurityNumber,
                         Date = transactionDB.Date,
                         Symbol = transactionDB.Symbol,
-                        Amount = transactionDB.Amount,
+                        Amount = -transactionDB.Amount,
                         TotalPrice = transactionDB.TotalPrice
                     };
                     transactions.Add(transaction1);

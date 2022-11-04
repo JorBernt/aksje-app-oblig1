@@ -571,7 +571,7 @@ namespace aksjeapp_backend.DAL
                         portfolioList[index].Amount += transaction.Amount;
                         portfolioList[index].Value += stockChange.Value * transaction.Amount;
                     }
-                    // Adds the first of this symbol to portofolio list
+                    // Adds the first of this symbol to portfolio list
                     else
                     {
 
@@ -630,7 +630,7 @@ namespace aksjeapp_backend.DAL
         {
             try
             {
-                // Return name, cumtomer info, combined list of transactions, total value of portofolio
+                // Return name, cumtomer info, combined list of transactions, total value of portfolio
 
                 var customerFromDB = await _db.Customers.FindAsync(socialSecurityNumber);
 
@@ -660,17 +660,17 @@ namespace aksjeapp_backend.DAL
                 // Runs UpdatePortfolio to update it
                 await UpdatePortfolio(socialSecurityNumber);
 
-                var portofolio = await _db.Portfolios.FirstOrDefaultAsync(k => k.SocialSecurityNumber == socialSecurityNumber);
-                var portofolioList = await _db.PortfolioList.ToListAsync();
+                var portfolio = await _db.Portfolios.FirstOrDefaultAsync(k => k.SocialSecurityNumber == socialSecurityNumber);
+                var portfolioList = await _db.PortfolioList.ToListAsync();
 
                 // Adds portfoliolist to portfolio
-                if (portofolio == null)
+                if (portfolio == null)
                 {
-                    portofolio = new Portfolio();
+                    portfolio = new Portfolio();
                 }
                 else
                 {
-                    portofolio.StockPortfolio = portofolioList;
+                    portfolio.StockPortfolio = portfolioList;
                 }
                 //Converts Customers to Customer
                 var customer = new Customer()
@@ -683,7 +683,7 @@ namespace aksjeapp_backend.DAL
                     Transactions = transactions,
                     PostalCode = customerFromDB.PostalArea.PostalCode,
                     PostCity = customerFromDB.PostalArea.PostCity,
-                    Portfolio = portofolio
+                    Portfolio = portfolio
 
                 };
 

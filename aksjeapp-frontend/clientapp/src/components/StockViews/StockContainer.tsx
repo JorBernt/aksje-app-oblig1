@@ -59,7 +59,7 @@ const StockContainer = (props: Props) => {
                 </div>
                 <hr className="pb-1 border-black pb-3"/>
                 <div className={className}>
-                    {stockView.length === 0 ?
+                    {!showLoading && stockView.length === 0 ?
                         <>
                             <div className="ml-28">
                                 <p>No stocks to show.</p>

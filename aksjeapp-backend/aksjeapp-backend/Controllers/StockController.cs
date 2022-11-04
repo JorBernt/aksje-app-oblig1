@@ -1,6 +1,7 @@
 ﻿using aksjeapp_backend.DAL;
 using aksjeapp_backend.Models;
 using Microsoft.AspNetCore.Mvc;
+using Results = aksjeapp_backend.Models.Results;
 
 namespace aksjeapp_backend.Controller
 {
@@ -189,7 +190,7 @@ namespace aksjeapp_backend.Controller
             return Ok(Losers);
         }
 
-        public async Task<ActionResult> GetCustomerPortofolio(string socialSecurityNumber)
+        public async Task<ActionResult> GetCustomerPortfolio(string socialSecurityNumber)
         {
             var customer = await _db.GetCustomerPortfolio(socialSecurityNumber);
             if (customer == null)
@@ -217,10 +218,10 @@ namespace aksjeapp_backend.Controller
         public async Task<ActionResult> GetStockName(string symbol)
         {
             var name = await _db.GetStockName(symbol);
-            if (name == null)
+            if (name == "")
             {
                 _logger.LogInformation("Fault");
-                return BadRequest();
+                return BadRequest("Could not find a name for the symbol");
             }
 
             return Ok(name);

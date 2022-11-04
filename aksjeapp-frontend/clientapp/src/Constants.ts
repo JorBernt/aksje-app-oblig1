@@ -1,5 +1,3 @@
-import {Transaction} from "./components/models";
-
 export const DATE_TODAY = new Date().toLocaleDateString("nb-NO").replace("/", "-");
 
 const url = "https://localhost:7187/Stock/"
@@ -54,8 +52,8 @@ export const API = {
             return url + `GetStockName?symbol=${symbol}`
         },
 
-    GET_CUSTOMER_PORTOFOLIO:
+    GET_CUSTOMER_PORTFOLIO:
         (socialSecurityNumber: string) => {
-            return url + "GetCustomerPortofolio?socialSecurityNumber=" + socialSecurityNumber
+            return url + "GetCustomerPortfolio?socialSecurityNumber=" + socialSecurityNumber
         },
 }

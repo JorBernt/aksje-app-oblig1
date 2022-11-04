@@ -53,7 +53,7 @@ namespace UnitTesting_aksjeapp
             Assert.Equal(stockList, result.Value);
         }
         [Fact]
-        public async Task GetAllStocks_NotOk()
+        public async Task GetAllStocks_Empty()
         {
             //Arrange
             var stockList = new List<Stock>();
@@ -141,7 +141,7 @@ namespace UnitTesting_aksjeapp
         }
 
         [Fact]
-        public async Task SellStock_NotOk()
+        public async Task SellStock_Empty()
         {
             var pers = "12345678910";
             var symbol = "AAPL";
@@ -170,7 +170,7 @@ namespace UnitTesting_aksjeapp
         }
 
         [Fact]
-        public async Task BuyStock_NotOk()
+        public async Task BuyStock_Empty()
         {
             var pers = "12345678910";
             var symbol = "AAPL";
@@ -205,7 +205,7 @@ namespace UnitTesting_aksjeapp
         }
 
         [Fact]
-        public async Task GetTransaction_NotOk()
+        public async Task GetTransaction_Empty()
         {
             var pers = "12345678910";
             var id = 10;
@@ -217,6 +217,93 @@ namespace UnitTesting_aksjeapp
             // Assert
             Assert.Equal("Transaction does not exist", result.Value);
         }
+
+        [Fact]
+    public async Task GetCustomerPortfolio_Ok()
+    {
+        var SSN = "12345678910";
+
+        List<Transaction> myTransactions = new List<Transaction>();
+        
+        myTransactions.Add(new Transaction
+        {
+            Id = 1,
+            Amount = 3,
+            Awaiting = false,
+            Date = "2022-05-20",
+            Symbol = "APLL",
+            TotalPrice = 456,
+            SocialSecurityNumber = SSN
+        });
+        myTransactions.Add(new Transaction
+        {
+            Id = 2,
+            Amount = 6,
+            Awaiting = false,
+            Date = "2022-10-01",
+            Symbol = "TESL",
+            TotalPrice = 154,
+            SocialSecurityNumber = SSN
+        });
+        myTransactions.Add(new Transaction
+        {
+            Id = 3,
+            Amount = 5,
+            Awaiting = false,
+            Date = "2022-09-14",
+            Symbol = "ALD",
+            TotalPrice = 785,
+            SocialSecurityNumber = SSN
+        });
+
+        Portfolio myPortfolio = new Portfolio();
+
+        myPortfolio.PortfolioId = 1;
+        myPortfolio.SocialSecurityNumber = "12345678910";
+        myPortfolio.Value = 1000;
+
+        List<PortfolioList> myPortfolioList = new List<PortfolioList>();
+        
+        myPortfolioList.Add( new PortfolioList
+        {
+            PortfolioListId = 1,
+            Symbol = "AAPL",
+            Name = "APPLE NAME",
+            Amount = 1000,
+            Change = 100.1,
+            Value = 20000.1,
+            PortfolioId = 1
+        });
+        
+        var myCustomer = new Customer()
+        {
+            SocialSecurityNumber = SSN,
+            FirstName = "Stevie",
+            LastName = "Wonder",
+            Address = "Bygaten 1",
+            Balance = 100000.20,
+            Transactions = myTransactions,
+            PostalCode = "2008",
+            PostCity = "Fjerdingby",
+            Portfolio = myPortfolio
+        };
+
+        mockRep.Setup(k => k.GetCustomerPortfolio(SSN)).ReturnsAsync(myCustomer);
+        var res = await _stockController.GetCustomerPortfolio(SSN) as OkObjectResult;
+        
+        Assert.Equal(myCustomer, res.Value);
+    }
+    
+    [Fact]
+    public async Task GetCustomerPortfolio_Empty()
+    {
+        var SSN = "12345678910";
+
+        mockRep.Setup(k => k.GetCustomerPortfolio(SSN)).ReturnsAsync(() => null);
+        var res = await _stockController.GetCustomerPortfolio(SSN) as BadRequestObjectResult;
+        
+        Assert.Equal("Customer not found", res.Value);
+    }
 
     [Fact]
     public async Task GetNews_Ok()
@@ -250,41 +337,49 @@ namespace UnitTesting_aksjeapp
 
         Assert.Equal(myNewsList, res.Value);
     }
-
+    
     [Fact]
     public async Task GetNews_empty()
     {
-        var myPublisher = new Publisher();
-        myPublisher.Name = "TestPublisher";
-
-        List<String> myStocks = new List<string>();
-        myStocks.Add("AAPL");
-        var myNews = new NewsResults
-        {
-            Publisher = myPublisher,
-            Title = "Prices are skyrocketing",
-            Author = "Per Hansen",
-            Date = "2022-05-20",
-            Stocks = myStocks,
-            url = "localhost:3000"
-        };
-
-        News myNewsList = new News();
-
-        List<NewsResults> myResultsList = new List<NewsResults>();
-        myNewsList.Results = myResultsList;
-
-        myResultsList.Add(myNews);
         var symbol = "AAPL";
 
         mockRep.Setup(k => k.GetNews(symbol)).ReturnsAsync(new News());
-        var stockController = new StockController(mockRep.Object, mockLog.Object);
 
-        var res = await stockController.GetNews(symbol) as BadRequestObjectResult;
+        var res = await _stockController.GetNews(symbol) as BadRequestObjectResult;
 
         //Assert.Equal(myNewsList, res.Value);
         Assert.Equal("Could not find any news", res.Value);
     }
-}
-    
+
+    [Fact]
+    public async Task GetStockName_Ok()
+    {
+        var symbol = "AAPL";
+
+        var name = "Apple inc. Common stock";
+
+        mockRep.Setup(k => k.GetStockName(symbol)).ReturnsAsync(name);
+        var res = await _stockController.GetStockName(symbol) as OkObjectResult;
+
+        Assert.Equal(name, res.Value);
+
+    }
+
+    [Fact]
+    public async Task GetStockName_Empty()
+    {
+        var symbol = "AAPL";
+
+        var name = "";
+
+        mockRep.Setup(k => k.GetStockName(symbol)).ReturnsAsync(name);
+        var res = await _stockController.GetStockName(symbol) as BadRequestObjectResult;
+
+        Assert.Equal("Could not find a name for the symbol", res.Value);
+
+    }
+
+
+    }
+
 }

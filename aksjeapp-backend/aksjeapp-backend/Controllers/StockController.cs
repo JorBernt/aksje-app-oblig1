@@ -31,7 +31,7 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> GetStockPrices(string symbol, string fromDate, string toDate) // dato skal skrives som "YYYY-MM-DD"
         {
-            if(symbol == null)
+            if (symbol == null)
             {
                 _logger.LogInformation("Empty stock parameter");
                 return BadRequest("Symbol is empty");
@@ -117,7 +117,7 @@ namespace aksjeapp_backend.Controller
             return Ok(transaction);
         }
         [HttpPost]
-        public async Task<ActionResult> UpdateTransaction([FromBody]Transaction transaction)
+        public async Task<ActionResult> UpdateTransaction([FromBody] Transaction transaction)
         {
             var returnOK = await _db.UpdateTransaction(transaction);
             if (!returnOK)

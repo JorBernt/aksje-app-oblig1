@@ -2,7 +2,6 @@ using aksjeapp_backend.Controller;
 using aksjeapp_backend.DAL;
 using aksjeapp_backend.Models;
 using aksjeapp_backend.Models.News;
-using Castle.Core.Logging;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
@@ -11,7 +10,7 @@ namespace UnitTesting_aksjeapp
 {
     public class UnitTest_StockController
     {
-        
+
         private static readonly Mock<IStockRepository> mockRep = new Mock<IStockRepository>();
         private static readonly Mock<ILogger<StockController>> mockLog = new Mock<ILogger<StockController>>();
         private readonly StockController _stockController = new StockController(mockRep.Object, mockLog.Object);
@@ -66,7 +65,7 @@ namespace UnitTesting_aksjeapp
             Assert.Equal("Not found", result.Value);
         }
 
-
+        [Fact]
         public async Task GetAllTransactions_Ok()
         {
             //Arrange
@@ -125,10 +124,66 @@ namespace UnitTesting_aksjeapp
             Assert.Null(results);
         }
 
-         [Fact]
-        public async Task GetTransaction()
+        [Fact]
+        public async Task SellStock()
         {
+            var pers = "12345678910";
+            var symbol = "AAPL";
+            var amount = 10;
 
+            mockRep.Setup(k => k.SellStock(pers, symbol.ToUpper(), amount)).ReturnsAsync(true);
+            var stockController = new StockController(mockRep.Object, mockLog.Object);
+
+            //
+            var res = await stockController.SellStock(pers, symbol, amount) as OkObjectResult;
+
+            Assert.Equal("Stock sold", res.Value);
+        }
+
+        [Fact]
+        public async Task SellStock_NotOk()
+        {
+            var pers = "12345678910";
+            var symbol = "AAPL";
+            var amount = 10;
+            mockRep.Setup(k => k.SellStock(pers, symbol.ToUpper(), amount)).ReturnsAsync(false);
+            var stockController = new StockController(mockRep.Object, mockLog.Object);
+            var res = await stockController.SellStock(pers, symbol, amount) as BadRequestResult;
+
+            Assert.Equal("Fault in sellStock", "Fault in sellStock");
+        }
+
+        [Fact]
+        public async Task BuyStock()
+        {
+            var pers = "12345678910";
+            var symbol = "AAPL";
+            var amount = 10;
+
+            mockRep.Setup(k => k.BuyStock(pers, symbol.ToUpper(), amount)).ReturnsAsync(true);
+            var stockController = new StockController(mockRep.Object, mockLog.Object);
+
+            //
+            var res = await stockController.BuyStock(pers, symbol, amount) as OkObjectResult;
+
+            Assert.Equal("Stock bought", res.Value);
+        }
+
+        [Fact]
+        public async Task BuyStock_NotOk()
+        {
+            var pers = "12345678910";
+            var symbol = "AAPL";
+            var amount = 10;
+            mockRep.Setup(k => k.BuyStock(pers, symbol.ToUpper(), amount)).ReturnsAsync(false);
+            var stockController = new StockController(mockRep.Object, mockLog.Object);
+            var res = await stockController.BuyStock(pers, symbol, amount) as BadRequestResult;
+            Assert.Equal("Fault in buyStock", "Fault in buyStock");
+        }
+
+        [Fact]
+        public async Task GetTransaction_Ok()
+        {
             var transaction = new Transaction
             {
                 Id = 1,
@@ -139,115 +194,97 @@ namespace UnitTesting_aksjeapp
                 TotalPrice = 3500
             };
 
-            mockRep.Setup(k => k.GetTransaction(transaction.SocialSecurityNumber, transaction.Id)).ReturnsAsync(transaction);
+            mockRep.Setup(k => k.GetTransaction(transaction.SocialSecurityNumber, transaction.Id))
+                .ReturnsAsync(transaction);
             var stockController = new StockController(mockRep.Object, mockLog.Object);
-            var res = await stockController.GetTransaction(transaction.SocialSecurityNumber, transaction.Id) as OkObjectResult;
-            
+            var res =
+                await stockController.GetTransaction(transaction.SocialSecurityNumber,
+                    transaction.Id) as OkObjectResult;
+
             Assert.Equal(transaction, transaction);
-
         }
 
         [Fact]
-        public async Task BuyStock()
+        public async Task GetTransaction_NotOk()
         {
-            //Arrange
             var pers = "12345678910";
-            var symbol = "AAPL";
-            var amount = 10;
+            var id = 10;
 
-            mockRep.Setup(k => k.BuyStock(pers, symbol.ToUpper(), amount)).ReturnsAsync(true);
+            mockRep.Setup(k => k.GetTransaction(pers, id)).ReturnsAsync(() => null);
 
-            //Act
-            var res = await _stockController.BuyStock(pers, symbol, amount) as OkObjectResult;
-            //Assert
-            Assert.Equal("Stock bought", res.Value);
+            var result = await _stockController.GetTransaction(pers, id) as BadRequestObjectResult;
 
-        }
-
-
-        [Fact]
-        public async Task SellStock()
-        {
-            //Arrange
-            var pers = "12345678910";
-            var symbol = "AAPL";
-            var amount = 10;
-
-            mockRep.Setup(k => k.SellStock(pers, symbol.ToUpper(), amount)).ReturnsAsync(true);
-
-            //Act
-            var res = await _stockController.SellStock(pers, symbol, amount) as OkObjectResult;
             // Assert
-            Assert.Equal("Stock sold", res.Value);
-
+            Assert.Equal("Transaction does not exist", result.Value);
         }
 
-        [Fact]
-        public async Task GetNews_Ok()
+    [Fact]
+    public async Task GetNews_Ok()
+    {
+        var myPublisher = new Publisher();
+        myPublisher.Name = "TestPublisher";
+
+        List<String> myStocks = new List<string>();
+        myStocks.Add("AAPL");
+        var myNews = new NewsResults
         {
-            var myPublisher = new Publisher();
-            myPublisher.Name = "TestPublisher";
+            Publisher = myPublisher,
+            Title = "Prices are skyrocketing",
+            Author = "Per Hansen",
+            Date = "2022-05-20",
+            Stocks = myStocks,
+            url = "localhost:3000"
+        };
 
-            List<String> myStocks = new List<string>();
-            myStocks.Add("AAPL");
-            var myNews = new NewsResults
-            {
-                Publisher = myPublisher,
-                Title = "Prices are skyrocketing",
-                Author = "Per Hansen",
-                Date = "2022-05-20",
-                Stocks = myStocks,
-                url = "localhost:3000"
-            };
+        News myNewsList = new News();
 
-            News myNewsList = new News();
+        List<NewsResults> myResultsList = new List<NewsResults>();
+        myNewsList.Results = myResultsList;
 
-            List<NewsResults> myResultsList = new List<NewsResults>();
-            myNewsList.Results = myResultsList;
+        myResultsList.Add(myNews);
 
-            myResultsList.Add(myNews);
+        mockRep.Setup(k => k.GetNews("AAPL")).ReturnsAsync(myNewsList);
+        var stockController = new StockController(mockRep.Object, mockLog.Object);
 
-            mockRep.Setup(k => k.GetNews("AAPL")).ReturnsAsync(myNewsList);
-            var stockController = new StockController(mockRep.Object, mockLog.Object);
+        var res = await stockController.GetNews("AAPL") as OkObjectResult;
 
-            var res = await stockController.GetNews("AAPL") as OkObjectResult;
-
-            Assert.Equal(myNewsList, res.Value);
-        }
-        [Fact]
-        public async Task GetNews_empty()
-        {
-            var myPublisher = new Publisher();
-            myPublisher.Name = "TestPublisher";
-
-            List<String> myStocks = new List<string>();
-            myStocks.Add("AAPL");
-            var myNews = new NewsResults
-            {
-                Publisher = myPublisher,
-                Title = "Prices are skyrocketing",
-                Author = "Per Hansen",
-                Date = "2022-05-20",
-                Stocks = myStocks,
-                url = "localhost:3000"
-            };
-
-            News myNewsList = new News();
-
-            List<NewsResults> myResultsList = new List<NewsResults>();
-            myNewsList.Results = myResultsList;
-
-            myResultsList.Add(myNews);
-            var symbol = "AAPL";
-
-            mockRep.Setup(k => k.GetNews(symbol)).ReturnsAsync(new News());
-            var stockController = new StockController(mockRep.Object, mockLog.Object);
-
-            var res = await stockController.GetNews(symbol) as BadRequestObjectResult;
-
-            //Assert.Equal(myNewsList, res.Value);
-            Assert.Equal("Could not find any news", res.Value);
-        }
+        Assert.Equal(myNewsList, res.Value);
     }
+
+    [Fact]
+    public async Task GetNews_empty()
+    {
+        var myPublisher = new Publisher();
+        myPublisher.Name = "TestPublisher";
+
+        List<String> myStocks = new List<string>();
+        myStocks.Add("AAPL");
+        var myNews = new NewsResults
+        {
+            Publisher = myPublisher,
+            Title = "Prices are skyrocketing",
+            Author = "Per Hansen",
+            Date = "2022-05-20",
+            Stocks = myStocks,
+            url = "localhost:3000"
+        };
+
+        News myNewsList = new News();
+
+        List<NewsResults> myResultsList = new List<NewsResults>();
+        myNewsList.Results = myResultsList;
+
+        myResultsList.Add(myNews);
+        var symbol = "AAPL";
+
+        mockRep.Setup(k => k.GetNews(symbol)).ReturnsAsync(new News());
+        var stockController = new StockController(mockRep.Object, mockLog.Object);
+
+        var res = await stockController.GetNews(symbol) as BadRequestObjectResult;
+
+        //Assert.Equal(myNewsList, res.Value);
+        Assert.Equal("Could not find any news", res.Value);
+    }
+}
     
 }

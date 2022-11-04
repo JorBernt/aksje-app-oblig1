@@ -19,8 +19,7 @@ namespace aksjeapp_backend.DAL
             return aksjeListe;
         }
 
-        public async Task<StockPrices>
-            GetStockPrices(string symbol, string fromDate, string toDate) // dato skal skrives som "YYYY-MM-DD"
+        public async Task<StockPrices> GetStockPrices(string symbol, string fromDate, string toDate) // dato skal skrives som "YYYY-MM-DD"
         {
             var stock = await PolygonAPI.GetStockPrices(symbol, fromDate, toDate, 1);
 

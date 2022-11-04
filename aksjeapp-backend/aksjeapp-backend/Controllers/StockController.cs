@@ -20,7 +20,7 @@ namespace aksjeapp_backend.Controller
         public async Task<ActionResult> GetAllStocks()
         {
             var allStocks = await _db.GetAllStocks();
-            if (allStocks == null)
+            if (allStocks.Count == 0 || allStocks == null)
             {
                 _logger.LogInformation("Not found");
                 return BadRequest("Not found");
@@ -205,10 +205,10 @@ namespace aksjeapp_backend.Controller
         {
             var news = await _db.GetNews(symbol.ToUpper());
 
-            if (news == null)
+            if (news.Results == null)
             {
                 _logger.LogInformation("Fault");
-                return BadRequest();
+                return BadRequest("Could not find any news");
             }
 
             return Ok(news);

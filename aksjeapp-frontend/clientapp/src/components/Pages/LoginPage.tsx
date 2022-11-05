@@ -3,10 +3,15 @@ import Navbar from "../Navbar/Navbar";
 import Card from "../UI/Card/Card";
 import InputField from "../UI/Input/InputField";
 import Button from "../UI/Input/Button";
+import {useNavigate} from "react-router-dom";
 
 const LoginPage = () => {
+    const navigate = useNavigate();
     const handleOnClick = () => {
 
+    }
+    const handleNavigateClick = () => {
+        navigate("/register")
     }
     return (
         <>
@@ -22,7 +27,8 @@ const LoginPage = () => {
                         </div>
                         <div className="mt-4 flex flex-col justify-center items-center">
                             <p>Don't have an account?</p>
-                            <a href={"/"} className={"underline decoration-inherit text-blue-500"}>Register here</a>
+                            <a href={"/register"} onClick={handleNavigateClick}
+                               className={"underline decoration-inherit text-blue-500"}>Register here</a>
                         </div>
                     </div>
                 </Card>

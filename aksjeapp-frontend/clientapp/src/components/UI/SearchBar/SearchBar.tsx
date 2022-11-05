@@ -37,7 +37,7 @@ const SearchBar: React.FC<Props> = () => {
     return (
         <>
             <div
-                className="flex justify-between bg-white rounded-2xl shadow-inner shadow-gray-400 overflow-hidden justi">
+                className="flex justify-between bg-white rounded-2xl shadow-inner shadow-gray-400 overflow-hidden ">
                 <input className="w-[32rem] bg-transparent focus:border focus:border-pink-500 rounded-l-2xl pl-4"
                        style={{outline: "none"}} type="text" placeholder="Search stocks..." ref={inputRef}
                        onChange={search}/>

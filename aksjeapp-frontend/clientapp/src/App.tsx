@@ -5,6 +5,7 @@ import LandingPage from "./components/Pages/LandingPage";
 import ProfilePage from "./components/Pages/ProfilePage";
 import SingleStockPage from "./components/Pages/SingleStockPage";
 import Stocks from "./components/Pages/Stocks";
+import LoginPage from "./components/Pages/LoginPage";
 
 function App() {
     return (
@@ -14,6 +15,7 @@ function App() {
                 <Route path="/profile" element={<ProfilePage/>}/>
                 <Route path="/singleStock" element={<SingleStockPage/>}/>
                 <Route path="/stocks" element={<Stocks/>}/>
+                <Route path="/login" element={<LoginPage/>}/>
             </Routes>
         </Router>
     );

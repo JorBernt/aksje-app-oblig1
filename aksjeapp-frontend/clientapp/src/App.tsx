@@ -6,6 +6,7 @@ import ProfilePage from "./components/Pages/ProfilePage";
 import SingleStockPage from "./components/Pages/SingleStockPage";
 import Stocks from "./components/Pages/Stocks";
 import LoginPage from "./components/Pages/LoginPage";
+import RegisterPage from "./components/Pages/RegisterPage";
 
 function App() {
     return (
@@ -16,6 +17,7 @@ function App() {
                 <Route path="/singleStock" element={<SingleStockPage/>}/>
                 <Route path="/stocks" element={<Stocks/>}/>
                 <Route path="/login" element={<LoginPage/>}/>
+                <Route path="/register" element={<RegisterPage/>}/>
             </Routes>
         </Router>
     );

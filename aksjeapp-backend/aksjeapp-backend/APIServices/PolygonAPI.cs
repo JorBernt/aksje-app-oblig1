@@ -26,7 +26,7 @@ namespace aksjeapp_backend.DAL
                     }
                     if (json.Contains("error"))
                     {
-                        if(json.Contains("could not parse"))
+                        if (json.Contains("could not parse"))
                         {
                             return null;
                         }

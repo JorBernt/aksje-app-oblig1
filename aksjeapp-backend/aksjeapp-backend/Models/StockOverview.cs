@@ -1,6 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-
-namespace aksjeapp_backend.Models;
+﻿namespace aksjeapp_backend.Models;
 
 public class StockOverview
 {

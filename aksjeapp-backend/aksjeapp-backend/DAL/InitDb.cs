@@ -48,7 +48,7 @@ namespace aksjeapp_backend.DAL
                     Balance = 100_000,
                     PostalArea = postalArea1
                 };
-                
+
                 context.Customers.Add(customer1);
                 context.SaveChanges();
             }

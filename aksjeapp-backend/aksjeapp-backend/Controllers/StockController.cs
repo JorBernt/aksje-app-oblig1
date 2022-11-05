@@ -1,7 +1,6 @@
 ﻿using aksjeapp_backend.DAL;
 using aksjeapp_backend.Models;
 using Microsoft.AspNetCore.Mvc;
-using Results = aksjeapp_backend.Models.Results;
 
 namespace aksjeapp_backend.Controller
 {
@@ -32,12 +31,13 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> GetStockPrices(string symbol, string fromDate, string toDate) // dato skal skrives som "YYYY-MM-DD"
         {
-            if (symbol == null)
+            if (symbol == "")
             {
                 _logger.LogInformation("Empty stock parameter");
-                return BadRequest("Symbol is empty");
+                return NoContent();
             }
             var stockPrices = await _db.GetStockPrices(symbol.ToUpper(), fromDate, toDate);
+
             if (stockPrices == null)
             {
                 _logger.LogInformation("GetStockPrices not found");

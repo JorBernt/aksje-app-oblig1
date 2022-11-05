@@ -66,6 +66,63 @@ namespace UnitTesting_aksjeapp
         }
 
         // GetStockPrices
+        [Fact]
+        public async Task GetStockPrices_Ok()
+        {
+            //Arrange
+            var results = new List<Results>();
+            results.Add(new Results { Date = "2022-05-11", ClosePrice = 10.00, OpenPrice = 9.00, HighestPrice = 12.00, LowestPrice = 9.00 });
+            results.Add(new Results { Date = "2022-05-12", ClosePrice = 11.00, OpenPrice = 9.00, HighestPrice = 13.50, LowestPrice = 8.00 });
+
+            var stockPrices = new StockPrices
+            {
+                Symbol = "AAPL",
+                Name = "Apple Inc Common Stock",
+                Last = 12.00,
+                Change = 1.4,
+                TodayDifference = 0.5,
+                Buy = 100,
+                Sell = 40,
+                High = 13.00,
+                Low = 9.00,
+                Turnover = 10000000,
+                results = results
+            };
+
+            mockRep.Setup(k => k.GetStockPrices("AAPL", "2022-05-11", "2022-05-12")).ReturnsAsync(stockPrices);
+
+            //Act
+            var result = await _stockController.GetStockPrices("AAPL", "2022-05-11", "2022-05-12") as OkObjectResult;
+
+            //Assert
+            Assert.Equal(stockPrices, result.Value);
+        }
+
+        [Fact]
+        public async Task GetStockPrices_EmptySymbol()
+        {
+            //Arrange
+           
+
+            //Act
+            var result = await _stockController.GetStockPrices("", "", "") as NoContentResult;
+
+            //Assert       HTTP NoContent has status code 204
+            Assert.Equal(204,result.StatusCode);
+        }
+
+        [Fact]
+        public async Task GetStockPrices_Empty()
+        {
+            //Arrange
+            mockRep.Setup(k => k.GetStockPrices("AAPL","","")).ReturnsAsync(() => null);
+
+            //Act
+            var result = await _stockController.GetStockPrices("AAPL","","") as BadRequestObjectResult;
+
+            //Assert   HTTP NoContent has status code 204
+            Assert.Equal("Not found", result.Value);
+        }
 
         [Fact]
         public async Task BuyStock()
@@ -193,9 +250,9 @@ namespace UnitTesting_aksjeapp
             Assert.Null(results);
         }
 
-        
 
-        
+        //GetSpecificTransactions
+
 
         [Fact]
         public async Task GetTransaction_Ok()
@@ -234,166 +291,178 @@ namespace UnitTesting_aksjeapp
             Assert.Equal("Transaction does not exist", result.Value);
         }
 
+        //UpdateTransaction
+
+        //DeleteTransaction
+
+        //StockChange
+
+        //GetStockOverview
+
+        //GetWinners
+
+        //GetLosers
+
         [Fact]
-    public async Task GetCustomerPortfolio_Ok()
-    {
-        var SSN = "12345678910";
-
-        List<Transaction> myTransactions = new List<Transaction>();
-        
-        myTransactions.Add(new Transaction
+        public async Task GetCustomerPortfolio_Ok()
         {
-            Id = 1,
-            Amount = 3,
-            Awaiting = false,
-            Date = "2022-05-20",
-            Symbol = "APLL",
-            TotalPrice = 456,
-            SocialSecurityNumber = SSN
-        });
-        myTransactions.Add(new Transaction
+            var SSN = "12345678910";
+
+            List<Transaction> myTransactions = new List<Transaction>();
+
+            myTransactions.Add(new Transaction
+            {
+                Id = 1,
+                Amount = 3,
+                Awaiting = false,
+                Date = "2022-05-20",
+                Symbol = "APLL",
+                TotalPrice = 456,
+                SocialSecurityNumber = SSN
+            });
+            myTransactions.Add(new Transaction
+            {
+                Id = 2,
+                Amount = 6,
+                Awaiting = false,
+                Date = "2022-10-01",
+                Symbol = "TESL",
+                TotalPrice = 154,
+                SocialSecurityNumber = SSN
+            });
+            myTransactions.Add(new Transaction
+            {
+                Id = 3,
+                Amount = 5,
+                Awaiting = false,
+                Date = "2022-09-14",
+                Symbol = "ALD",
+                TotalPrice = 785,
+                SocialSecurityNumber = SSN
+            });
+
+            Portfolio myPortfolio = new Portfolio();
+
+            myPortfolio.PortfolioId = 1;
+            myPortfolio.SocialSecurityNumber = "12345678910";
+            myPortfolio.Value = 1000;
+
+            List<PortfolioList> myPortfolioList = new List<PortfolioList>();
+
+            myPortfolioList.Add(new PortfolioList
+            {
+                PortfolioListId = 1,
+                Symbol = "AAPL",
+                Name = "APPLE NAME",
+                Amount = 1000,
+                Change = 100.1,
+                Value = 20000.1,
+                PortfolioId = 1
+            });
+
+            var myCustomer = new Customer()
+            {
+                SocialSecurityNumber = SSN,
+                FirstName = "Stevie",
+                LastName = "Wonder",
+                Address = "Bygaten 1",
+                Balance = 100000.20,
+                Transactions = myTransactions,
+                PostalCode = "2008",
+                PostCity = "Fjerdingby",
+                Portfolio = myPortfolio
+            };
+
+            mockRep.Setup(k => k.GetCustomerPortfolio(SSN)).ReturnsAsync(myCustomer);
+            var res = await _stockController.GetCustomerPortfolio(SSN) as OkObjectResult;
+
+            Assert.Equal(myCustomer, res.Value);
+        }
+
+        [Fact]
+        public async Task GetCustomerPortfolio_Empty()
         {
-            Id = 2,
-            Amount = 6,
-            Awaiting = false,
-            Date = "2022-10-01",
-            Symbol = "TESL",
-            TotalPrice = 154,
-            SocialSecurityNumber = SSN
-        });
-        myTransactions.Add(new Transaction
+            var SSN = "12345678910";
+
+            mockRep.Setup(k => k.GetCustomerPortfolio(SSN)).ReturnsAsync(() => null);
+            var res = await _stockController.GetCustomerPortfolio(SSN) as BadRequestObjectResult;
+
+            Assert.Equal("Customer not found", res.Value);
+        }
+
+        [Fact]
+        public async Task GetNews_Ok()
         {
-            Id = 3,
-            Amount = 5,
-            Awaiting = false,
-            Date = "2022-09-14",
-            Symbol = "ALD",
-            TotalPrice = 785,
-            SocialSecurityNumber = SSN
-        });
+            var myPublisher = new Publisher();
+            myPublisher.Name = "TestPublisher";
 
-        Portfolio myPortfolio = new Portfolio();
+            List<String> myStocks = new List<string>();
+            myStocks.Add("AAPL");
+            var myNews = new NewsResults
+            {
+                Publisher = myPublisher,
+                Title = "Prices are skyrocketing",
+                Author = "Per Hansen",
+                Date = "2022-05-20",
+                Stocks = myStocks,
+                url = "localhost:3000"
+            };
 
-        myPortfolio.PortfolioId = 1;
-        myPortfolio.SocialSecurityNumber = "12345678910";
-        myPortfolio.Value = 1000;
+            News myNewsList = new News();
 
-        List<PortfolioList> myPortfolioList = new List<PortfolioList>();
-        
-        myPortfolioList.Add( new PortfolioList
+            List<NewsResults> myResultsList = new List<NewsResults>();
+            myNewsList.Results = myResultsList;
+
+            myResultsList.Add(myNews);
+
+            mockRep.Setup(k => k.GetNews("AAPL")).ReturnsAsync(myNewsList);
+            var stockController = new StockController(mockRep.Object, mockLog.Object);
+
+            var res = await stockController.GetNews("AAPL") as OkObjectResult;
+
+            Assert.Equal(myNewsList, res.Value);
+        }
+
+        [Fact]
+        public async Task GetNews_empty()
         {
-            PortfolioListId = 1,
-            Symbol = "AAPL",
-            Name = "APPLE NAME",
-            Amount = 1000,
-            Change = 100.1,
-            Value = 20000.1,
-            PortfolioId = 1
-        });
-        
-        var myCustomer = new Customer()
+            var symbol = "AAPL";
+
+            mockRep.Setup(k => k.GetNews(symbol)).ReturnsAsync(new News());
+
+            var res = await _stockController.GetNews(symbol) as BadRequestObjectResult;
+
+            //Assert.Equal(myNewsList, res.Value);
+            Assert.Equal("Could not find any news", res.Value);
+        }
+
+        [Fact]
+        public async Task GetStockName_Ok()
         {
-            SocialSecurityNumber = SSN,
-            FirstName = "Stevie",
-            LastName = "Wonder",
-            Address = "Bygaten 1",
-            Balance = 100000.20,
-            Transactions = myTransactions,
-            PostalCode = "2008",
-            PostCity = "Fjerdingby",
-            Portfolio = myPortfolio
-        };
+            var symbol = "AAPL";
 
-        mockRep.Setup(k => k.GetCustomerPortfolio(SSN)).ReturnsAsync(myCustomer);
-        var res = await _stockController.GetCustomerPortfolio(SSN) as OkObjectResult;
-        
-        Assert.Equal(myCustomer, res.Value);
-    }
-    
-    [Fact]
-    public async Task GetCustomerPortfolio_Empty()
-    {
-        var SSN = "12345678910";
+            var name = "Apple inc. Common stock";
 
-        mockRep.Setup(k => k.GetCustomerPortfolio(SSN)).ReturnsAsync(() => null);
-        var res = await _stockController.GetCustomerPortfolio(SSN) as BadRequestObjectResult;
-        
-        Assert.Equal("Customer not found", res.Value);
-    }
+            mockRep.Setup(k => k.GetStockName(symbol)).ReturnsAsync(name);
+            var res = await _stockController.GetStockName(symbol) as OkObjectResult;
 
-    [Fact]
-    public async Task GetNews_Ok()
-    {
-        var myPublisher = new Publisher();
-        myPublisher.Name = "TestPublisher";
+            Assert.Equal(name, res.Value);
 
-        List<String> myStocks = new List<string>();
-        myStocks.Add("AAPL");
-        var myNews = new NewsResults
+        }
+
+        [Fact]
+        public async Task GetStockName_Empty()
         {
-            Publisher = myPublisher,
-            Title = "Prices are skyrocketing",
-            Author = "Per Hansen",
-            Date = "2022-05-20",
-            Stocks = myStocks,
-            url = "localhost:3000"
-        };
+            var symbol = "AAPL";
 
-        News myNewsList = new News();
+            var name = "";
 
-        List<NewsResults> myResultsList = new List<NewsResults>();
-        myNewsList.Results = myResultsList;
+            mockRep.Setup(k => k.GetStockName(symbol)).ReturnsAsync(name);
+            var res = await _stockController.GetStockName(symbol) as BadRequestObjectResult;
 
-        myResultsList.Add(myNews);
+            Assert.Equal("Could not find a name for the symbol", res.Value);
 
-        mockRep.Setup(k => k.GetNews("AAPL")).ReturnsAsync(myNewsList);
-        var stockController = new StockController(mockRep.Object, mockLog.Object);
-
-        var res = await stockController.GetNews("AAPL") as OkObjectResult;
-
-        Assert.Equal(myNewsList, res.Value);
-    }
-    
-    [Fact]
-    public async Task GetNews_empty()
-    {
-        var symbol = "AAPL";
-
-        mockRep.Setup(k => k.GetNews(symbol)).ReturnsAsync(new News());
-
-        var res = await _stockController.GetNews(symbol) as BadRequestObjectResult;
-
-        //Assert.Equal(myNewsList, res.Value);
-        Assert.Equal("Could not find any news", res.Value);
-    }
-
-    [Fact]
-    public async Task GetStockName_Ok()
-    {
-        var symbol = "AAPL";
-
-        var name = "Apple inc. Common stock";
-
-        mockRep.Setup(k => k.GetStockName(symbol)).ReturnsAsync(name);
-        var res = await _stockController.GetStockName(symbol) as OkObjectResult;
-
-        Assert.Equal(name, res.Value);
-
-    }
-
-    [Fact]
-    public async Task GetStockName_Empty()
-    {
-        var symbol = "AAPL";
-
-        var name = "";
-
-        mockRep.Setup(k => k.GetStockName(symbol)).ReturnsAsync(name);
-        var res = await _stockController.GetStockName(symbol) as BadRequestObjectResult;
-
-        Assert.Equal("Could not find a name for the symbol", res.Value);
-
-    }
+        }
 
 
     }

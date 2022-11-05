@@ -1,7 +1,6 @@
 ﻿using aksjeapp_backend.DAL;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Diagnostics.CodeAnalysis;
 
 namespace aksjeapp_backend.Models
 {
@@ -11,7 +10,7 @@ namespace aksjeapp_backend.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int PortfolioId { get; set; }
 
-        
+
         public string SocialSecurityNumber { get; set; }
 
         public virtual List<PortfolioList> StockPortfolio { get; set; }

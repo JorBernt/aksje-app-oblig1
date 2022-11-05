@@ -118,7 +118,7 @@ namespace aksjeapp_backend.DAL
                 return false;
             }
         }
-        
+
         public async Task<bool> SellStock(string socialSecurityNumber, string symbol, int number)
         {
             int number1 = number;
@@ -221,50 +221,50 @@ namespace aksjeapp_backend.DAL
             {
                 return null;
             }
-                // Lists all transactions that belongs to the owner
-                var transactionsfromDb = await _db.TransactionsBought.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
+            // Lists all transactions that belongs to the owner
+            var transactionsfromDb = await _db.TransactionsBought.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
 
-                var transactions = new List<Transaction>();
+            var transactions = new List<Transaction>();
 
 
-                foreach (var transactionDB in transactionsfromDb)
+            foreach (var transactionDB in transactionsfromDb)
+            {
+                var transaction1 = new Transaction
                 {
-                    var transaction1 = new Transaction
-                    {
-                        Id = transactionDB.BoughtId,
-                        SocialSecurityNumber = transactionDB.SocialSecurityNumber,
-                        Date = transactionDB.Date,
-                        Symbol = transactionDB.Symbol,
-                        Amount = transactionDB.Amount,
-                        TotalPrice = transactionDB.TotalPrice
-                    };
-                    if (transaction1.Date.Equals(GetTodaysDate().ToString("yyyy-MM-dd")))
-                    {
-                        transaction1.Awaiting = true;
-                    }
-                    transactions.Add(transaction1);
-
-                }
-
-                // Lists all the transactions that is sold too, just as negative number
-                var transactionsfromDbSold = await _db.TransactionsSold.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
-
-                foreach (var transactionDBSold in transactionsfromDbSold)
+                    Id = transactionDB.BoughtId,
+                    SocialSecurityNumber = transactionDB.SocialSecurityNumber,
+                    Date = transactionDB.Date,
+                    Symbol = transactionDB.Symbol,
+                    Amount = transactionDB.Amount,
+                    TotalPrice = transactionDB.TotalPrice
+                };
+                if (transaction1.Date.Equals(GetTodaysDate().ToString("yyyy-MM-dd")))
                 {
-                    var transaction1 = new Transaction
-                    {
-                        Id = -1,
-                        SocialSecurityNumber = transactionDBSold.SocialSecurityNumber,
-                        Date = transactionDBSold.Date,
-                        Symbol = transactionDBSold.Symbol,
-                        Amount = -transactionDBSold.Amount,
-                        TotalPrice = transactionDBSold.TotalPrice
-                    };
-
-                    transactions.Add(transaction1);
-
+                    transaction1.Awaiting = true;
                 }
-                return transactions;
+                transactions.Add(transaction1);
+
+            }
+
+            // Lists all the transactions that is sold too, just as negative number
+            var transactionsfromDbSold = await _db.TransactionsSold.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
+
+            foreach (var transactionDBSold in transactionsfromDbSold)
+            {
+                var transaction1 = new Transaction
+                {
+                    Id = -1,
+                    SocialSecurityNumber = transactionDBSold.SocialSecurityNumber,
+                    Date = transactionDBSold.Date,
+                    Symbol = transactionDBSold.Symbol,
+                    Amount = -transactionDBSold.Amount,
+                    TotalPrice = transactionDBSold.TotalPrice
+                };
+
+                transactions.Add(transaction1);
+
+            }
+            return transactions;
 
         }
 
@@ -450,11 +450,11 @@ namespace aksjeapp_backend.DAL
                 }
                 List<Models.Results> results = stockPrice1.results;
 
-                    double res1 = results[^1].ClosePrice;
-                    double res2 = results[^2].ClosePrice;
-                    double resDiff = res1 - res2;
-                    double resAvg = (res1 + res2) / 2;
-                    double change = (resDiff / ((resAvg) / 2) * 100) / 2;
+                double res1 = results[^1].ClosePrice;
+                double res2 = results[^2].ClosePrice;
+                double resDiff = res1 - res2;
+                double resAvg = (res1 + res2) / 2;
+                double change = (resDiff / ((resAvg) / 2) * 100) / 2;
 
                 stockChange = new StockChangeValue()
                 {

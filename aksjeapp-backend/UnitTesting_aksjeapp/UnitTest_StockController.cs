@@ -65,6 +65,75 @@ namespace UnitTesting_aksjeapp
             Assert.Equal("Not found", result.Value);
         }
 
+        // GetStockPrices
+
+        [Fact]
+        public async Task BuyStock()
+        {
+            //Arrange
+            var pers = "12345678910";
+            var symbol = "AAPL";
+            var amount = 10;
+
+            mockRep.Setup(k => k.BuyStock(pers, symbol.ToUpper(), amount)).ReturnsAsync(true);
+            var stockController = new StockController(mockRep.Object, mockLog.Object);
+
+            //Act
+            var res = await stockController.BuyStock(pers, symbol, amount) as OkObjectResult;
+
+            //Assert
+            Assert.Equal("Stock bought", res.Value);
+        }
+
+        [Fact]
+        public async Task BuyStock_Empty()
+        {
+            //Arrange
+            var pers = "12345678910";
+            var symbol = "AAPL";
+            var amount = 10;
+            mockRep.Setup(k => k.BuyStock(pers, symbol.ToUpper(), amount)).ReturnsAsync(false);
+            var stockController = new StockController(mockRep.Object, mockLog.Object);
+
+            //Act
+            var res = await stockController.BuyStock(pers, symbol, amount) as BadRequestObjectResult;
+
+            //Assert
+            Assert.Equal("Fault in buyStock", res.Value);
+        }
+
+        [Fact]
+        public async Task SellStock()
+        {
+            var pers = "12345678910";
+            var symbol = "AAPL";
+            var amount = 10;
+
+            mockRep.Setup(k => k.SellStock(pers, symbol.ToUpper(), amount)).ReturnsAsync(true);
+            var stockController = new StockController(mockRep.Object, mockLog.Object);
+
+            //
+            var res = await stockController.SellStock(pers, symbol, amount) as OkObjectResult;
+
+            Assert.Equal("Stock sold", res.Value);
+        }
+
+        [Fact]
+        public async Task SellStock_Empty()
+        {
+            var pers = "12345678910";
+            var symbol = "AAPL";
+            var amount = 10;
+            mockRep.Setup(k => k.SellStock(pers, symbol.ToUpper(), amount)).ReturnsAsync(false);
+            var stockController = new StockController(mockRep.Object, mockLog.Object);
+            var res = await stockController.SellStock(pers, symbol, amount) as BadRequestObjectResult;
+
+            Assert.Equal("Fault in sellStock", res.Value);
+        }
+
+        //SearchResult
+
+
         [Fact]
         public async Task GetAllTransactions_Ok()
         {
@@ -124,62 +193,9 @@ namespace UnitTesting_aksjeapp
             Assert.Null(results);
         }
 
-        [Fact]
-        public async Task SellStock()
-        {
-            var pers = "12345678910";
-            var symbol = "AAPL";
-            var amount = 10;
+        
 
-            mockRep.Setup(k => k.SellStock(pers, symbol.ToUpper(), amount)).ReturnsAsync(true);
-            var stockController = new StockController(mockRep.Object, mockLog.Object);
-
-            //
-            var res = await stockController.SellStock(pers, symbol, amount) as OkObjectResult;
-
-            Assert.Equal("Stock sold", res.Value);
-        }
-
-        [Fact]
-        public async Task SellStock_Empty()
-        {
-            var pers = "12345678910";
-            var symbol = "AAPL";
-            var amount = 10;
-            mockRep.Setup(k => k.SellStock(pers, symbol.ToUpper(), amount)).ReturnsAsync(false);
-            var stockController = new StockController(mockRep.Object, mockLog.Object);
-            var res = await stockController.SellStock(pers, symbol, amount) as BadRequestResult;
-
-            Assert.Equal("Fault in sellStock", "Fault in sellStock");
-        }
-
-        [Fact]
-        public async Task BuyStock()
-        {
-            var pers = "12345678910";
-            var symbol = "AAPL";
-            var amount = 10;
-
-            mockRep.Setup(k => k.BuyStock(pers, symbol.ToUpper(), amount)).ReturnsAsync(true);
-            var stockController = new StockController(mockRep.Object, mockLog.Object);
-
-            //
-            var res = await stockController.BuyStock(pers, symbol, amount) as OkObjectResult;
-
-            Assert.Equal("Stock bought", res.Value);
-        }
-
-        [Fact]
-        public async Task BuyStock_Empty()
-        {
-            var pers = "12345678910";
-            var symbol = "AAPL";
-            var amount = 10;
-            mockRep.Setup(k => k.BuyStock(pers, symbol.ToUpper(), amount)).ReturnsAsync(false);
-            var stockController = new StockController(mockRep.Object, mockLog.Object);
-            var res = await stockController.BuyStock(pers, symbol, amount) as BadRequestResult;
-            Assert.Equal("Fault in buyStock", "Fault in buyStock");
-        }
+        
 
         [Fact]
         public async Task GetTransaction_Ok()

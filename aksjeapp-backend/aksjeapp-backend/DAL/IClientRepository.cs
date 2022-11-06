@@ -3,6 +3,6 @@
 
     public interface IClientRepository
     {
-        
+        Task<bool> RegisterCustomer(Customer customer);
     }
 }

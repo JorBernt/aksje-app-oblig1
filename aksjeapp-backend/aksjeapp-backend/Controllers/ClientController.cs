@@ -13,5 +13,17 @@ namespace aksjeapp_backend.Controller
             _db = db;
             _logger = logger;
         }
+
+        [HttpPost]
+        public async Task<ActionResult> RegisterCustomer([FromBody] Customer customer)
+        {
+            var returnOk = await _db.RegisterCustomer(customer);
+            if (!returnOk)
+            {
+                _logger.LogInformation("Fault in registerCustomer");
+                return BadRequest("Fault in registerCustomer");
+            }
+            return Ok("Customer registered");
+        }
     }
 }

@@ -18,7 +18,7 @@ const LoginPage = () => {
             <Navbar/>
             <div className="flex justify-center mt-32">
                 <Card>
-                    <div className="flex flex-col h-fit items-center">
+                    <div className="flex flex-col h-fit items-center w-72">
                         <h1 className={"text-center text-2xl mb-4"}>Login</h1>
                         <InputField type={"text"} label={"Email"}/>
                         <InputField type={"password"} label={"Password"}/>

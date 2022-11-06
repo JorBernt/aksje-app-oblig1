@@ -73,7 +73,7 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> SearchResults(string keyPhrase)
         {
-            if (keyPhrase == null)
+            if (keyPhrase == "")
             {
                 return BadRequest("KeyPhrase is empty");
             }

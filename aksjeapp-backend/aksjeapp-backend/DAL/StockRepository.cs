@@ -195,7 +195,7 @@ namespace aksjeapp_backend.DAL
         {
             try
             {
-                if (keyPhrase == "")
+                if (keyPhrase.Equals(""))
                 {
                     return null;
                 }
@@ -208,7 +208,7 @@ namespace aksjeapp_backend.DAL
             }
             catch
             {
-                return null;
+                return new List<Stock>();
             }
         }
 

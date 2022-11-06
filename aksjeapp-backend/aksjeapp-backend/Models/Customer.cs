@@ -16,7 +16,7 @@ namespace aksjeapp_backend.DAL
 
 
         private double balance;
-        public double TotalPrice
+        public double Balance
         {
             get
             {

@@ -102,23 +102,23 @@ namespace UnitTesting_aksjeapp
         public async Task GetStockPrices_EmptySymbol()
         {
             //Arrange
-           
+
 
             //Act
             var result = await _stockController.GetStockPrices("", "", "") as NoContentResult;
 
             //Assert       HTTP NoContent has status code 204
-            Assert.Equal(204,result.StatusCode);
+            Assert.Equal(204, result.StatusCode);
         }
 
         [Fact]
         public async Task GetStockPrices_Empty()
         {
             //Arrange
-            mockRep.Setup(k => k.GetStockPrices("AAPL","","")).ReturnsAsync(() => null);
+            mockRep.Setup(k => k.GetStockPrices("AAPL", "", "")).ReturnsAsync(() => null);
 
             //Act
-            var result = await _stockController.GetStockPrices("AAPL","","") as BadRequestObjectResult;
+            var result = await _stockController.GetStockPrices("AAPL", "", "") as BadRequestObjectResult;
 
             //Assert   HTTP NoContent has status code 204
             Assert.Equal("Not found", result.Value);
@@ -188,8 +188,74 @@ namespace UnitTesting_aksjeapp
             Assert.Equal("Fault in sellStock", res.Value);
         }
 
-        //SearchResult
+        //TODO: SearchResult
+        [Fact]
+        public async Task SearchResult_Ok()
+        {
+            //Arrange
+            var stock1 = new Stock
+            {
+                Symbol = "AAPL",
+                Name = "Apple Inc. Common Stock",
+                Country = "United States",
+                Sector = "Technology"
+            };
+            var stock2 = new Stock
+            {
+                Symbol = "ABMD",
+                Name = "ABIOMED Inc. Common Stock",
+                Country = "United States",
+                Sector = "Health Care"
+            };
+            var stock3 = new Stock
+            {
+                Symbol = "ABNB",
+                Name = "Airbnb Inc. Class A Common Stock",
+                Country = "United States",
+                Sector = "Consumer Discretionary"
+            };
+            var stockList = new List<Stock>();
+            stockList.Add(stock1);
+            stockList.Add(stock2);
+            stockList.Add(stock3);
 
+
+            mockRep.Setup(k => k.ReturnSearchResults("A")).ReturnsAsync(stockList);
+
+            //Act
+            var result = await _stockController.SearchResults("A") as OkObjectResult;
+
+            //Assert
+            Assert.Equal(stockList, result.Value);
+        }
+
+        [Fact]
+        public async Task SearchResult_EmptyKeyPhrase()
+        {
+            //Arrange
+            mockRep.Setup(k => k.ReturnSearchResults("")).ReturnsAsync(() => null);
+
+            //Act
+            var result = await _stockController.SearchResults("") as BadRequestObjectResult;
+
+            //Assert
+            Assert.Equal("KeyPhrase is empty", result.Value);
+        }
+
+        [Fact]
+        public async Task SearchResult_Empty()
+        {
+            //Arrange
+            var stockList = new List<Stock>();
+
+            mockRep.Setup(k => k.ReturnSearchResults("ABCDEFGH")).ReturnsAsync(stockList);
+
+            //Act
+            var result = await _stockController.SearchResults("ABCDEFGH") as OkObjectResult;
+
+            //Assert
+            Assert.Equal(stockList, result.Value);
+        }
 
         [Fact]
         public async Task GetAllTransactions_Ok()

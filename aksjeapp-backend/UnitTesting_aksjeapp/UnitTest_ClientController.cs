@@ -36,7 +36,7 @@ namespace UnitTesting_aksjeapp
             };
 
             mockRep.Setup(k => k.RegisterCustomer(customer)).ReturnsAsync(true);
-            var results =  await _clientController.RegisterCustomer(customer) as OkObjectResult;
+            var results = await _clientController.RegisterCustomer(customer) as OkObjectResult;
             Assert.Equal("Customer registered", results.Value);
         }
         [Fact]
@@ -62,7 +62,7 @@ namespace UnitTesting_aksjeapp
             };
 
             mockRep.Setup(k => k.RegisterCustomer(customer)).ReturnsAsync(false);
-            var results =  await _clientController.RegisterCustomer(customer) as BadRequestObjectResult;
+            var results = await _clientController.RegisterCustomer(customer) as BadRequestObjectResult;
             Assert.Equal("Fault in registerCustomer", results.Value);
         }
     }

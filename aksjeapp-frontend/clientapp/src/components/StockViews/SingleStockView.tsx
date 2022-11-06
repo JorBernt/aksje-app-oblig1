@@ -4,6 +4,7 @@ import Card from "../UI/Card/Card";
 import DataDisplay from "../UI/TextDisplay/DataDisplay";
 import {API} from "../../Constants";
 import LoadingSpinner from "../UI/LoadingSpinner";
+import {Simulate} from "react-dom/test-utils";
 
 
 interface Results {
@@ -79,7 +80,7 @@ const SingleStockView: React.FC<Props> = (props) => {
     return (
         <>
             <Card color={"default"} customCss="w-[42.5rem] m-5 p-5">
-                <p className="m text-2xl text-center pb-5">{name}</p>
+                <p className="m text-2xl text-center pb-5">{loading ? "Fetching name..." : name}</p>
                 <Chart data={stockPrices} loading={loading} max={max} min={min}/>
                 {loading &&
                     <>

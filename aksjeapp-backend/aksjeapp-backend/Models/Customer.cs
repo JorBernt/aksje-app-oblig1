@@ -13,7 +13,21 @@ namespace aksjeapp_backend.DAL
         public string LastName { get; set; }
         [RegularExpression(@"^[a-zA-ZæøåÆØÅ0-9. \-]{2,50$")]
         public string Address { get; set; }
-        public double Balance { get; set; } = 0;
+
+
+        private double balance;
+        public double TotalPrice
+        {
+            get
+            {
+                return this.balance;
+            }
+            set
+            {
+                this.balance = Math.Round(value, 2);
+            }
+        }
+
         public List<Transaction> Transactions { get; set; }
         [RegularExpression(@"^[0-9]{4}$")]
         public string PostalCode { get; set; }

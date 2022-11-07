@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "UnitTesting_aksjeapp": {
+      "commandName": "Project"
+    },
+    "Profile 1": {
+      "commandName": "Executable"
+    }
+  }
+}

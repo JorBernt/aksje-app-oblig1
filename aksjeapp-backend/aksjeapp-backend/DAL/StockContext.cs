@@ -26,7 +26,14 @@ namespace aksjeapp_backend.DAL
         public string PostalCode { get; set; }
         public string PostCity { get; set; }
     }
-
+    public class Users
+    {
+        [Key]
+        public int UserId { get; set; }
+        public string Username { get; set; }
+        public byte[] Password { get; set; }
+        public byte[] Salt { get; set; }
+    }
     public class TransactionBought
     {
 
@@ -130,6 +137,8 @@ namespace aksjeapp_backend.DAL
         public DbSet<Customers> Customers { get; set; }
 
         public DbSet<PostalAreas> PostalAreas { get; set; }
+
+        public DbSet<Users> Users { get; set; }
 
         public DbSet<TransactionBought> TransactionsBought { get; set; }
 

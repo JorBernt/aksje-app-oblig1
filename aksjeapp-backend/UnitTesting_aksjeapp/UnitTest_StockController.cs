@@ -439,9 +439,101 @@ namespace UnitTesting_aksjeapp
             Assert.Equal("Stock overview not found", res.Value);
         }
 
-        //GetWinners
+        [Fact]
+        public async Task GetWinners_Ok()
+        {
+            List<StockChangeValue> myList = new List<StockChangeValue>();
+            
+            var myStockChangeValue = new StockChangeValue()
+            {
+                StockId = 1,
+                Date = "2022-02-02",
+                Symbol = "AAPL",
+                Change = 1.01,
+                Value = 200
+            };
+            var myStockChangeValue2 = new StockChangeValue()
+            {
+                StockId = 2,
+                Date = "2022-05-02",
+                Symbol = "TSLA",
+                Change = 200.9,
+                Value = 1.2
+            };
+            var myStockChangeValue3 = new StockChangeValue()
+            {
+                StockId = 3,
+                Date = "2022-02-09",
+                Symbol = "GOOGL",
+                Change = 2.2,
+                Value = 1000.1
+            };
+            myList.Add(myStockChangeValue);
+            myList.Add(myStockChangeValue2);
+            myList.Add(myStockChangeValue3);
 
-        //GetLosers
+            mockRep.Setup(k => k.GetWinners()).ReturnsAsync(myList);
+            var res = await _stockController.GetWinners() as OkObjectResult;
+            
+            Assert.Equal(myList, res.Value);
+        }
+
+        [Fact]
+        public async Task GetWinners_Empty()
+        {
+            mockRep.Setup(k => k.GetWinners()).ReturnsAsync(() => null);
+            var res = await _stockController.GetWinners() as BadRequestObjectResult;
+            
+            Assert.Equal("Winners not found", res.Value);
+        }
+        
+        [Fact]
+        public async Task GetLosers_Ok()
+        {
+            List<StockChangeValue> myList = new List<StockChangeValue>();
+            
+            var myStockChangeValue = new StockChangeValue()
+            {
+                StockId = 1,
+                Date = "2022-02-02",
+                Symbol = "AAPL",
+                Change = -1.01,
+                Value = 200
+            };
+            var myStockChangeValue2 = new StockChangeValue()
+            {
+                StockId = 2,
+                Date = "2022-05-02",
+                Symbol = "TSLA",
+                Change = -200.9,
+                Value = 1.2
+            };
+            var myStockChangeValue3 = new StockChangeValue()
+            {
+                StockId = 3,
+                Date = "2022-02-09",
+                Symbol = "GOOGL",
+                Change = -2.2,
+                Value = 1000.1
+            };
+            myList.Add(myStockChangeValue);
+            myList.Add(myStockChangeValue2);
+            myList.Add(myStockChangeValue3);
+
+            mockRep.Setup(k => k.GetLosers()).ReturnsAsync(myList);
+            var res = await _stockController.GetLosers() as OkObjectResult;
+            
+            Assert.Equal(myList, res.Value);
+        }
+
+        [Fact]
+        public async Task GetLosers_Empty()
+        {
+            mockRep.Setup(k => k.GetLosers()).ReturnsAsync(() => null);
+            var res = await _stockController.GetLosers() as BadRequestObjectResult;
+            
+            Assert.Equal("Losers not found", res.Value);
+        }
 
         [Fact]
         public async Task GetCustomerPortfolio_Ok()

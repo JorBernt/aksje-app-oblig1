@@ -362,8 +362,82 @@ namespace UnitTesting_aksjeapp
         //DeleteTransaction
 
         //StockChange
+        [Fact]
+        public async Task StockChange_Ok()
+        {
+            var symbol = "AAPL";
+            
+            var myStockChangeValue = new StockChangeValue()
+            {
+                StockId = 1,
+                Date = "2022-02-02",
+                Symbol = "AAPL",
+                Change = 1.01,
+                Value = 200
+            };
 
-        //GetStockOverview
+            mockRep.Setup(k => k.StockChange(symbol)).ReturnsAsync(myStockChangeValue);
+            var res = await _stockController.StockChange(symbol) as OkObjectResult;
+            
+            Assert.Equal(myStockChangeValue, res.Value);
+        }
+
+        [Fact]
+        public async Task StockChange_Empty()
+        {
+            var symbol = "AAPL";
+
+            mockRep.Setup(k => k.StockChange(symbol)).ReturnsAsync(() => null);
+            var res = await _stockController.StockChange(symbol) as BadRequestObjectResult;
+            
+            Assert.Equal("Stockchange not found", res.Value);
+        }
+        
+        
+        [Fact]
+        public async Task GetStockOverview_Ok()
+        {
+            List<StockOverview> myList = new List<StockOverview>();
+
+            var myStockOverview = new StockOverview
+            {
+                Symbol = "AAPL",
+                Name = "Apple INC.",
+                Change = 1.01,
+                Value = 1
+            };
+            var myStockOverview2 = new StockOverview
+            {
+                Symbol = "GOOGL",
+                Name = "ALPHABET",
+                Change = 3.2,
+                Value = 90
+            };
+            var myStockOverview3 = new StockOverview
+            {
+                Symbol = "A",
+                Name = "TSLA MOTOR COMPANY",
+                Change = -2,
+                Value = 100
+            };
+
+            myList.Add(myStockOverview);
+            myList.Add(myStockOverview2);
+            myList.Add(myStockOverview3);
+
+            mockRep.Setup(k => k.GetStockOverview()).ReturnsAsync(myList);
+            var res = await _stockController.GetStockOverview() as OkObjectResult;
+            
+            Assert.Equal(myList, res.Value);
+        }
+
+        [Fact]
+        public async Task GetStockOverview_Empty()
+        {
+            mockRep.Setup(k => k.GetStockOverview()).ReturnsAsync(() => null);
+            var res = await _stockController.GetStockOverview() as BadRequestObjectResult;
+            Assert.Equal("Stock overview not found", res.Value);
+        }
 
         //GetWinners
 

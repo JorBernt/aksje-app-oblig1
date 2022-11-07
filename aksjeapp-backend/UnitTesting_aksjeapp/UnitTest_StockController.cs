@@ -318,6 +318,69 @@ namespace UnitTesting_aksjeapp
 
 
         //GetSpecificTransactions
+        [Fact]
+        public async Task GetSpecificTransactions_Ok()
+        {
+            //Arrange
+            var symbol = "AAPL";
+            var SSN = "12345678910";
+
+            List<Transaction> myList = new List<Transaction>();
+            
+            myList.Add(new Transaction
+            {
+                Id = 1,
+                Amount = 3,
+                Awaiting = false,
+                Date = "2022-05-20",
+                Symbol = "AAPL",
+                TotalPrice = 456,
+                SocialSecurityNumber = SSN
+            });
+            myList.Add(new Transaction
+            {
+                Id = 2,
+                Amount = 6,
+                Awaiting = false,
+                Date = "2022-10-01",
+                Symbol = "AAPL",
+                TotalPrice = 154,
+                SocialSecurityNumber = SSN
+            });
+            myList.Add(new Transaction
+            {
+                Id = 3,
+                Amount = 5,
+                Awaiting = false,
+                Date = "2022-09-14",
+                Symbol = "AAPl",
+                TotalPrice = 785,
+                SocialSecurityNumber = SSN
+            });
+
+            mockRep.Setup(k => k.GetSpecificTransactions(symbol)).ReturnsAsync(myList);
+            
+            //Act
+            var res = await _stockController.GetSpecificTransactions(symbol) as OkObjectResult;
+            
+            //Assert
+            Assert.Equal(myList, res.Value);
+        }
+        
+        [Fact]
+        public async Task GetSpecificTransactions_Empty()
+        {
+            //Arrange
+            var symbol = "AAPL";
+
+            mockRep.Setup(k => k.GetSpecificTransactions(symbol)).ReturnsAsync(new List<Transaction>());
+
+            //Act
+            var res = await _stockController.GetSpecificTransactions(symbol) as BadRequestObjectResult;
+
+            //Assert
+            Assert.Equal("No transactions", res.Value);
+        }
 
 
         [Fact]

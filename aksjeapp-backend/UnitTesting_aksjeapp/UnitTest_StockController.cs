@@ -318,6 +318,69 @@ namespace UnitTesting_aksjeapp
 
 
         //GetSpecificTransactions
+        [Fact]
+        public async Task GetSpecificTransactions_Ok()
+        {
+            //Arrange
+            var symbol = "AAPL";
+            var SSN = "12345678910";
+
+            List<Transaction> myList = new List<Transaction>();
+            
+            myList.Add(new Transaction
+            {
+                Id = 1,
+                Amount = 3,
+                Awaiting = false,
+                Date = "2022-05-20",
+                Symbol = "AAPL",
+                TotalPrice = 456,
+                SocialSecurityNumber = SSN
+            });
+            myList.Add(new Transaction
+            {
+                Id = 2,
+                Amount = 6,
+                Awaiting = false,
+                Date = "2022-10-01",
+                Symbol = "AAPL",
+                TotalPrice = 154,
+                SocialSecurityNumber = SSN
+            });
+            myList.Add(new Transaction
+            {
+                Id = 3,
+                Amount = 5,
+                Awaiting = false,
+                Date = "2022-09-14",
+                Symbol = "AAPl",
+                TotalPrice = 785,
+                SocialSecurityNumber = SSN
+            });
+
+            mockRep.Setup(k => k.GetSpecificTransactions(symbol)).ReturnsAsync(myList);
+            
+            //Act
+            var res = await _stockController.GetSpecificTransactions(symbol) as OkObjectResult;
+            
+            //Assert
+            Assert.Equal(myList, res.Value);
+        }
+        
+        [Fact]
+        public async Task GetSpecificTransactions_Empty()
+        {
+            //Arrange
+            var symbol = "AAPL";
+
+            mockRep.Setup(k => k.GetSpecificTransactions(symbol)).ReturnsAsync(new List<Transaction>());
+
+            //Act
+            var res = await _stockController.GetSpecificTransactions(symbol) as BadRequestObjectResult;
+
+            //Assert
+            Assert.Equal("No transactions", res.Value);
+        }
 
 
         [Fact]
@@ -362,16 +425,218 @@ namespace UnitTesting_aksjeapp
         //DeleteTransaction
 
         //StockChange
+        [Fact]
+        public async Task StockChange_Ok()
+        {
+            
+            //Arrange
+            var symbol = "AAPL";
+            
+            var myStockChangeValue = new StockChangeValue()
+            {
+                StockId = 1,
+                Date = "2022-02-02",
+                Symbol = "AAPL",
+                Change = 1.01,
+                Value = 200
+            };
 
-        //GetStockOverview
+            mockRep.Setup(k => k.StockChange(symbol)).ReturnsAsync(myStockChangeValue);
+            
+            //Act
+            var res = await _stockController.StockChange(symbol) as OkObjectResult;
+            
+            //Assert
+            Assert.Equal(myStockChangeValue, res.Value);
+        }
 
-        //GetWinners
+        [Fact]
+        public async Task StockChange_Empty()
+        {
+            //Arrange
+            var symbol = "AAPL";
 
-        //GetLosers
+            mockRep.Setup(k => k.StockChange(symbol)).ReturnsAsync(() => null);
+            
+            //Act
+            var res = await _stockController.StockChange(symbol) as BadRequestObjectResult;
+            
+            //Assert
+            Assert.Equal("Stockchange not found", res.Value);
+        }
+        
+        
+        [Fact]
+        public async Task GetStockOverview_Ok()
+        {
+            //Arrange
+            List<StockOverview> myList = new List<StockOverview>();
+
+            var myStockOverview = new StockOverview
+            {
+                Symbol = "AAPL",
+                Name = "Apple INC.",
+                Change = 1.01,
+                Value = 1
+            };
+            var myStockOverview2 = new StockOverview
+            {
+                Symbol = "GOOGL",
+                Name = "ALPHABET",
+                Change = 3.2,
+                Value = 90
+            };
+            var myStockOverview3 = new StockOverview
+            {
+                Symbol = "A",
+                Name = "TSLA MOTOR COMPANY",
+                Change = -2,
+                Value = 100
+            };
+
+            myList.Add(myStockOverview);
+            myList.Add(myStockOverview2);
+            myList.Add(myStockOverview3);
+
+            mockRep.Setup(k => k.GetStockOverview()).ReturnsAsync(myList);
+            
+            //Act
+            var res = await _stockController.GetStockOverview() as OkObjectResult;
+            
+            //Assert
+            Assert.Equal(myList, res.Value);
+        }
+
+        [Fact]
+        public async Task GetStockOverview_Empty()
+        {
+            //Arrange
+            mockRep.Setup(k => k.GetStockOverview()).ReturnsAsync(() => null);
+            
+            //Act
+            var res = await _stockController.GetStockOverview() as BadRequestObjectResult;
+            
+            //Assert
+            Assert.Equal("Stock overview not found", res.Value);
+        }
+
+        [Fact]
+        public async Task GetWinners_Ok()
+        {
+            
+            //Arrange
+            List<StockChangeValue> myList = new List<StockChangeValue>();
+            
+            var myStockChangeValue = new StockChangeValue()
+            {
+                StockId = 1,
+                Date = "2022-02-02",
+                Symbol = "AAPL",
+                Change = 1.01,
+                Value = 200
+            };
+            var myStockChangeValue2 = new StockChangeValue()
+            {
+                StockId = 2,
+                Date = "2022-05-02",
+                Symbol = "TSLA",
+                Change = 200.9,
+                Value = 1.2
+            };
+            var myStockChangeValue3 = new StockChangeValue()
+            {
+                StockId = 3,
+                Date = "2022-02-09",
+                Symbol = "GOOGL",
+                Change = 2.2,
+                Value = 1000.1
+            };
+            myList.Add(myStockChangeValue);
+            myList.Add(myStockChangeValue2);
+            myList.Add(myStockChangeValue3);
+
+            mockRep.Setup(k => k.GetWinners()).ReturnsAsync(myList);
+            
+            //Act
+            var res = await _stockController.GetWinners() as OkObjectResult;
+            
+            //Assert
+            Assert.Equal(myList, res.Value);
+        }
+
+        [Fact]
+        public async Task GetWinners_Empty()
+        {
+            //Arrange
+            mockRep.Setup(k => k.GetWinners()).ReturnsAsync(() => null);
+            
+            //Act
+            var res = await _stockController.GetWinners() as BadRequestObjectResult;
+            
+            //Assert
+            Assert.Equal("Winners not found", res.Value);
+        }
+        
+        [Fact]
+        public async Task GetLosers_Ok()
+        {
+            //Arrange
+            List<StockChangeValue> myList = new List<StockChangeValue>();
+            
+            var myStockChangeValue = new StockChangeValue()
+            {
+                StockId = 1,
+                Date = "2022-02-02",
+                Symbol = "AAPL",
+                Change = -1.01,
+                Value = 200
+            };
+            var myStockChangeValue2 = new StockChangeValue()
+            {
+                StockId = 2,
+                Date = "2022-05-02",
+                Symbol = "TSLA",
+                Change = -200.9,
+                Value = 1.2
+            };
+            var myStockChangeValue3 = new StockChangeValue()
+            {
+                StockId = 3,
+                Date = "2022-02-09",
+                Symbol = "GOOGL",
+                Change = -2.2,
+                Value = 1000.1
+            };
+            myList.Add(myStockChangeValue);
+            myList.Add(myStockChangeValue2);
+            myList.Add(myStockChangeValue3);
+
+            mockRep.Setup(k => k.GetLosers()).ReturnsAsync(myList);
+            
+            //Act
+            var res = await _stockController.GetLosers() as OkObjectResult;
+            
+            //Assert
+            Assert.Equal(myList, res.Value);
+        }
+
+        [Fact]
+        public async Task GetLosers_Empty()
+        {
+            //Arrange
+            mockRep.Setup(k => k.GetLosers()).ReturnsAsync(() => null);
+            
+            //Act
+            var res = await _stockController.GetLosers() as BadRequestObjectResult;
+            
+            //Assert
+            Assert.Equal("Losers not found", res.Value);
+        }
 
         [Fact]
         public async Task GetCustomerPortfolio_Ok()
         {
+            //Arrange
             var SSN = "12345678910";
 
             List<Transaction> myTransactions = new List<Transaction>();
@@ -440,8 +705,11 @@ namespace UnitTesting_aksjeapp
             };
 
             mockRep.Setup(k => k.GetCustomerPortfolio(SSN)).ReturnsAsync(myCustomer);
+            
+            //Act
             var res = await _stockController.GetCustomerPortfolio(SSN) as OkObjectResult;
 
+            //Assert
             Assert.Equal(myCustomer, res.Value);
         }
 
@@ -451,14 +719,18 @@ namespace UnitTesting_aksjeapp
             var SSN = "12345678910";
 
             mockRep.Setup(k => k.GetCustomerPortfolio(SSN)).ReturnsAsync(() => null);
+            
+            //Act
             var res = await _stockController.GetCustomerPortfolio(SSN) as BadRequestObjectResult;
 
+            //Assert
             Assert.Equal("Customer not found", res.Value);
         }
 
         [Fact]
         public async Task GetNews_Ok()
         {
+            //Arrange
             var myPublisher = new Publisher();
             myPublisher.Name = "TestPublisher";
 
@@ -484,21 +756,25 @@ namespace UnitTesting_aksjeapp
             mockRep.Setup(k => k.GetNews("AAPL")).ReturnsAsync(myNewsList);
             var stockController = new StockController(mockRep.Object, mockLog.Object);
 
+            //Act
             var res = await stockController.GetNews("AAPL") as OkObjectResult;
 
+            //Assert
             Assert.Equal(myNewsList, res.Value);
         }
 
         [Fact]
         public async Task GetNews_empty()
         {
+            //Arrange
             var symbol = "AAPL";
 
             mockRep.Setup(k => k.GetNews(symbol)).ReturnsAsync(new News());
 
+            //Act
             var res = await _stockController.GetNews(symbol) as BadRequestObjectResult;
 
-            //Assert.Equal(myNewsList, res.Value);
+            //Assert
             Assert.Equal("Could not find any news", res.Value);
         }
 

@@ -1,15 +1,18 @@
-﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+﻿using aksjeapp_backend.DAL;
+using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Http;
 using Serilog;
 using System.Security.Cryptography;
 
-namespace aksjeapp_backend.DAL
+namespace Security
 {
-    public class SecurityRepository
-{
+    public class Security
+    {
         private readonly StockContext _db;
 
-        public SecurityRepository(StockContext db)
+        private readonly string _loggedIn = "LoggedIn";
+        public Security(StockContext db)
         {
             _db = db;
         }
@@ -42,6 +45,7 @@ namespace aksjeapp_backend.DAL
                 bool ok = hash.SequenceEqual(userFound.Password);
                 if (ok)
                 {
+                    HttpContext.Session.SetString(_loggedIn, "LoggedIn");
                     return true;
                 }
                 return false;
@@ -51,4 +55,11 @@ namespace aksjeapp_backend.DAL
                 return false;
             }
         }
+
+
+        public async Task<String> LoggedIn()
+        {
+            
+        }
+    }
 }

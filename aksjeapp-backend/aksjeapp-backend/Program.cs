@@ -25,13 +25,16 @@ var logger = new LoggerConfiguration()
 builder.Logging.ClearProviders();
 builder.Logging.AddSerilog(logger);
 
+
+// https://learn.microsoft.com/en-us/aspnet/core/fundamentals/app-state?view=aspnetcore-6.0
+builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
     options.Cookie.Name = ".AdventureWorks.Session";
     options.IdleTimeout = TimeSpan.FromSeconds(1800); //30 Minutes
     options.Cookie.IsEssential = true;
 });
-builder.Services.AddDistributedMemoryCache();
+
 
 var app = builder.Build();
 

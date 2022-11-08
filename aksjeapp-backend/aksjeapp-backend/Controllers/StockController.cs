@@ -1,6 +1,7 @@
 ﻿using aksjeapp_backend.DAL;
 using aksjeapp_backend.Models;
 using Microsoft.AspNetCore.Mvc;
+using aksjeapp_backend.Security;
 
 namespace aksjeapp_backend.Controller
 {
@@ -9,23 +10,30 @@ namespace aksjeapp_backend.Controller
     {
         private readonly IStockRepository _db;
         private readonly ILogger<StockController> _logger;
+        private readonly ISecurityRepository _security;
 
-        public StockController(IStockRepository db, ILogger<StockController> logger)
+        private readonly HttpContext session;
+
+        public StockController(IStockRepository db, ILogger<StockController> logger, ISecurityRepository security)
         {
             _db = db;
             _logger = logger;
+            _security = security;
         }
 
 
         public async Task<ActionResult> GetAllStocks()
         {
+            if(string.IsNullOrEmpty(await _security.LoggedIn(session.Session)))
+                {
+                return Unauthorized();
+            }
             var allStocks = await _db.GetAllStocks();
             if (allStocks.Count == 0 || allStocks == null)
             {
                 _logger.LogInformation("Not found");
                 return BadRequest("Not found");
             }
-
             return Ok(allStocks);
         }
 

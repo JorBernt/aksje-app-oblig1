@@ -5,9 +5,9 @@ using Microsoft.AspNetCore.Http;
 using Serilog;
 using System.Security.Cryptography;
 
-namespace Security
+namespace aksjeapp_backend.Security
 {
-    public class Security
+    public class Security : ISecurityRepository
     {
         private readonly StockContext _db;
 
@@ -35,7 +35,7 @@ namespace Security
             return salt;
         }
 
-        public async Task<bool> LogIn(Customer user)
+        public async Task<bool> LogIn(Customer user, ISession session)
         {
             try
             {
@@ -45,7 +45,7 @@ namespace Security
                 bool ok = hash.SequenceEqual(userFound.Password);
                 if (ok)
                 {
-                    HttpContext.Session.SetString(_loggedIn, "LoggedIn");
+                    session.SetString(_loggedIn, user.SocialSecurityNumber);
                     return true;
                 }
                 return false;
@@ -57,9 +57,12 @@ namespace Security
         }
 
 
-        public async Task<String> LoggedIn()
+        public async Task<String> LoggedIn(ISession session)
         {
-            
+            if (session.GetString(_loggedIn) != null) {
+                return session.GetString(_loggedIn);
+            }
+            return null;
         }
     }
 }

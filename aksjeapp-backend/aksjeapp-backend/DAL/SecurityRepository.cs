@@ -32,7 +32,7 @@ namespace aksjeapp_backend.DAL
             return salt;
         }
 
-        public async Task<bool> LoggInn(Customer user)
+        public async Task<bool> LogIn(Customer user)
         {
             try
             {

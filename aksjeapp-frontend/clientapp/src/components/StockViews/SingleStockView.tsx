@@ -4,7 +4,6 @@ import Card from "../UI/Card/Card";
 import DataDisplay from "../UI/TextDisplay/DataDisplay";
 import {API} from "../../Constants";
 import LoadingSpinner from "../UI/LoadingSpinner";
-import {Simulate} from "react-dom/test-utils";
 
 
 interface Results {
@@ -57,7 +56,7 @@ const SingleStockView: React.FC<Props> = (props) => {
     const mappableStockPriceData: Array<MappableData> = []
     useEffect(() => {
         setLoading(true)
-        fetch(API.GET_STOCK_PRICES(props.symbol, props.fromDate, props.toDate))
+        fetch(API.STOCK.GET_STOCK_PRICES(props.symbol, props.fromDate, props.toDate))
             .then(response => response.json()
                 .then((response: StockData) => {
                     response.results.forEach(r => mappableStockPriceData.push({
@@ -73,7 +72,7 @@ const SingleStockView: React.FC<Props> = (props) => {
                     setStockData(response)
                     setLoading(false)
                 }))
-        fetch(API.GET_STOCK_NAME(props.symbol)).then(response => response.text().then(text => setName(text)))
+        fetch(API.STOCK.GET_STOCK_NAME(props.symbol)).then(response => response.text().then(text => setName(text)))
 
     }, [props.symbol])
 

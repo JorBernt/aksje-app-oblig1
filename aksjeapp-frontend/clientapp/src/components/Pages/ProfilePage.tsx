@@ -16,7 +16,7 @@ const ProfilePage = () => {
     }
 
     useEffect(() => {
-        fetch(API.GET_CUSTOMER_PORTFOLIO("12345678910"))
+        fetch(API.STOCK.GET_CUSTOMER_PORTFOLIO("12345678910"))
             .then(response => response.json()
                 .then(res => {
                     setProfileInfo(res)

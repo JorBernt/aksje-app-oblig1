@@ -30,11 +30,12 @@ const LandingPage = () => {
                         <div className="flex flex-col">
                             <Card color="default" customCss={"m-5 px-5 pt-3 pb-4"}>
                                 <StockContainer text="Winners of the day" showAmount={false} sorted="valDsc"
-                                                height="h-[14.25rem]" API={API.GET_WINNERS} setName={setStockName}/>
+                                                height="h-[14.25rem]" API={API.STOCK.GET_WINNERS}
+                                                setName={setStockName}/>
                             </Card>
                             <Card color="default" customCss={"m-5 px-5 pt-3 pb-4"}>
                                 <StockContainer text="Losers of the day" showAmount={false} sorted="valAsc"
-                                                height="h-[14.25rem]" API={API.GET_LOSERS}/>
+                                                height="h-[14.25rem]" API={API.STOCK.GET_LOSERS}/>
                             </Card>
                         </div>
                     </div>

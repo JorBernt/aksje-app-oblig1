@@ -29,7 +29,7 @@ const SearchBar: React.FC<Props> = () => {
         if (typeof query === "undefined")
             return
         setInput(query)
-        fetch(API.SEARCH_RESULTS(query))
+        fetch(API.STOCK.SEARCH_RESULTS(query))
             .then(response => response.json()
                 .then(response => setSearchResult(() => [...response]))
             )

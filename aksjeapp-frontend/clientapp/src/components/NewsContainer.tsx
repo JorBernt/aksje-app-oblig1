@@ -10,7 +10,7 @@ const NewsContainer = () => {
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
-        fetch(API.GET_NEWS)
+        fetch(API.STOCK.GET_NEWS)
             .then(response => response.json()
                 .then((res) => {
                     setNews(p => [...res.results])

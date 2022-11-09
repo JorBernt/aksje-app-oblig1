@@ -1,12 +1,14 @@
 using aksjeapp_backend.Controller;
 using aksjeapp_backend.DAL;
 using aksjeapp_backend.Models;
+using aksjeapp_backend.Models;
 using aksjeapp_backend.Models.News;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 
 namespace UnitTesting_aksjeapp
+
 {
     public class UnitTest_StockController
     {
@@ -805,6 +807,40 @@ namespace UnitTesting_aksjeapp
             Assert.Equal("Could not find a name for the symbol", res.Value);
 
         }
+        [Fact]
+        public async Task UpdateTransaction()
+        {
+            Transaction trans = new Transaction();
+            trans.SocialSecurityNumber = "12345678910";
+            trans.Date = "2022/10/01";
+            trans.Symbol = "AAPL";
+            trans.Amount = 350;
+            trans.TotalPrice = 1800;
+            trans.Awaiting = true;
+
+            mockRep.Setup(k => k.UpdateTransaction(trans)).ReturnsAsync(true);
+
+            var res = await _stockController.UpdateTransaction(trans) as OkObjectResult;
+            
+            Assert.Equal("Transaction updated", res.Value);
+        }
+        [Fact]
+        public async Task UpdateTransaction_Empty()
+        {
+            Transaction trans = new Transaction();
+            trans.SocialSecurityNumber = "12345678910";
+            trans.Date = "2022/10/01";
+            trans.Symbol = "AAPL";
+            trans.Amount = 350;
+            trans.TotalPrice = 1800;
+            trans.Awaiting = true;
+
+            mockRep.Setup(k => k.UpdateTransaction(trans)).ReturnsAsync(false);
+
+            var res = await _stockController.UpdateTransaction(trans) as BadRequestObjectResult;
+            
+            Assert.Equal("Transaction not updated", res.Value);
+        }
 
         [Fact]
         public async Task logIn_Ok()
@@ -822,7 +858,28 @@ namespace UnitTesting_aksjeapp
             //Assert
         }
 
+        public async Task DeleteTransaction()
+        {
+            var SSN = "12345678910";
+            var id = 10;
 
-    }
+            mockRep.Setup(k => k.DeleteTransaction(SSN, id)).ReturnsAsync(true);
 
+            var res = await _stockController.DeleteTransaction(SSN, id) as OkObjectResult;
+            
+            Assert.Equal("Transaction deleted", res.Value);
+        }
+        [Fact]
+        public async Task DeleteTransaction_Empty()
+        {
+            var SSN = "12345678910";
+            var id = 10;
+
+            mockRep.Setup(k => k.DeleteTransaction(SSN, id)).ReturnsAsync(false);
+
+            var res = await _stockController.DeleteTransaction(SSN, id) as BadRequestObjectResult;
+            
+            Assert.Equal("Transaction not deleted", res.Value);
+        }
+   }
 }

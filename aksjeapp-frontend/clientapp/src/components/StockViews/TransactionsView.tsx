@@ -18,7 +18,7 @@ const TransactionsView: React.FC<Props> = (props) => {
     //const isVisible = true;
 
     const loadAllTransactions = () => {
-        fetch(API.GET_ALL_TRANSACTIONS("12345678910"))
+        fetch(API.STOCK.GET_ALL_TRANSACTIONS("12345678910"))
             .then(response => response.json()
                 .then(response => {
                     setTransactionView(p => [...response])
@@ -36,7 +36,7 @@ const TransactionsView: React.FC<Props> = (props) => {
         loadAllTransactions()
     }, [])
     const handleOnClickDelete = (id: number) => {
-        fetch(API.DELETE_TRANSACTION(SSN, id))
+        fetch(API.STOCK.DELETE_TRANSACTION(SSN, id))
             .then(result => {
                 loadAllTransactions()
                 props.callBack();
@@ -54,7 +54,7 @@ const TransactionsView: React.FC<Props> = (props) => {
             const t = [...editTransactionArray];
             t[transaction.id] = false;
             setEditTransactionArray(t)
-            fetch(API.UPDATE_TRANSACTION, {
+            fetch(API.STOCK.UPDATE_TRANSACTION, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",

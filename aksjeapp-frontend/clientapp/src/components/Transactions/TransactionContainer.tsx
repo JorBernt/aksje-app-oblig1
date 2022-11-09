@@ -22,7 +22,7 @@ const TransactionContainer = (props: Props) => {
     const [transactionView, setTransactionView] = useState(testTransaction);
 
     useEffect(() => {
-        fetch(API.GET_SPECIFIC_TRANSACTIONS(props.symbol))
+        fetch(API.STOCK.GET_SPECIFIC_TRANSACTIONS(props.symbol))
             .then(response => response.json()
                 .then(response => {
                     setTransactionView(p => [...response])

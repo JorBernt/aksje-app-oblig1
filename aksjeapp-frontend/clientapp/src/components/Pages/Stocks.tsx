@@ -14,7 +14,7 @@ const Stocks = () => {
                     <div className="flex justify-center">
                         <Card>
                             <StockContainer text="All stocks" showAmount={false} sorted="valAsc" height="h-[28.5rem]"
-                                            API={API.GET_STOCK_OVERVIEW}/>
+                                            API={API.STOCK.GET_STOCK_OVERVIEW}/>
                         </Card>
                     </div>
                     <div>

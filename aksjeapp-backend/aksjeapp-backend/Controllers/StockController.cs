@@ -10,21 +10,18 @@ namespace aksjeapp_backend.Controller
     {
         private readonly IStockRepository _db;
         private readonly ILogger<StockController> _logger;
-        private readonly ISecurityRepository _security;
 
-        private readonly HttpContext session;
 
-        public StockController(IStockRepository db, ILogger<StockController> logger, ISecurityRepository security)
+        public StockController(IStockRepository db, ILogger<StockController> logger)
         {
             _db = db;
             _logger = logger;
-            _security = security;
         }
 
 
         public async Task<ActionResult> GetAllStocks()
         {
-            if(string.IsNullOrEmpty(await _security.LoggedIn(session.Session)))
+            if(string.IsNullOrEmpty())
             {
                 return Unauthorized();
             }

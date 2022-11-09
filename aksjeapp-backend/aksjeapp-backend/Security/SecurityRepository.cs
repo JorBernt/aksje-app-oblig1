@@ -7,7 +7,7 @@ using System.Security.Cryptography;
 
 namespace aksjeapp_backend.Security
 {
-    public class Security : ISecurityRepository
+    public class Security : Controllerbase
     {
         private readonly StockContext _db;
 

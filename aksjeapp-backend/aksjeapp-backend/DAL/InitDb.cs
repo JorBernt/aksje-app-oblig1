@@ -38,6 +38,11 @@ namespace aksjeapp_backend.DAL
                     PostalCode = "0134",
                     PostCity = "Oslo"
                 };
+                var postalArea2 = new PostalAreas
+                {
+                    PostalCode = "2100",
+                    PostCity = "Bærum"
+                };
 
 
                 var customer1 = new Customers
@@ -59,9 +64,31 @@ namespace aksjeapp_backend.DAL
                     Password = hash,
                     Salt = salt
                 };
-               
+                
+                var customer2 = new Customers
+                {
+                    FirstName = "John",
+                    SocialSecurityNumber = "97531086420",
+                    LastName = "Lennon",
+                    Address = "Rådhusplassen 2",
+                    Balance = 350_000,
+                    PostalArea = postalArea2
+                };
+                string password = "kjempehemmelig";
+
+                byte[] saltJohn = StockRepository.GenSalt();
+                byte[] hashJohn = StockRepository.GenHash(passord, salt);
+                var john = new Users
+                {
+                    Username = "97531086420",
+                    Password = hashJohn,
+                    Salt = saltJohn
+                };
+
+                context.Users.Add(john);
                 context.Users.Add(line);
                 context.Customers.Add(customer1);
+                context.Customers.Add(customer2);
                 context.SaveChanges();
             }
         }

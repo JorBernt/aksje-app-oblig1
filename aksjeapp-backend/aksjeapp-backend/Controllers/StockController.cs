@@ -21,10 +21,7 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> GetAllStocks()
         {
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
-            {
-                return Unauthorized();
-            }
+
             var allStocks = await _db.GetAllStocks();
             if (allStocks.Count == 0 || allStocks == null)
             {
@@ -95,14 +92,14 @@ namespace aksjeapp_backend.Controller
             return Ok(searchReults);
         }
 
-        public async Task<ActionResult> GetAllTransactions(string socialSecurityNumber)
+        public async Task<ActionResult> GetAllTransactions()
         {
             if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
             {
                 return Unauthorized();
             }
 
-            var transactions = await _db.GetAllTransactions(socialSecurityNumber);
+            var transactions = await _db.GetAllTransactions(_loggedIn);
             if (transactions.Count <= 0)
             {
                 _logger.LogInformation("No transactions");
@@ -124,12 +121,16 @@ namespace aksjeapp_backend.Controller
             return Ok(transactions);
         }
 
-        public async Task<ActionResult> GetTransaction(string socialSecurityNumber, int id)
+        public async Task<ActionResult> GetTransaction(int id)
         {
-            var transaction = await _db.GetTransaction(socialSecurityNumber, id);
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
+            {
+                return Unauthorized();
+            }
+            var transaction = await _db.GetTransaction(_loggedIn, id);
             if (transaction == null)
             {
-                _logger.LogInformation("Not found transaction belonging to " + socialSecurityNumber + " with id " + id);
+                _logger.LogInformation("Not found transaction belonging to " + _loggedIn + " with id " + id);
                 return BadRequest("Transaction does not exist");
             }
 

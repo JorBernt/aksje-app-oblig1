@@ -58,7 +58,7 @@ namespace aksjeapp_backend.Controller
             {
                 return Unauthorized();
             }
-            bool returnOK = await _db.BuyStock(socialSecurityNumber, symbol.ToUpper(), number);
+            bool returnOK = await _db.BuyStock(_loggedIn, symbol.ToUpper(), number);
             if (!returnOK)
             {
                 _logger.LogInformation("Fault in buyStock");
@@ -74,7 +74,7 @@ namespace aksjeapp_backend.Controller
             {
                 return Unauthorized();
             }
-            bool returnOK = await _db.SellStock(socialSecurityNumber, symbol.ToUpper(), number);
+            bool returnOK = await _db.SellStock(_loggedIn, symbol.ToUpper(), number);
             if (!returnOK)
             {
                 _logger.LogInformation("Fault in sellStock");
@@ -158,7 +158,7 @@ namespace aksjeapp_backend.Controller
             {
                 return Unauthorized();
             }
-            bool returnOK = await _db.DeleteTransaction(socialSecurityNumber, id);
+            bool returnOK = await _db.DeleteTransaction(_loggedIn, id);
             if (!returnOK)
             {
                 _logger.LogInformation("Transaction not deleted");
@@ -216,13 +216,13 @@ namespace aksjeapp_backend.Controller
             return Ok(Losers);
         }
 
-        public async Task<ActionResult> GetCustomerPortfolio(string socialSecurityNumber)
+        public async Task<ActionResult> GetCustomerPortfolio()
         {
             if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
             {
                 return Unauthorized();
             }
-            var customer = await _db.GetCustomerPortfolio(socialSecurityNumber);
+            var customer = await _db.GetCustomerPortfolio(_loggedIn);
             if (customer == null)
             {
                 _logger.LogInformation("Customer not found");

@@ -35,5 +35,7 @@ namespace aksjeapp_backend.DAL
         public string PostCity { get; set; }
 
         public Portfolio Portfolio { get; set; }
+
+        public string Password { get; set; }
     }
 }

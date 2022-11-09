@@ -264,17 +264,17 @@ namespace aksjeapp_backend.Controller
                 {
                     _logger.LogInformation("Error in StockController/LogIn (Login failed)");
                     HttpContext.Session.SetString(_loggedIn, "");
-                    return BadRequest("Failed to log in");
+                    return BadRequest("Failed");
 
                 }
                 HttpContext.Session.SetString(_loggedIn, "LoggedIn");
-                return Ok("Login was successful");
+                return Ok("Ok");
         }
 
         public async Task<ActionResult> LogOut()
         {
             HttpContext.Session.SetString(_loggedIn, "");
-            return Ok("User was logged out successfully");
+            return Ok("Ok");
         }
     }
 }

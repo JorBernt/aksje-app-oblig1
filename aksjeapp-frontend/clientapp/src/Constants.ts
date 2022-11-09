@@ -1,3 +1,5 @@
+import Cookies from 'universal-cookie';
+
 export const DATE_TODAY = new Date().toLocaleDateString("nb-NO").replace("/", "-");
 
 const baseURL = "https://localhost:7187/"
@@ -5,6 +7,10 @@ const stockURL = baseURL + "Stock/"
 const clientURL = baseURL + "Client/"
 
 export const SSN = "12345678910";
+
+const _cookie = new Cookies();
+export const cookie = () => _cookie;
+export const sessionToken = () => String(_cookie.get("sessionToken"))
 
 export const API = {
     STOCK: {

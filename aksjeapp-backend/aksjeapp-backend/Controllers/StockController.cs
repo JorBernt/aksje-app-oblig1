@@ -54,6 +54,10 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> BuyStock(string socialSecurityNumber, string symbol, int number)
         {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
+            {
+                return Unauthorized();
+            }
             bool returnOK = await _db.BuyStock(socialSecurityNumber, symbol.ToUpper(), number);
             if (!returnOK)
             {
@@ -66,6 +70,10 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> SellStock(string socialSecurityNumber, string symbol, int number)
         {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
+            {
+                return Unauthorized();
+            }
             bool returnOK = await _db.SellStock(socialSecurityNumber, symbol.ToUpper(), number);
             if (!returnOK)
             {
@@ -89,6 +97,11 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> GetAllTransactions(string socialSecurityNumber)
         {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
+            {
+                return Unauthorized();
+            }
+            
             var transactions = await _db.GetAllTransactions(socialSecurityNumber);
             if (transactions.Count <= 0)
             {
@@ -125,6 +138,10 @@ namespace aksjeapp_backend.Controller
         [HttpPost]
         public async Task<ActionResult> UpdateTransaction([FromBody] Transaction transaction)
         {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
+            {
+                return Unauthorized();
+            }
             var returnOK = await _db.UpdateTransaction(transaction);
             if (!returnOK)
             {
@@ -137,6 +154,10 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> DeleteTransaction(string socialSecurityNumber, int id)
         {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
+            {
+                return Unauthorized();
+            }
             bool returnOK = await _db.DeleteTransaction(socialSecurityNumber, id);
             if (!returnOK)
             {
@@ -246,7 +267,6 @@ namespace aksjeapp_backend.Controller
                     return BadRequest("Failed to log in");
 
                 }
-                HttpContext.Session.
                 HttpContext.Session.SetString(_loggedIn, "LoggedIn");
                 return Ok("Login was successful");
         }

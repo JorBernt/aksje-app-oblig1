@@ -22,5 +22,7 @@ namespace aksjeapp_backend.DAL
         Task<List<StockChangeValue>> GetLosers();
         Task<News> GetNews(string symbol);
         Task<String> GetStockName(string symbol);
+
+        Task<bool> LogIn(User user);
     }
 }

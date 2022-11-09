@@ -9,6 +9,8 @@ namespace aksjeapp_backend.Controller
     {
         private readonly IStockRepository _db;
         private readonly ILogger<StockController> _logger;
+        private static string _loggedIn = "";
+
 
         public StockController(IStockRepository db, ILogger<StockController> logger)
         {
@@ -19,13 +21,13 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> GetAllStocks()
         {
+
             var allStocks = await _db.GetAllStocks();
             if (allStocks.Count == 0 || allStocks == null)
             {
                 _logger.LogInformation("Not found");
                 return BadRequest("Not found");
             }
-
             return Ok(allStocks);
         }
 
@@ -49,7 +51,11 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> BuyStock(string socialSecurityNumber, string symbol, int number)
         {
-            bool returnOK = await _db.BuyStock(socialSecurityNumber, symbol.ToUpper(), number);
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
+            {
+                return Unauthorized();
+            }
+            bool returnOK = await _db.BuyStock(_loggedIn, symbol.ToUpper(), number);
             if (!returnOK)
             {
                 _logger.LogInformation("Fault in buyStock");
@@ -61,7 +67,11 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> SellStock(string socialSecurityNumber, string symbol, int number)
         {
-            bool returnOK = await _db.SellStock(socialSecurityNumber, symbol.ToUpper(), number);
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
+            {
+                return Unauthorized();
+            }
+            bool returnOK = await _db.SellStock(_loggedIn, symbol.ToUpper(), number);
             if (!returnOK)
             {
                 _logger.LogInformation("Fault in sellStock");
@@ -82,9 +92,14 @@ namespace aksjeapp_backend.Controller
             return Ok(searchReults);
         }
 
-        public async Task<ActionResult> GetAllTransactions(string socialSecurityNumber)
+        public async Task<ActionResult> GetAllTransactions()
         {
-            var transactions = await _db.GetAllTransactions(socialSecurityNumber);
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
+            {
+                return Unauthorized();
+            }
+
+            var transactions = await _db.GetAllTransactions(_loggedIn);
             if (transactions.Count <= 0)
             {
                 _logger.LogInformation("No transactions");
@@ -106,12 +121,16 @@ namespace aksjeapp_backend.Controller
             return Ok(transactions);
         }
 
-        public async Task<ActionResult> GetTransaction(string socialSecurityNumber, int id)
+        public async Task<ActionResult> GetTransaction(int id)
         {
-            var transaction = await _db.GetTransaction(socialSecurityNumber, id);
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
+            {
+                return Unauthorized();
+            }
+            var transaction = await _db.GetTransaction(_loggedIn, id);
             if (transaction == null)
             {
-                _logger.LogInformation("Not found transaction belonging to " + socialSecurityNumber + " with id " + id);
+                _logger.LogInformation("Not found transaction belonging to " + _loggedIn + " with id " + id);
                 return BadRequest("Transaction does not exist");
             }
 
@@ -120,6 +139,10 @@ namespace aksjeapp_backend.Controller
         [HttpPost]
         public async Task<ActionResult> UpdateTransaction([FromBody] Transaction transaction)
         {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
+            {
+                return Unauthorized();
+            }
             var returnOK = await _db.UpdateTransaction(transaction);
             if (!returnOK)
             {
@@ -132,7 +155,11 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> DeleteTransaction(string socialSecurityNumber, int id)
         {
-            bool returnOK = await _db.DeleteTransaction(socialSecurityNumber, id);
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
+            {
+                return Unauthorized();
+            }
+            bool returnOK = await _db.DeleteTransaction(_loggedIn, id);
             if (!returnOK)
             {
                 _logger.LogInformation("Transaction not deleted");
@@ -190,9 +217,13 @@ namespace aksjeapp_backend.Controller
             return Ok(Losers);
         }
 
-        public async Task<ActionResult> GetCustomerPortfolio(string socialSecurityNumber)
+        public async Task<ActionResult> GetCustomerPortfolio()
         {
-            var customer = await _db.GetCustomerPortfolio(socialSecurityNumber);
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
+            {
+                return Unauthorized();
+            }
+            var customer = await _db.GetCustomerPortfolio(_loggedIn);
             if (customer == null)
             {
                 _logger.LogInformation("Customer not found");
@@ -225,6 +256,28 @@ namespace aksjeapp_backend.Controller
             }
 
             return Ok(name);
+        }
+
+        public async Task<ActionResult> LogIn(User user)
+        {
+            bool returnOK = await _db.LogIn(user);
+            _loggedIn = user.Username;
+            if (!returnOK)
+            {
+                _logger.LogInformation("Error in StockController/LogIn (Login failed)");
+                HttpContext.Session.SetString(_loggedIn, "");
+                return BadRequest("Failed");
+
+            }
+
+            HttpContext.Session.SetString(_loggedIn, "LoggedIn");
+            return Ok("Ok");
+        }
+
+        public async Task<ActionResult> LogOut()
+        {
+            HttpContext.Session.SetString(_loggedIn, "");
+            return Ok("Ok");
         }
     }
 }

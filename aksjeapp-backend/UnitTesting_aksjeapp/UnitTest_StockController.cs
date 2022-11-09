@@ -328,7 +328,7 @@ namespace UnitTesting_aksjeapp
             var SSN = "12345678910";
 
             List<Transaction> myList = new List<Transaction>();
-            
+
             myList.Add(new Transaction
             {
                 Id = 1,
@@ -361,14 +361,14 @@ namespace UnitTesting_aksjeapp
             });
 
             mockRep.Setup(k => k.GetSpecificTransactions(symbol)).ReturnsAsync(myList);
-            
+
             //Act
             var res = await _stockController.GetSpecificTransactions(symbol) as OkObjectResult;
-            
+
             //Assert
             Assert.Equal(myList, res.Value);
         }
-        
+
         [Fact]
         public async Task GetSpecificTransactions_Empty()
         {
@@ -430,10 +430,10 @@ namespace UnitTesting_aksjeapp
         [Fact]
         public async Task StockChange_Ok()
         {
-            
+
             //Arrange
             var symbol = "AAPL";
-            
+
             var myStockChangeValue = new StockChangeValue()
             {
                 StockId = 1,
@@ -444,10 +444,10 @@ namespace UnitTesting_aksjeapp
             };
 
             mockRep.Setup(k => k.StockChange(symbol)).ReturnsAsync(myStockChangeValue);
-            
+
             //Act
             var res = await _stockController.StockChange(symbol) as OkObjectResult;
-            
+
             //Assert
             Assert.Equal(myStockChangeValue, res.Value);
         }
@@ -459,15 +459,15 @@ namespace UnitTesting_aksjeapp
             var symbol = "AAPL";
 
             mockRep.Setup(k => k.StockChange(symbol)).ReturnsAsync(() => null);
-            
+
             //Act
             var res = await _stockController.StockChange(symbol) as BadRequestObjectResult;
-            
+
             //Assert
             Assert.Equal("Stockchange not found", res.Value);
         }
-        
-        
+
+
         [Fact]
         public async Task GetStockOverview_Ok()
         {
@@ -501,10 +501,10 @@ namespace UnitTesting_aksjeapp
             myList.Add(myStockOverview3);
 
             mockRep.Setup(k => k.GetStockOverview()).ReturnsAsync(myList);
-            
+
             //Act
             var res = await _stockController.GetStockOverview() as OkObjectResult;
-            
+
             //Assert
             Assert.Equal(myList, res.Value);
         }
@@ -514,10 +514,10 @@ namespace UnitTesting_aksjeapp
         {
             //Arrange
             mockRep.Setup(k => k.GetStockOverview()).ReturnsAsync(() => null);
-            
+
             //Act
             var res = await _stockController.GetStockOverview() as BadRequestObjectResult;
-            
+
             //Assert
             Assert.Equal("Stock overview not found", res.Value);
         }
@@ -525,10 +525,10 @@ namespace UnitTesting_aksjeapp
         [Fact]
         public async Task GetWinners_Ok()
         {
-            
+
             //Arrange
             List<StockChangeValue> myList = new List<StockChangeValue>();
-            
+
             var myStockChangeValue = new StockChangeValue()
             {
                 StockId = 1,
@@ -558,10 +558,10 @@ namespace UnitTesting_aksjeapp
             myList.Add(myStockChangeValue3);
 
             mockRep.Setup(k => k.GetWinners()).ReturnsAsync(myList);
-            
+
             //Act
             var res = await _stockController.GetWinners() as OkObjectResult;
-            
+
             //Assert
             Assert.Equal(myList, res.Value);
         }
@@ -571,20 +571,20 @@ namespace UnitTesting_aksjeapp
         {
             //Arrange
             mockRep.Setup(k => k.GetWinners()).ReturnsAsync(() => null);
-            
+
             //Act
             var res = await _stockController.GetWinners() as BadRequestObjectResult;
-            
+
             //Assert
             Assert.Equal("Winners not found", res.Value);
         }
-        
+
         [Fact]
         public async Task GetLosers_Ok()
         {
             //Arrange
             List<StockChangeValue> myList = new List<StockChangeValue>();
-            
+
             var myStockChangeValue = new StockChangeValue()
             {
                 StockId = 1,
@@ -614,10 +614,10 @@ namespace UnitTesting_aksjeapp
             myList.Add(myStockChangeValue3);
 
             mockRep.Setup(k => k.GetLosers()).ReturnsAsync(myList);
-            
+
             //Act
             var res = await _stockController.GetLosers() as OkObjectResult;
-            
+
             //Assert
             Assert.Equal(myList, res.Value);
         }
@@ -627,10 +627,10 @@ namespace UnitTesting_aksjeapp
         {
             //Arrange
             mockRep.Setup(k => k.GetLosers()).ReturnsAsync(() => null);
-            
+
             //Act
             var res = await _stockController.GetLosers() as BadRequestObjectResult;
-            
+
             //Assert
             Assert.Equal("Losers not found", res.Value);
         }
@@ -707,7 +707,7 @@ namespace UnitTesting_aksjeapp
             };
 
             mockRep.Setup(k => k.GetCustomerPortfolio(SSN)).ReturnsAsync(myCustomer);
-            
+
             //Act
             var res = await _stockController.GetCustomerPortfolio(SSN) as OkObjectResult;
 
@@ -721,7 +721,7 @@ namespace UnitTesting_aksjeapp
             var SSN = "12345678910";
 
             mockRep.Setup(k => k.GetCustomerPortfolio(SSN)).ReturnsAsync(() => null);
-            
+
             //Act
             var res = await _stockController.GetCustomerPortfolio(SSN) as BadRequestObjectResult;
 
@@ -843,6 +843,21 @@ namespace UnitTesting_aksjeapp
         }
 
         [Fact]
+        public async Task logIn_Ok()
+        {
+            //Arrange
+
+            mockRep.Setup(k => k.LogIn(It.IsAny<User>())).ReturnsAsync(true);
+
+
+
+            //Act
+            //var res = await _stockController.LogIn(It.IsAny<User>()) as OkObjectResult;
+
+
+            //Assert
+        }
+
         public async Task DeleteTransaction()
         {
             var SSN = "12345678910";
@@ -866,8 +881,5 @@ namespace UnitTesting_aksjeapp
             
             Assert.Equal("Transaction not deleted", res.Value);
         }
-        
-
-    }
-
+   }
 }

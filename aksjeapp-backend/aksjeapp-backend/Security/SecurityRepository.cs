@@ -1,13 +1,11 @@
 ﻿using aksjeapp_backend.DAL;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.AspNetCore.Http;
-using Serilog;
 using System.Security.Cryptography;
 
 namespace aksjeapp_backend.Security
 {
-    public class Security : Controllerbase
+    public class Security
     {
         private readonly StockContext _db;
 
@@ -59,7 +57,8 @@ namespace aksjeapp_backend.Security
 
         public async Task<string> LoggedIn(ISession session)
         {
-            if (session.GetString(_loggedIn) != null) {
+            if (session.GetString(_loggedIn) != null)
+            {
                 return session.GetString(_loggedIn);
             }
             return null;

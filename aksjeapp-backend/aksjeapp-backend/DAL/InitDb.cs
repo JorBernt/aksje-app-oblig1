@@ -1,5 +1,6 @@
 ﻿using aksjeapp_backend.Models;
 using Newtonsoft.Json;
+using aksjeapp_backend.DAL;
 
 namespace aksjeapp_backend.DAL
 {
@@ -48,7 +49,18 @@ namespace aksjeapp_backend.DAL
                     Balance = 100_000,
                     PostalArea = postalArea1
                 };
+                string passord = "123";
 
+                byte[] salt = StockRepository.GenSalt();
+                byte[] hash = StockRepository.GenHash(passord, salt);
+                var line = new Users
+                {
+                    Username = "12345678910",
+                    Password = hash,
+                    Salt = salt
+                };
+               
+                context.Users.Add(line);
                 context.Customers.Add(customer1);
                 context.SaveChanges();
             }

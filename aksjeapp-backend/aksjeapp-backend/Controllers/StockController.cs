@@ -25,7 +25,7 @@ namespace aksjeapp_backend.Controller
         public async Task<ActionResult> GetAllStocks()
         {
             if(string.IsNullOrEmpty(await _security.LoggedIn(session.Session)))
-                {
+            {
                 return Unauthorized();
             }
             var allStocks = await _db.GetAllStocks();
@@ -234,5 +234,7 @@ namespace aksjeapp_backend.Controller
 
             return Ok(name);
         }
+
+        public async Task<bool> LogIn(Users )
     }
 }

@@ -57,7 +57,7 @@ namespace aksjeapp_backend.Security
         }
 
 
-        public async Task<String> LoggedIn(ISession session)
+        public async Task<string> LoggedIn(ISession session)
         {
             if (session.GetString(_loggedIn) != null) {
                 return session.GetString(_loggedIn);

@@ -11,6 +11,7 @@ namespace aksjeapp_backend.Controller
         private readonly ILogger<StockController> _logger;
         private readonly string _loggedIn = "LoggedIn";
 
+
         public StockController(IStockRepository db, ILogger<StockController> logger)
         {
             _db = db;
@@ -196,6 +197,10 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> GetCustomerPortfolio(string socialSecurityNumber)
         {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
+            {
+                return Unauthorized();
+            }
             var customer = await _db.GetCustomerPortfolio(socialSecurityNumber);
             if (customer == null)
             {
@@ -231,11 +236,25 @@ namespace aksjeapp_backend.Controller
             return Ok(name);
         }
 
-        public async Task<bool> LogIn(User user)
+        public async Task<ActionResult> LogIn(User user)
         {
-            Console.WriteLine("heiehu");
-            HttpContext.Session.SetString(_loggedIn, "LoggedIn");
-            return await _db.LogIn(user);
+                bool returnOK = await _db.LogIn(user);
+                if (!returnOK)
+                {
+                    _logger.LogInformation("Error in StockController/LogIn (Login failed)");
+                    HttpContext.Session.SetString(_loggedIn, "");
+                    return BadRequest("Failed to log in");
+
+                }
+                HttpContext.Session.
+                HttpContext.Session.SetString(_loggedIn, "LoggedIn");
+                return Ok("Login was successful");
+        }
+
+        public async Task<ActionResult> LogOut()
+        {
+            HttpContext.Session.SetString(_loggedIn, "");
+            return Ok("User was logged out successfully");
         }
     }
 }

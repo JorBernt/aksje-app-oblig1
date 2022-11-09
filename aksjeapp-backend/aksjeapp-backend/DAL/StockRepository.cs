@@ -751,8 +751,10 @@ namespace aksjeapp_backend.DAL
             try
             {
                 var userFound = await _db.Users.FirstOrDefaultAsync(k => k.Username == user.Username);
+                
                 if (userFound == null)
                 {
+                    Console.WriteLine("userFound == null");
                     return false;
                 }
 
@@ -763,10 +765,12 @@ namespace aksjeapp_backend.DAL
                 {
                     return true;
                 }
+                Console.WriteLine("return false");
                 return false;
             }
             catch (Exception e)
             {
+                Console.WriteLine("Catch");
                 return false;
             }
         }

@@ -805,20 +805,20 @@ namespace UnitTesting_aksjeapp
             Assert.Equal("Could not find a name for the symbol", res.Value);
 
         }
-        
+
         [Fact]
         public async Task logIn_Ok()
         {
             //Arrange
 
             mockRep.Setup(k => k.LogIn(It.IsAny<User>())).ReturnsAsync(true);
-            
-            
+
+
 
             //Act
             //var res = await _stockController.LogIn(It.IsAny<User>()) as OkObjectResult;
-            
-            
+
+
             //Assert
         }
 

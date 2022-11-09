@@ -1,6 +1,5 @@
 ﻿using aksjeapp_backend.Models;
 using Newtonsoft.Json;
-using aksjeapp_backend.DAL;
 
 namespace aksjeapp_backend.DAL
 {
@@ -54,17 +53,17 @@ namespace aksjeapp_backend.DAL
                     Balance = 100_000,
                     PostalArea = postalArea1
                 };
-                string passord = "123";
+                string passwordLine = "123";
 
                 byte[] salt = StockRepository.GenSalt();
-                byte[] hash = StockRepository.GenHash(passord, salt);
+                byte[] hash = StockRepository.GenHash(passwordLine, salt);
                 var line = new Users
                 {
                     Username = "12345678910",
                     Password = hash,
                     Salt = salt
                 };
-                
+
                 var customer2 = new Customers
                 {
                     FirstName = "John",
@@ -74,10 +73,10 @@ namespace aksjeapp_backend.DAL
                     Balance = 350_000,
                     PostalArea = postalArea2
                 };
-                string password = "kjempehemmelig";
+                string passwordJohn = "kjempehemmelig";
 
                 byte[] saltJohn = StockRepository.GenSalt();
-                byte[] hashJohn = StockRepository.GenHash(passord, salt);
+                byte[] hashJohn = StockRepository.GenHash(passwordJohn, saltJohn);
                 var john = new Users
                 {
                     Username = "97531086420",

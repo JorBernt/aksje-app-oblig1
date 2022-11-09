@@ -9,7 +9,7 @@ namespace aksjeapp_backend.Controller
     {
         private readonly IStockRepository _db;
         private readonly ILogger<StockController> _logger;
-        private readonly string _loggedIn = "LoggedIn";
+        private static string _loggedIn = "";
 
 
         public StockController(IStockRepository db, ILogger<StockController> logger)
@@ -21,10 +21,10 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> GetAllStocks()
         {
-           /* if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
             {
                 return Unauthorized();
-            }*/
+            }
             var allStocks = await _db.GetAllStocks();
             if (allStocks.Count == 0 || allStocks == null)
             {
@@ -101,7 +101,7 @@ namespace aksjeapp_backend.Controller
             {
                 return Unauthorized();
             }
-            
+
             var transactions = await _db.GetAllTransactions(socialSecurityNumber);
             if (transactions.Count <= 0)
             {
@@ -259,16 +259,18 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> LogIn(User user)
         {
-                bool returnOK = await _db.LogIn(user);
-                if (!returnOK)
-                {
-                    _logger.LogInformation("Error in StockController/LogIn (Login failed)");
-                    HttpContext.Session.SetString(_loggedIn, "");
-                    return BadRequest("Failed");
+            bool returnOK = await _db.LogIn(user);
+            _loggedIn = user.Username;
+            if (!returnOK)
+            {
+                _logger.LogInformation("Error in StockController/LogIn (Login failed)");
+                HttpContext.Session.SetString(_loggedIn, "");
+                return BadRequest("Failed");
 
-                }
-                HttpContext.Session.SetString(_loggedIn, "LoggedIn");
-                return Ok("Ok");
+            }
+
+            HttpContext.Session.SetString(_loggedIn, "LoggedIn");
+            return Ok("Ok");
         }
 
         public async Task<ActionResult> LogOut()

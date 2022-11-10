@@ -25,6 +25,7 @@ const EditPage = () => {
             password: String(passwordRef.current?.value)
         }
         console.log(userData)
+        console.log(userData)
     }
     return (
         <>

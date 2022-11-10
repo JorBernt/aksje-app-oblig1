@@ -7,6 +7,7 @@ import SingleStockPage from "./components/Pages/SingleStockPage";
 import Stocks from "./components/Pages/Stocks";
 import LoginPage from "./components/Pages/LoginPage";
 import RegisterPage from "./components/Pages/RegisterPage";
+import EditPage from "./components/Pages/EditPage"
 
 function App() {
     return (
@@ -18,6 +19,7 @@ function App() {
                 <Route path="/stocks" element={<Stocks/>}/>
                 <Route path="/login" element={<LoginPage/>}/>
                 <Route path="/register" element={<RegisterPage/>}/>
+                <Route path="/edit" element={<EditPage/>}/>
             </Routes>
         </Router>
     );

@@ -49,7 +49,7 @@ namespace aksjeapp_backend.Controller
             return Ok(stockPrices);
         }
 
-        public async Task<ActionResult> BuyStock(string socialSecurityNumber, string symbol, int number)
+        public async Task<ActionResult> BuyStock(string symbol, int number)
         {
             if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
             {
@@ -65,7 +65,7 @@ namespace aksjeapp_backend.Controller
             return Ok("Stock bought");
         }
 
-        public async Task<ActionResult> SellStock(string socialSecurityNumber, string symbol, int number)
+        public async Task<ActionResult> SellStock(string symbol, int number)
         {
             if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
             {

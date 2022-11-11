@@ -1,21 +1,30 @@
 using aksjeapp_backend.Controller;
 using aksjeapp_backend.DAL;
 using aksjeapp_backend.Models;
-using aksjeapp_backend.Models;
 using aksjeapp_backend.Models.News;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
+using System.Net;
+using Results = aksjeapp_backend.Models.Results;
 
 namespace UnitTesting_aksjeapp
 
 {
     public class UnitTest_StockController
     {
+        private const string _loggedIn = "LoggedIn";
+        private const string _notLoggedIn = "";
 
         private static readonly Mock<IStockRepository> mockRep = new Mock<IStockRepository>();
         private static readonly Mock<ILogger<StockController>> mockLog = new Mock<ILogger<StockController>>();
         private readonly StockController _stockController = new StockController(mockRep.Object, mockLog.Object);
+
+        private readonly Mock<HttpContext> mockHttpContext = new Mock<HttpContext>();
+        private readonly MockHttpSession mockSession = new MockHttpSession();
+
+
 
         [Fact]
         public async Task GetAllStocks_Ok()
@@ -127,7 +136,31 @@ namespace UnitTesting_aksjeapp
         }
 
         [Fact]
-        public async Task BuyStock()
+        public async Task BuyStockLoggedIn()
+        {
+            //Arrange
+            var pers = "12345678910";
+            var symbol = "AAPL";
+            var amount = 10;
+
+
+            mockRep.Setup(k => k.BuyStock(pers, symbol.ToUpper(), amount)).ReturnsAsync(true);
+            mockSession[_loggedIn] = pers;
+            
+            mockHttpContext.Setup(s => s.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+
+            //Act
+            var res = await _stockController.BuyStock(symbol, amount) as OkObjectResult;
+
+            //Assert
+            Assert.Equal((int)HttpStatusCode.OK, res.StatusCode);
+            Assert.Equal("Stock bought", res.Value);
+        }
+
+        [Fact]
+        public async Task BuyStockNotLoggedIn()
         {
             //Arrange
             var pers = "12345678910";
@@ -138,7 +171,7 @@ namespace UnitTesting_aksjeapp
             var stockController = new StockController(mockRep.Object, mockLog.Object);
 
             //Act
-            var res = await stockController.BuyStock(pers, symbol, amount) as OkObjectResult;
+            var res = await stockController.BuyStock(symbol, amount) as OkObjectResult;
 
             //Assert
             Assert.Equal("Stock bought", res.Value);
@@ -155,7 +188,7 @@ namespace UnitTesting_aksjeapp
             var stockController = new StockController(mockRep.Object, mockLog.Object);
 
             //Act
-            var res = await stockController.BuyStock(pers, symbol, amount) as BadRequestObjectResult;
+            var res = await stockController.BuyStock(symbol, amount) as BadRequestObjectResult;
 
             //Assert
             Assert.Equal("Fault in buyStock", res.Value);
@@ -172,7 +205,7 @@ namespace UnitTesting_aksjeapp
             var stockController = new StockController(mockRep.Object, mockLog.Object);
 
             //
-            var res = await stockController.SellStock(pers, symbol, amount) as OkObjectResult;
+            var res = await stockController.SellStock(symbol, amount) as OkObjectResult;
 
             Assert.Equal("Stock sold", res.Value);
         }
@@ -185,7 +218,7 @@ namespace UnitTesting_aksjeapp
             var amount = 10;
             mockRep.Setup(k => k.SellStock(pers, symbol.ToUpper(), amount)).ReturnsAsync(false);
             var stockController = new StockController(mockRep.Object, mockLog.Object);
-            var res = await stockController.SellStock(pers, symbol, amount) as BadRequestObjectResult;
+            var res = await stockController.SellStock(symbol, amount) as BadRequestObjectResult;
 
             Assert.Equal("Fault in sellStock", res.Value);
         }
@@ -298,7 +331,7 @@ namespace UnitTesting_aksjeapp
             mockRep.Setup(k => k.GetAllTransactions(SSN)).ReturnsAsync(transactions);
 
             //Act
-            var results = await _stockController.GetAllTransactions(SSN) as OkObjectResult;
+            var results = await _stockController.GetAllTransactions() as OkObjectResult;
 
             //Assert
             Assert.Equal<List<Transaction>>(transactions, (List<Transaction>)results.Value);
@@ -312,7 +345,7 @@ namespace UnitTesting_aksjeapp
             mockRep.Setup(k => k.GetAllTransactions(SSN)).ReturnsAsync(new List<Transaction>());
 
             //Act
-            var results = await _stockController.GetAllTransactions(SSN) as OkObjectResult;
+            var results = await _stockController.GetAllTransactions() as OkObjectResult;
 
             //Assert
             Assert.Null(results);
@@ -402,8 +435,7 @@ namespace UnitTesting_aksjeapp
                 .ReturnsAsync(transaction);
             var stockController = new StockController(mockRep.Object, mockLog.Object);
             var res =
-                await stockController.GetTransaction(transaction.SocialSecurityNumber,
-                    transaction.Id) as OkObjectResult;
+                await stockController.GetTransaction(transaction.Id) as OkObjectResult;
 
             Assert.Equal(transaction, transaction);
         }
@@ -416,7 +448,7 @@ namespace UnitTesting_aksjeapp
 
             mockRep.Setup(k => k.GetTransaction(pers, id)).ReturnsAsync(() => null);
 
-            var result = await _stockController.GetTransaction(pers, id) as BadRequestObjectResult;
+            var result = await _stockController.GetTransaction(id) as BadRequestObjectResult;
 
             // Assert
             Assert.Equal("Transaction does not exist", result.Value);
@@ -709,7 +741,7 @@ namespace UnitTesting_aksjeapp
             mockRep.Setup(k => k.GetCustomerPortfolio(SSN)).ReturnsAsync(myCustomer);
 
             //Act
-            var res = await _stockController.GetCustomerPortfolio(SSN) as OkObjectResult;
+            var res = await _stockController.GetCustomerPortfolio() as OkObjectResult;
 
             //Assert
             Assert.Equal(myCustomer, res.Value);
@@ -723,7 +755,7 @@ namespace UnitTesting_aksjeapp
             mockRep.Setup(k => k.GetCustomerPortfolio(SSN)).ReturnsAsync(() => null);
 
             //Act
-            var res = await _stockController.GetCustomerPortfolio(SSN) as BadRequestObjectResult;
+            var res = await _stockController.GetCustomerPortfolio() as BadRequestObjectResult;
 
             //Assert
             Assert.Equal("Customer not found", res.Value);
@@ -821,7 +853,7 @@ namespace UnitTesting_aksjeapp
             mockRep.Setup(k => k.UpdateTransaction(trans)).ReturnsAsync(true);
 
             var res = await _stockController.UpdateTransaction(trans) as OkObjectResult;
-            
+
             Assert.Equal("Transaction updated", res.Value);
         }
         [Fact]
@@ -838,7 +870,7 @@ namespace UnitTesting_aksjeapp
             mockRep.Setup(k => k.UpdateTransaction(trans)).ReturnsAsync(false);
 
             var res = await _stockController.UpdateTransaction(trans) as BadRequestObjectResult;
-            
+
             Assert.Equal("Transaction not updated", res.Value);
         }
 
@@ -866,7 +898,7 @@ namespace UnitTesting_aksjeapp
             mockRep.Setup(k => k.DeleteTransaction(SSN, id)).ReturnsAsync(true);
 
             var res = await _stockController.DeleteTransaction(SSN, id) as OkObjectResult;
-            
+
             Assert.Equal("Transaction deleted", res.Value);
         }
         [Fact]
@@ -878,8 +910,8 @@ namespace UnitTesting_aksjeapp
             mockRep.Setup(k => k.DeleteTransaction(SSN, id)).ReturnsAsync(false);
 
             var res = await _stockController.DeleteTransaction(SSN, id) as BadRequestObjectResult;
-            
+
             Assert.Equal("Transaction not deleted", res.Value);
         }
-   }
+    }
 }

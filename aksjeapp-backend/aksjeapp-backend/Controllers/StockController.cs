@@ -9,7 +9,7 @@ namespace aksjeapp_backend.Controller
     {
         private readonly IStockRepository _db;
         private readonly ILogger<StockController> _logger;
-        private static string _loggedIn = "";
+        public string _loggedIn = "";
 
 
         public StockController(IStockRepository db, ILogger<StockController> logger)
@@ -51,6 +51,7 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> BuyStock(string symbol, int number)
         {
+            Console.WriteLine(_loggedIn);
             if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
             {
                 return Unauthorized();

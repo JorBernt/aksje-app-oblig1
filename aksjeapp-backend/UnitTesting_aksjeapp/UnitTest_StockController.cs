@@ -145,10 +145,11 @@ namespace UnitTesting_aksjeapp
 
 
             mockRep.Setup(k => k.BuyStock(pers, symbol.ToUpper(), amount)).ReturnsAsync(true);
-            mockSession[_loggedIn] = pers;
-            
+            _stockController._loggedIn = pers;  // Sets the _loggedIn key to socialSecurityNumber
+            mockSession[pers] = pers;
             mockHttpContext.Setup(s => s.Session).Returns(mockSession);
             _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+            
 
 
             //Act
@@ -878,16 +879,24 @@ namespace UnitTesting_aksjeapp
         public async Task logIn_Ok()
         {
             //Arrange
+            User line = new User
+            {
+                Username = "12345678910",
+                Password = "123"
+            };
 
             mockRep.Setup(k => k.LogIn(It.IsAny<User>())).ReturnsAsync(true);
 
-
+            mockSession[line.Username] = _loggedIn;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
 
             //Act
-            //var res = await _stockController.LogIn(It.IsAny<User>()) as OkObjectResult;
-
+            var res = await _stockController.LogIn(line) as OkObjectResult; // We are not using It.Any<User> since we use the username as session key.
 
             //Assert
+            Assert.Equal((int)HttpStatusCode.OK, res.StatusCode);
+            Assert.Equal("Ok",res.Value);
         }
 
         public async Task DeleteTransaction()

@@ -77,7 +77,7 @@ namespace aksjeapp_backend.Controller
             if(number < 0)
             {
                 _logger.LogInformation("Inserted negative number in amount");
-                return BadRequest("Cannot buy negative stock");
+                return BadRequest("Cannot sell negative stock");
             }
             if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
             {

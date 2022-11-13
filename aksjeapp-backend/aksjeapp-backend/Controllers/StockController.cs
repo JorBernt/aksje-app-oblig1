@@ -261,18 +261,23 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> LogIn(User user)
         {
-            bool returnOK = await _db.LogIn(user);
-            _loggedIn = user.Username;
-            if (!returnOK)
+            if (ModelState.IsValid)
             {
-                _logger.LogInformation("Error in StockController/LogIn (Login failed)");
-                HttpContext.Session.SetString(_loggedIn, "");
-                return BadRequest("Failed");
+                bool returnOK = await _db.LogIn(user);
+                _loggedIn = user.Username;
+                if (!returnOK)
+                {
+                    _logger.LogInformation("Error in StockController/LogIn (Login failed)");
+                    HttpContext.Session.SetString(_loggedIn, "");
+                    return Ok("Failed");
 
+                }
+
+                HttpContext.Session.SetString(_loggedIn, "LoggedIn");
+                return Ok("Ok");
             }
-
-            HttpContext.Session.SetString(_loggedIn, "LoggedIn");
-            return Ok("Ok");
+            _logger.LogInformation("Fault in regular expression in logIn");
+            return BadRequest("Fault in input");
         }
 
         public async Task<ActionResult> LogOut()

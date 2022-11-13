@@ -149,7 +149,7 @@ namespace UnitTesting_aksjeapp
             mockSession[pers] = pers;
             mockHttpContext.Setup(s => s.Session).Returns(mockSession);
             _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
-            
+
 
 
             //Act
@@ -896,7 +896,57 @@ namespace UnitTesting_aksjeapp
 
             //Assert
             Assert.Equal((int)HttpStatusCode.OK, res.StatusCode);
-            Assert.Equal("Ok",res.Value);
+            Assert.Equal("Ok", res.Value);
+        }
+
+        [Fact]
+        public async Task logIn_WrongUsernamePassword()
+        {
+            //Arrange
+            User line = new User
+            {
+                Username = "12345678910",
+                Password = "123"
+            };
+
+            mockRep.Setup(k => k.LogIn(It.IsAny<User>())).ReturnsAsync(false);
+
+            mockSession[line.Username] = _notLoggedIn;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            var res = await _stockController.LogIn(line) as OkObjectResult; // We are not using It.Any<User> since we use the username as session key.
+
+            //Assert
+            Assert.Equal((int)HttpStatusCode.OK, res.StatusCode);
+            Assert.Equal("Failed", res.Value);
+        }
+
+        [Fact]
+        public async Task logIn_WrongInput()
+        {
+            //Arrange
+            User line = new User
+            {
+                Username = "12345678910",
+                Password = "123"
+            };
+
+            mockRep.Setup(k => k.LogIn(It.IsAny<User>())).ReturnsAsync(true);
+
+            _stockController.ModelState.AddModelError("Username", "Fault in input");
+
+            mockSession[line.Username] = _loggedIn;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            var res = await _stockController.LogIn(line) as BadRequestObjectResult; // We are not using It.Any<User> since we use the username as session key.
+
+            //Assert
+            Assert.Equal((int)HttpStatusCode.BadRequest, res.StatusCode);
+            Assert.Equal("Fault in input", res.Value);
         }
 
         public async Task DeleteTransaction()

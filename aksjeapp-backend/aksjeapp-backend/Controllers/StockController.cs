@@ -1,6 +1,7 @@
 ﻿using aksjeapp_backend.DAL;
 using aksjeapp_backend.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Text.RegularExpressions;
 
 namespace aksjeapp_backend.Controller
 {
@@ -51,7 +52,11 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> BuyStock(string symbol, int number)
         {
-            Console.WriteLine(_loggedIn);
+            if (number < 0)
+            {
+                _logger.LogInformation("Inserted negative number in amount");
+                return BadRequest("Cannot buy negative stock");
+            }
             if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
             {
                 return Unauthorized();
@@ -68,6 +73,11 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> SellStock(string symbol, int number)
         {
+            if(number < 0)
+            {
+                _logger.LogInformation("Inserted negative number in amount");
+                return BadRequest("Cannot buy negative stock");
+            }
             if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
             {
                 return Unauthorized();
@@ -154,7 +164,7 @@ namespace aksjeapp_backend.Controller
             return Ok("Transaction updated");
         }
 
-        public async Task<ActionResult> DeleteTransaction(string socialSecurityNumber, int id)
+        public async Task<ActionResult> DeleteTransaction(int id)
         {
             if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
             {
@@ -249,14 +259,19 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> GetStockName(string symbol)
         {
+            symbol = symbol.ToUpper();
+            Regex reg = new Regex(@"^[A-Z]{2,4");
+            if (reg.IsMatch(symbol)) {
             var name = await _db.GetStockName(symbol);
             if (name == "")
             {
-                _logger.LogInformation("Fault");
-                return BadRequest("Could not find a name for the symbol");
+                _logger.LogInformation("No stocks found in database");
+                return BadRequest("Could not find a stock");
             }
 
             return Ok(name);
+            }
+            return BadRequest("Fault in input get stock name");
         }
 
         public async Task<ActionResult> LogIn(User user)

@@ -37,7 +37,7 @@ namespace aksjeapp_backend.Controller
             if (symbol == "")
             {
                 _logger.LogInformation("Empty stock parameter");
-                return NoContent();
+                return BadRequest("Empty stock parameter");
             }
             var stockPrices = await _db.GetStockPrices(symbol.ToUpper(), fromDate, toDate);
 
@@ -52,14 +52,15 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> BuyStock(string symbol, int number)
         {
-            if (number < 0)
-            {
-                _logger.LogInformation("Inserted negative number in amount");
-                return BadRequest("Cannot buy negative stock");
-            }
+            
             if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
             {
                 return Unauthorized();
+            }
+            if (number < 0)
+            {
+                _logger.LogInformation("Inserted negative number in amount");
+                return BadRequest("Cannot buy negative amount of stock");
             }
             bool returnOK = await _db.BuyStock(_loggedIn, symbol.ToUpper(), number);
             if (!returnOK)

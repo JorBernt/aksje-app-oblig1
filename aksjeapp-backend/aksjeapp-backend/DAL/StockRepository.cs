@@ -751,7 +751,7 @@ namespace aksjeapp_backend.DAL
             try
             {
                 var userFound = await _db.Users.FirstOrDefaultAsync(k => k.Username == user.Username);
-                
+
                 if (userFound == null)
                 {
                     Console.WriteLine("userFound == null");

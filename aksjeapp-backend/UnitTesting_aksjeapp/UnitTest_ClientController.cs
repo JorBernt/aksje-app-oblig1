@@ -65,6 +65,6 @@ namespace UnitTesting_aksjeapp
             var results = await _clientController.RegisterCustomer(customer) as BadRequestObjectResult;
             Assert.Equal("Fault in registerCustomer", results.Value);
         }
-        
+
     }
 }

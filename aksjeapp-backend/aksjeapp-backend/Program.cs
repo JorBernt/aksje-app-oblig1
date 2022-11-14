@@ -40,11 +40,13 @@ var app = builder.Build();
 
 app.UseCors(MyAllowSpecificOrigins);
 app.UseRouting();
+
+app.UseSession();
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
 
-app.UseSession();
 
 InitDb.Initialize(app);
 

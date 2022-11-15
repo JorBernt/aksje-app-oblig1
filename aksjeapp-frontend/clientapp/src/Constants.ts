@@ -82,7 +82,10 @@ export const API = {
         },
         AUTHENTICATE_USER: async (): Promise<boolean | unknown> => {
             try {
-                const response = await fetch(`${stockURL}IsLoggedIn`);
+                const response = await fetch(`${stockURL}IsLoggedIn`, {
+                    method: "GET",
+                    credentials: 'include',
+                });
                 return response.status === 200;
             } catch (error: unknown) {
                 return error;

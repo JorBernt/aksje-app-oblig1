@@ -13,7 +13,7 @@ var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
 builder.Services.AddCors(options =>
 {
     options.AddPolicy(name: MyAllowSpecificOrigins,
-        policy => { policy.WithOrigins("http://localhost:3000").AllowAnyMethod().AllowAnyHeader(); });
+        policy => { policy.WithOrigins("https://localhost:3000").AllowAnyMethod().AllowAnyHeader().AllowCredentials(); });
 });
 
 // Initialized logger (code accessed from https://www.claudiobernasconi.ch/2022/01/28/how-to-use-serilog-in-asp-net-core-web-api/) 
@@ -42,6 +42,7 @@ app.UseCors(MyAllowSpecificOrigins);
 app.UseRouting();
 
 app.UseSession();
+app.UseHttpsRedirection();
 
 app.MapControllerRoute(
     name: "default",

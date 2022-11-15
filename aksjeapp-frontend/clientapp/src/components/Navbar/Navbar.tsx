@@ -1,9 +1,15 @@
-import React from 'react';
+import React, {useState} from 'react';
 import NavbarLink from "./NavbarLink";
 import SearchBar from "../UI/SearchBar/SearchBar";
 import Divider from "./Divider";
+import {API} from "../../Constants";
 
 function Navbar() {
+    const [loggedIn, setLoggedIn] = useState(false)
+    API.CLIENT.AUTHENTICATE_USER().then(response => {
+        if (response)
+            setLoggedIn(true)
+    })
     return (
         <>
             <nav className="flex items-center justify-between bg-navbar border-b-2 border-black p-1">
@@ -18,7 +24,12 @@ function Navbar() {
                     <Divider/>
                     <NavbarLink link={"/stocks"} text={"Stocks"}/>
                     <Divider/>
-                    <NavbarLink link={"/profile"} text={"Profile"}/>
+                    {
+                        loggedIn ?
+                            <NavbarLink link={"/profile"} text={"Profile"}/>
+                            :
+                            <NavbarLink link={"/login"} text={"Log in"}/>
+                    }
                 </div>
             </nav>
         </>

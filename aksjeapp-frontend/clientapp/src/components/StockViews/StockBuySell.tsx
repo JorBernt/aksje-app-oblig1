@@ -23,7 +23,7 @@ const StockBuySell = (props: Props) => {
 
         setShowLoading(true)
         if (props.data === "Buy")
-            fetch(API.STOCK.BUY_STOCK(SSN, props.symbol, parseInt(inputRef.current.value)))
+            fetch(API.STOCK.BUY_STOCK(SSN, props.symbol, parseInt(inputRef.current.value)), {credentials: 'include'})
                 .then(response => response.text()
                     .then(response => {
                         if (inputRef.current)

@@ -10,7 +10,8 @@ namespace aksjeapp_backend.Controller
     {
         private readonly IStockRepository _db;
         private readonly ILogger<StockController> _logger;
-        public string _loggedIn = "";
+        private const string _loggedIn = "SocialSecurityNumber";
+        
 
 
         public StockController(IStockRepository db, ILogger<StockController> logger)
@@ -62,7 +63,8 @@ namespace aksjeapp_backend.Controller
                 _logger.LogInformation("Inserted negative number in amount");
                 return BadRequest("Cannot buy negative amount of stock");
             }
-            bool returnOK = await _db.BuyStock(_loggedIn, symbol.ToUpper(), number);
+            string socialSecurityNumber = HttpContext.Session.GetString(_loggedIn);
+            bool returnOK = await _db.BuyStock(socialSecurityNumber, symbol.ToUpper(), number);
             if (!returnOK)
             {
                 _logger.LogInformation("Fault in buyStock");
@@ -83,7 +85,8 @@ namespace aksjeapp_backend.Controller
             {
                 return Unauthorized();
             }
-            bool returnOK = await _db.SellStock(_loggedIn, symbol.ToUpper(), number);
+            string socialSecurityNumber = HttpContext.Session.GetString(_loggedIn);
+            bool returnOK = await _db.SellStock(socialSecurityNumber, symbol.ToUpper(), number);
             if (!returnOK)
             {
                 _logger.LogInformation("Fault in sellStock");
@@ -110,8 +113,8 @@ namespace aksjeapp_backend.Controller
             {
                 return Unauthorized();
             }
-
-            var transactions = await _db.GetAllTransactions(_loggedIn);
+            string socialSecurityNumber = HttpContext.Session.GetString(_loggedIn);
+            var transactions = await _db.GetAllTransactions(socialSecurityNumber);
             if (transactions.Count <= 0)
             {
                 _logger.LogInformation("No transactions");
@@ -139,7 +142,8 @@ namespace aksjeapp_backend.Controller
             {
                 return Unauthorized();
             }
-            var transaction = await _db.GetTransaction(_loggedIn, id);
+            string socialSecurityNumber = HttpContext.Session.GetString(_loggedIn);
+            var transaction = await _db.GetTransaction(socialSecurityNumber, id);
             if (transaction == null)
             {
                 _logger.LogInformation("Not found transaction belonging to " + _loggedIn + " with id " + id);
@@ -171,7 +175,8 @@ namespace aksjeapp_backend.Controller
             {
                 return Unauthorized();
             }
-            bool returnOK = await _db.DeleteTransaction(_loggedIn, id);
+            string socialSecurityNumber = HttpContext.Session.GetString(_loggedIn);
+            bool returnOK = await _db.DeleteTransaction(socialSecurityNumber, id);
             if (!returnOK)
             {
                 _logger.LogInformation("Transaction not deleted");
@@ -235,7 +240,9 @@ namespace aksjeapp_backend.Controller
             {
                 return Unauthorized();
             }
-            var customer = await _db.GetCustomerPortfolio(_loggedIn);
+
+            string socialSecurityNumber = HttpContext.Session.GetString(_loggedIn);
+            var customer = await _db.GetCustomerPortfolio(socialSecurityNumber);
             if (customer == null)
             {
                 _logger.LogInformation("Customer not found");
@@ -275,12 +282,12 @@ namespace aksjeapp_backend.Controller
             return BadRequest("Fault in input get stock name");
         }
 
-        public async Task<ActionResult> LogIn(User user)
+        [HttpPost]
+        public async Task<ActionResult> LogIn([FromBody]User user)
         {
             if (ModelState.IsValid)
             {
                 bool returnOK = await _db.LogIn(user);
-                _loggedIn = user.Username;
                 if (!returnOK)
                 {
                     _logger.LogInformation("Error in StockController/LogIn (Login failed)");
@@ -288,8 +295,8 @@ namespace aksjeapp_backend.Controller
                     return Ok("Failed");
 
                 }
-
-                HttpContext.Session.SetString(_loggedIn, "LoggedIn");
+                
+                HttpContext.Session.SetString(_loggedIn, user.Username);
                 return Ok("Ok");
             }
             _logger.LogInformation("Fault in regular expression in logIn");
@@ -300,6 +307,16 @@ namespace aksjeapp_backend.Controller
         {
             HttpContext.Session.SetString(_loggedIn, "");
             return Ok("Ok");
+        }
+
+        public async Task<ActionResult> IsLoggedIn()
+        {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
+            {
+                return Unauthorized();
+            }
+
+            return Ok();
         }
     }
 }

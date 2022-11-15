@@ -115,10 +115,10 @@ namespace aksjeapp_backend.Controller
             }
             string socialSecurityNumber = HttpContext.Session.GetString(_loggedIn);
             var transactions = await _db.GetAllTransactions(socialSecurityNumber);
-            if (transactions.Count <= 0)
+            if (transactions == null)
             {
-                _logger.LogInformation("No transactions");
-                return BadRequest("No transactions");
+                _logger.LogInformation("Customer not found in getAlltransactions");
+                return BadRequest("Customer not found");
             }
 
             return Ok(transactions);

@@ -373,7 +373,7 @@ namespace UnitTesting_aksjeapp
         }
 
         [Fact]
-        public async Task GetAllTransactions_Ok()
+        public async Task GetAllTransactionsLoggedIn()
         {
             //Arrange
             var socialSecurityNumber = "12345678910";
@@ -410,11 +410,30 @@ namespace UnitTesting_aksjeapp
             });
             MockRep.Setup(k => k.GetAllTransactions(socialSecurityNumber)).ReturnsAsync(transactions);
 
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+                
             //Act
             var results = await _stockController.GetAllTransactions() as OkObjectResult;
 
             //Assert
             Assert.Equal<List<Transaction>>(transactions, (List<Transaction>)results.Value);
+        }
+        
+        [Fact]
+        public async Task GetAllTransactionsNotLoggedIn()
+        {
+            //Arrange
+            mockSession[_loggedIn] = _notLoggedIn;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            var results = await _stockController.GetAllTransactions() as UnauthorizedResult;
+
+            //Assert
+            Assert.Equal((int)HttpStatusCode.Unauthorized, results.StatusCode);
         }
 
         [Fact]
@@ -424,11 +443,33 @@ namespace UnitTesting_aksjeapp
             var socialSecurityNumber = "12345678910";
             MockRep.Setup(k => k.GetAllTransactions(socialSecurityNumber)).ReturnsAsync(new List<Transaction>());
 
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+            
             //Act
             var results = await _stockController.GetAllTransactions() as OkObjectResult;
 
             //Assert
             Assert.Null(results);
+        }
+        
+        [Fact]
+        public async Task GetAllTransactions_CustomerNotFound()
+        {
+            //Arrange
+            var socialSecurityNumber = "12345678910";
+            MockRep.Setup(k => k.GetAllTransactions(socialSecurityNumber)).ReturnsAsync((() => null));
+
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+            
+            //Act
+            var results = await _stockController.GetAllTransactions() as BadRequestObjectResult;
+
+            //Assert
+            Assert.Equal("Customer not found",results.Value);
         }
 
 
@@ -970,7 +1011,7 @@ namespace UnitTesting_aksjeapp
 
             MockRep.Setup(k => k.LogIn(It.IsAny<User>())).ReturnsAsync(true);
 
-            mockSession[line.Username] = _loggedIn;
+            mockSession[_loggedIn] = line.Username;
             mockHttpContext.Setup(k => k.Session).Returns(mockSession);
             _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
 
@@ -995,7 +1036,7 @@ namespace UnitTesting_aksjeapp
 
             MockRep.Setup(k => k.LogIn(It.IsAny<User>())).ReturnsAsync(false);
 
-            mockSession[line.Username] = _notLoggedIn;
+            mockSession[_loggedIn] = _notLoggedIn;
             mockHttpContext.Setup(k => k.Session).Returns(mockSession);
             _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
 
@@ -1023,18 +1064,35 @@ namespace UnitTesting_aksjeapp
 
             _stockController.ModelState.AddModelError("Username", "Fault in input");
 
-            mockSession[line.Username] = _loggedIn;
+            mockSession[_loggedIn] = line.Username;
             mockHttpContext.Setup(k => k.Session).Returns(mockSession);
             _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
 
             //Act
-            var result =
-                await _stockController
-                    .LogIn(line) as BadRequestObjectResult; // We are not using It.Any<User> since we use the username as session key.
+            var result = await _stockController.LogIn(line) as BadRequestObjectResult;
 
             //Assert
             Assert.Equal((int)HttpStatusCode.BadRequest, result.StatusCode);
             Assert.Equal("Fault in input", result.Value);
+        }
+        
+        [Fact]
+        public async Task logOut()
+        {
+            //Arrange
+            var username = "12345678910";
+            
+            // Sets a session
+            mockSession[_loggedIn] = username;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            var result = await _stockController.LogOut() as OkObjectResult;
+            
+            //Assert
+            Assert.Equal((int)HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal("", mockSession[_loggedIn]);
         }
 
         [Fact]

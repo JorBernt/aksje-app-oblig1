@@ -301,5 +301,15 @@ namespace aksjeapp_backend.Controller
             HttpContext.Session.SetString(_loggedIn, "");
             return Ok("Ok");
         }
+
+        public async Task<ActionResult> IsLoggedIn()
+        {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
+            {
+                return Unauthorized();
+            }
+
+            return Ok();
+        }
     }
 }

@@ -14,7 +14,7 @@ namespace UnitTesting_aksjeapp
 {
     public class UnitTestStockController
     {
-        private const string _loggedIn = "LoggedIn";
+        private const string _loggedIn = "SocialSecurityNumber";
         private const string _notLoggedIn = "";
 
         private static readonly Mock<IStockRepository> MockRep = new Mock<IStockRepository>();
@@ -141,7 +141,8 @@ namespace UnitTesting_aksjeapp
             //Act
             var result = await _stockController.GetStockPrices("AAPL", "", "") as BadRequestObjectResult;
 
-            //Assert   HTTP NoContent has status code 204
+            //Assert
+            Assert.Equal((int) HttpStatusCode.BadRequest, result.StatusCode);
             Assert.Equal("Not found", result.Value);
         }
 
@@ -155,8 +156,7 @@ namespace UnitTesting_aksjeapp
 
 
             MockRep.Setup(k => k.BuyStock(socialSecurityNumber, symbol.ToUpper(), amount)).ReturnsAsync(true);
-            _stockController._loggedIn = socialSecurityNumber; // Sets the _loggedIn key to socialSecurityNumber
-            mockSession[socialSecurityNumber] = socialSecurityNumber;
+            mockSession[_loggedIn] = socialSecurityNumber;
             mockHttpContext.Setup(s => s.Session).Returns(mockSession);
             _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
 
@@ -176,9 +176,8 @@ namespace UnitTesting_aksjeapp
             var socialSecurityNumber = "12345678910";
             var symbol = "AAPL";
             var amount = -10;
-
-            _stockController._loggedIn = socialSecurityNumber; // Sets the _loggedIn key to socialSecurityNumber
-            mockSession[socialSecurityNumber] = socialSecurityNumber;
+            
+            mockSession[_loggedIn] = socialSecurityNumber;
             mockHttpContext.Setup(s => s.Session).Returns(mockSession);
             _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
 
@@ -194,10 +193,8 @@ namespace UnitTesting_aksjeapp
         public async Task BuyStockNotLoggedIn()
         {
             //Arrange
-            var socialSecurityNumber = "12345678910";
 
-            _stockController._loggedIn = socialSecurityNumber;
-            mockSession[socialSecurityNumber] = _notLoggedIn;
+            mockSession[_loggedIn] = _notLoggedIn;
             mockHttpContext.Setup(k => k.Session).Returns(mockSession);
             _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
             //Act
@@ -216,8 +213,7 @@ namespace UnitTesting_aksjeapp
             var amount = 10;
 
             MockRep.Setup(k => k.BuyStock(socialSecurityNumber, symbol.ToUpper(), amount)).ReturnsAsync(false);
-            _stockController._loggedIn = socialSecurityNumber; // Sets the _loggedIn key to socialSecurityNumber
-            mockSession[socialSecurityNumber] = socialSecurityNumber;
+            mockSession[_loggedIn] = socialSecurityNumber;
             mockHttpContext.Setup(s => s.Session).Returns(mockSession);
             _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
 
@@ -238,8 +234,7 @@ namespace UnitTesting_aksjeapp
 
             MockRep.Setup(k => k.SellStock(socialSecurityNumber, symbol.ToUpper(), amount)).ReturnsAsync(true);
             
-            _stockController._loggedIn = socialSecurityNumber;
-            mockSession[socialSecurityNumber] = _loggedIn;
+            mockSession[_loggedIn] = socialSecurityNumber;
             mockHttpContext.Setup(k => k.Session).Returns(mockSession);
             _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
 
@@ -260,8 +255,7 @@ namespace UnitTesting_aksjeapp
             
             MockRep.Setup(k => k.SellStock(socialSecurityNumber, symbol.ToUpper(), amount)).ReturnsAsync(false);
             
-            _stockController._loggedIn = socialSecurityNumber;
-            mockSession[socialSecurityNumber] = _loggedIn;
+            mockSession[_loggedIn] = socialSecurityNumber;
             mockHttpContext.Setup(k => k.Session).Returns(mockSession);
             _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
             
@@ -280,9 +274,7 @@ namespace UnitTesting_aksjeapp
             var symbol = "AAPL";
             var amount = -10;
             
-            
-            _stockController._loggedIn = socialSecurityNumber;
-            mockSession[socialSecurityNumber] = _loggedIn;
+            mockSession[_loggedIn] = socialSecurityNumber;
             mockHttpContext.Setup(k => k.Session).Returns(mockSession);
             _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
 
@@ -301,8 +293,6 @@ namespace UnitTesting_aksjeapp
             var symbol = "AAPL";
             var amount = 10;
             
-            
-            _stockController._loggedIn = socialSecurityNumber;
             mockSession[socialSecurityNumber] = _notLoggedIn;
             mockHttpContext.Setup(k => k.Session).Returns(mockSession);
             _stockController.ControllerContext.HttpContext = mockHttpContext.Object;

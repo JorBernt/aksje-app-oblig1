@@ -29,7 +29,6 @@ namespace aksjeapp_backend.Controller
                 _logger.LogInformation("Not found");
                 return BadRequest("Not found");
             }
-
             return Ok(allStocks);
         }
 
@@ -53,7 +52,6 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> BuyStock(string socialSecurityNumber, string symbol, int number)
         {
-            
             if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
             {
                 return Unauthorized();
@@ -69,11 +67,10 @@ namespace aksjeapp_backend.Controller
                 _logger.LogInformation("Fault in buyStock");
                 return BadRequest("Fault in buyStock");
             }
-
             return Ok("Stock bought");
         }
 
-        public async Task<ActionResult> SellStock(string symbol, int number)
+        public async Task<ActionResult> SellStock(string socialSecurityNumber, string symbol, int number)
         {
             if(number < 0)
             {
@@ -276,7 +273,8 @@ namespace aksjeapp_backend.Controller
             return BadRequest("Fault in input get stock name");
         }
 
-        public async Task<ActionResult> LogIn(User user)
+        [HttpPost]
+        public async Task<ActionResult> LogIn([FromBody]User user)
         {
             if (ModelState.IsValid)
             {
@@ -302,6 +300,16 @@ namespace aksjeapp_backend.Controller
         {
             HttpContext.Session.SetString(_loggedIn, "");
             return Ok("Ok");
+        }
+
+        public async Task<ActionResult> IsLoggedIn()
+        {
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
+            {
+                return Unauthorized();
+            }
+
+            return Ok();
         }
     }
 }

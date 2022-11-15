@@ -1,3 +1,8 @@
+export interface User {
+    username: string;
+    password: string;
+}
+
 export interface Stock {
     amount?: number;
     symbol: string;

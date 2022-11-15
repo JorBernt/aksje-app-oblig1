@@ -67,11 +67,10 @@ export const API = {
             try {
                 const response = await fetch(`${stockURL}LogIn`, {
                     method: "POST",
+                    credentials: 'include',
                     headers: {
                         "Content-Type": "application/json",
-                        "access-control-allow-origin": "",
-                        'Access-Control-Allow-Headers': 'Content-Type, Authorization',
-                        'Access-Control-Allow-Methods': '',
+                        'Access-Control-Allow-Headers': 'Content-Type, Authorization, Set-Cookie',
                     },
                     body: JSON.stringify(user)
                 });

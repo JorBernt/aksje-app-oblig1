@@ -18,7 +18,7 @@ const TransactionsView: React.FC<Props> = (props) => {
     //const isVisible = true;
 
     const loadAllTransactions = () => {
-        fetch(API.STOCK.GET_ALL_TRANSACTIONS("12345678910"))
+        fetch(API.STOCK.GET_ALL_TRANSACTIONS("12345678910"), {credentials: 'include',})
             .then(response => response.json()
                 .then(response => {
                     setTransactionView(p => [...response])

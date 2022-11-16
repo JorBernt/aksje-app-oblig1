@@ -90,6 +90,17 @@ export const API = {
                 return error;
             }
         },
-        LOGOUT: `${clientURL}LogOut`
+        LOGOUT: async (): Promise<boolean | unknown> => {
+            try {
+                const response = await fetch(`${stockURL}LogOut`, {
+                    credentials: 'include',
+                });
+                return response.status === 200;
+            } catch (error: unknown) {
+                return error;
+            }
+        }
     }
 }
+
+

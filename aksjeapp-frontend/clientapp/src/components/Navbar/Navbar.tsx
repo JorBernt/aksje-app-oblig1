@@ -2,10 +2,11 @@ import React from 'react';
 import NavbarLink from "./NavbarLink";
 import SearchBar from "../UI/SearchBar/SearchBar";
 import Divider from "./Divider";
-import {useLoggedInContext} from "../../App";
+import {LoggedInContextType, useLoggedInContext} from "../../App";
+import NavbarLinkDropDown from "./NavbarLinkDropdown";
 
-function Navbar() {
-    const loggedInContext = useLoggedInContext()
+const Navbar = () => {
+    const loggedInContext = useLoggedInContext() as LoggedInContextType
     return (
         <>
             <nav className="flex items-center justify-between bg-navbar border-b-2 border-black p-1">
@@ -22,9 +23,9 @@ function Navbar() {
                     <Divider/>
                     {
                         loggedInContext.loggedIn ?
-                            <NavbarLink link={"/profile"} text={"Profile"}/>
+                            <NavbarLinkDropDown links={["/profile", "/logout"]} texts={["Profile", "Log Out"]}/>
                             :
-                            <NavbarLink link={"/login"} text={"Log in"}/>
+                            <NavbarLink link={"/login"} text={"Log In"}/>
                     }
                 </div>
             </nav>

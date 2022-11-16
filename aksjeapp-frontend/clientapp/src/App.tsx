@@ -8,6 +8,7 @@ import Stocks from "./components/Pages/Stocks";
 import LoginPage from "./components/Pages/LoginPage";
 import RegisterPage from "./components/Pages/RegisterPage";
 import EditPage from "./components/Pages/EditPage"
+import {API} from "./Constants";
 
 export type LoggedInContextType = {
     loggedIn: boolean
@@ -34,6 +35,10 @@ export const [useLoggedInContext, LoggedInContextProvider] = createCtx<LoggedInC
 function App() {
 
     const [loggedIn, setLoggedIn] = useState(false)
+    API.CLIENT.AUTHENTICATE_USER().then(response => {
+        if (response)
+            setLoggedIn(true)
+    })
 
     return (
         <Router>

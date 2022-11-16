@@ -67,19 +67,19 @@ namespace aksjeapp_backend.DAL
                 var customer2 = new Customers
                 {
                     FirstName = "John",
-                    SocialSecurityNumber = "97531086420",
+                    SocialSecurityNumber = "12345678911",
                     LastName = "Lennon",
                     Address = "Rådhusplassen 2",
                     Balance = 350_000,
                     PostalArea = postalArea2
                 };
-                string passwordJohn = "kjempehemmelig";
+                string passwordJohn = "1234";
 
                 byte[] saltJohn = StockRepository.GenSalt();
                 byte[] hashJohn = StockRepository.GenHash(passwordJohn, saltJohn);
                 var john = new Users
                 {
-                    Username = "97531086420",
+                    Username = "12345678911",
                     Password = hashJohn,
                     Salt = saltJohn
                 };

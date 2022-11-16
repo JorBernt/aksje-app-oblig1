@@ -76,15 +76,17 @@ namespace aksjeapp_backend.Controller
 
         public async Task<ActionResult> SellStock(string symbol, int number)
         {
+            
+            if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
+            {
+                return Unauthorized();
+            }
             if(number < 0)
             {
                 _logger.LogInformation("Inserted negative number in amount");
                 return BadRequest("Cannot sell negative stock");
             }
-            if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
-            {
-                return Unauthorized();
-            }
+            
             string socialSecurityNumber = HttpContext.Session.GetString(_loggedIn);
             bool returnOK = await _db.SellStock(socialSecurityNumber, symbol.ToUpper(), number);
             if (!returnOK)

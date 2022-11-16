@@ -1007,43 +1007,73 @@ namespace UnitTesting_aksjeapp
         }
 
         [Fact]
-        public async Task UpdateTransaction()
+        public async Task UpdateTransactionLoggedIn_OK()
         {
-            var trans = new Transaction
+            //Arrange
+            var transaction = new Transaction
             {
                 SocialSecurityNumber = "12345678910",
-                Date = "2022/10/01",
+                Date = "2022-10-01",
                 Symbol = "AAPL",
                 Amount = 350,
                 TotalPrice = 1800,
                 Awaiting = true
             };
 
-            MockRep.Setup(k => k.UpdateTransaction(trans)).ReturnsAsync(true);
+            MockRep.Setup(k => k.UpdateTransaction(transaction)).ReturnsAsync(true);
 
-            var res = await _stockController.UpdateTransaction(trans) as OkObjectResult;
+            mockSession[_loggedIn] = transaction;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
 
-            Assert.Equal("Transaction updated", res.Value);
+            //Act            
+            var result = await _stockController.UpdateTransaction(transaction) as OkObjectResult;
+
+            //Assert
+            Assert.Equal("Transaction updated", result.Value);
+        }
+        
+        [Fact]
+        public async Task UpdateTransactionNotLoggedIn()
+        {
+            //Arrange
+            mockSession[_loggedIn] = _notLoggedIn;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            
+            // Act
+            var result = await _stockController.UpdateTransaction(It.IsAny<Transaction>()) as UnauthorizedResult;
+
+            //Assert
+            Assert.Equal((int) HttpStatusCode.Unauthorized, result.StatusCode);
         }
 
         [Fact]
         public async Task UpdateTransaction_Empty()
         {
-            var trans = new Transaction
+            // Arrange
+            var transaction = new Transaction
             {
                 SocialSecurityNumber = "12345678910",
-                Date = "2022/10/01",
+                Date = "2022-10-01",
                 Symbol = "AAPL",
                 Amount = 350,
                 TotalPrice = 1800,
                 Awaiting = true
             };
 
-            MockRep.Setup(k => k.UpdateTransaction(trans)).ReturnsAsync(false);
+            MockRep.Setup(k => k.UpdateTransaction(transaction)).ReturnsAsync(false);
 
-            var res = await _stockController.UpdateTransaction(trans) as BadRequestObjectResult;
+            mockSession[_loggedIn] = transaction;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
 
-            Assert.Equal("Transaction not updated", res.Value);
+            // Act
+            var result = await _stockController.UpdateTransaction(transaction) as BadRequestObjectResult;
+            
+            //Assert
+            Assert.Equal("Transaction not updated", result.Value);
         }
 
         [Fact]

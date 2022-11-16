@@ -722,7 +722,7 @@ namespace aksjeapp_backend.DAL
             var News = await PolygonAPI.GetNews(symbol);
             return News;
         }
-        public async Task<String> GetStockName(string symbol)
+        public async Task<string> GetStockName(string symbol)
         {
             var stock = await _db.Stocks.FindAsync(symbol);
             return stock == null ? "" : stock.Name;

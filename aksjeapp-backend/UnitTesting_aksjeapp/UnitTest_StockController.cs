@@ -1,26 +1,33 @@
 using aksjeapp_backend.Controller;
 using aksjeapp_backend.DAL;
 using aksjeapp_backend.Models;
-using aksjeapp_backend.Models;
 using aksjeapp_backend.Models.News;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
+using System.Net;
+using Results = aksjeapp_backend.Models.Results;
 
 namespace UnitTesting_aksjeapp
 
 {
-    public class UnitTest_StockController
+    public class UnitTestStockController
     {
+        private const string _loggedIn = "SocialSecurityNumber";
+        private const string _notLoggedIn = "";
 
-        private static readonly Mock<IStockRepository> mockRep = new Mock<IStockRepository>();
-        private static readonly Mock<ILogger<StockController>> mockLog = new Mock<ILogger<StockController>>();
-        private readonly StockController _stockController = new StockController(mockRep.Object, mockLog.Object);
+        private static readonly Mock<IStockRepository> MockRep = new Mock<IStockRepository>();
+        private static readonly Mock<ILogger<StockController>> MockLog = new Mock<ILogger<StockController>>();
+        private readonly StockController _stockController = new StockController(MockRep.Object, MockLog.Object);
+
+        private readonly Mock<HttpContext> mockHttpContext = new Mock<HttpContext>();
+        private readonly MockHttpSession mockSession = new MockHttpSession();
+
 
         [Fact]
         public async Task GetAllStocks_Ok()
         {
-
             //Arrange
             var stock1 = new Stock
             {
@@ -43,24 +50,27 @@ namespace UnitTesting_aksjeapp
                 Country = "United States",
                 Sector = "Consumer Discretionary"
             };
-            var stockList = new List<Stock>();
-            stockList.Add(stock1);
-            stockList.Add(stock2);
-            stockList.Add(stock3);
+            var stockList = new List<Stock>
+            {
+                stock1,
+                stock2,
+                stock3
+            };
 
-            mockRep.Setup(k => k.GetAllStocks()).ReturnsAsync(stockList);
+            MockRep.Setup(k => k.GetAllStocks()).ReturnsAsync(stockList);
             //Act
             var result = await _stockController.GetAllStocks() as OkObjectResult;
             //Assert
             Assert.Equal(stockList, result.Value);
         }
+
         [Fact]
         public async Task GetAllStocks_Empty()
         {
             //Arrange
             var stockList = new List<Stock>();
 
-            mockRep.Setup(k => k.GetAllStocks()).ReturnsAsync(stockList);
+            MockRep.Setup(k => k.GetAllStocks()).ReturnsAsync(stockList);
             //Act
             var result = await _stockController.GetAllStocks() as BadRequestObjectResult;
             //Assert
@@ -72,9 +82,17 @@ namespace UnitTesting_aksjeapp
         public async Task GetStockPrices_Ok()
         {
             //Arrange
-            var results = new List<Results>();
-            results.Add(new Results { Date = "2022-05-11", ClosePrice = 10.00, OpenPrice = 9.00, HighestPrice = 12.00, LowestPrice = 9.00 });
-            results.Add(new Results { Date = "2022-05-12", ClosePrice = 11.00, OpenPrice = 9.00, HighestPrice = 13.50, LowestPrice = 8.00 });
+            var results = new List<Results>
+            {
+                new Results
+                {
+                    Date = "2022-05-11", ClosePrice = 10.00, OpenPrice = 9.00, HighestPrice = 12.00, LowestPrice = 9.00
+                },
+                new Results
+                {
+                    Date = "2022-05-12", ClosePrice = 11.00, OpenPrice = 9.00, HighestPrice = 13.50, LowestPrice = 8.00
+                }
+            };
 
             var stockPrices = new StockPrices
             {
@@ -91,7 +109,7 @@ namespace UnitTesting_aksjeapp
                 results = results
             };
 
-            mockRep.Setup(k => k.GetStockPrices("AAPL", "2022-05-11", "2022-05-12")).ReturnsAsync(stockPrices);
+            MockRep.Setup(k => k.GetStockPrices("AAPL", "2022-05-11", "2022-05-12")).ReturnsAsync(stockPrices);
 
             //Act
             var result = await _stockController.GetStockPrices("AAPL", "2022-05-11", "2022-05-12") as OkObjectResult;
@@ -107,90 +125,185 @@ namespace UnitTesting_aksjeapp
 
 
             //Act
-            var result = await _stockController.GetStockPrices("", "", "") as NoContentResult;
+            var result = await _stockController.GetStockPrices("", "", "") as BadRequestObjectResult;
 
-            //Assert       HTTP NoContent has status code 204
-            Assert.Equal(204, result.StatusCode);
+            //Assert 
+            Assert.Equal((int)HttpStatusCode.BadRequest, result.StatusCode);
+            Assert.Equal("Empty stock parameter", result.Value);
         }
 
         [Fact]
         public async Task GetStockPrices_Empty()
         {
             //Arrange
-            mockRep.Setup(k => k.GetStockPrices("AAPL", "", "")).ReturnsAsync(() => null);
+            MockRep.Setup(k => k.GetStockPrices("AAPL", "", "")).ReturnsAsync(() => null);
 
             //Act
             var result = await _stockController.GetStockPrices("AAPL", "", "") as BadRequestObjectResult;
 
-            //Assert   HTTP NoContent has status code 204
+            //Assert
+            Assert.Equal((int) HttpStatusCode.BadRequest, result.StatusCode);
             Assert.Equal("Not found", result.Value);
         }
 
         [Fact]
-        public async Task BuyStock()
+        public async Task BuyStockLoggedIn()
         {
             //Arrange
-            var pers = "12345678910";
+            var socialSecurityNumber = "12345678910";
             var symbol = "AAPL";
             var amount = 10;
 
-            mockRep.Setup(k => k.BuyStock(pers, symbol.ToUpper(), amount)).ReturnsAsync(true);
-            var stockController = new StockController(mockRep.Object, mockLog.Object);
+
+            MockRep.Setup(k => k.BuyStock(socialSecurityNumber, symbol.ToUpper(), amount)).ReturnsAsync(true);
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(s => s.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
 
             //Act
-            var res = await stockController.BuyStock(pers, symbol, amount) as OkObjectResult;
+            var result = await _stockController.BuyStock(symbol, amount) as OkObjectResult;
 
             //Assert
-            Assert.Equal("Stock bought", res.Value);
+            Assert.Equal((int)HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal("Stock bought", result.Value);
+        }
+
+        [Fact]
+        public async Task BuyStockLoggedInNegativeNumber()
+        {
+            //Arrange
+            var socialSecurityNumber = "12345678910";
+            var symbol = "AAPL";
+            var amount = -10;
+            
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(s => s.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            var result = await _stockController.BuyStock(symbol, amount) as BadRequestObjectResult;
+
+            //Assert
+            Assert.Equal((int)HttpStatusCode.BadRequest, result.StatusCode);
+            Assert.Equal("Cannot buy negative amount of stock", result.Value);
+        }
+
+        [Fact]
+        public async Task BuyStockNotLoggedIn()
+        {
+            //Arrange
+
+            mockSession[_loggedIn] = _notLoggedIn;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+            //Act
+            var result = await _stockController.BuyStock(It.IsAny<string>(), It.IsAny<int>()) as UnauthorizedResult;
+
+            //Assert
+            Assert.Equal((int)HttpStatusCode.Unauthorized, result.StatusCode);
         }
 
         [Fact]
         public async Task BuyStock_Empty()
         {
             //Arrange
-            var pers = "12345678910";
+            var socialSecurityNumber = "12345678910";
             var symbol = "AAPL";
             var amount = 10;
-            mockRep.Setup(k => k.BuyStock(pers, symbol.ToUpper(), amount)).ReturnsAsync(false);
-            var stockController = new StockController(mockRep.Object, mockLog.Object);
+
+            MockRep.Setup(k => k.BuyStock(socialSecurityNumber, symbol.ToUpper(), amount)).ReturnsAsync(false);
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(s => s.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
 
             //Act
-            var res = await stockController.BuyStock(pers, symbol, amount) as BadRequestObjectResult;
+            var result = await _stockController.BuyStock(symbol, amount) as BadRequestObjectResult;
 
             //Assert
-            Assert.Equal("Fault in buyStock", res.Value);
+            Assert.Equal("Fault in buyStock", result.Value);
         }
 
         [Fact]
-        public async Task SellStock()
+        public async Task SellStockLoggedIn()
         {
-            var pers = "12345678910";
+            //Arrange
+            var socialSecurityNumber = "12345678910";
             var symbol = "AAPL";
             var amount = 10;
 
-            mockRep.Setup(k => k.SellStock(pers, symbol.ToUpper(), amount)).ReturnsAsync(true);
-            var stockController = new StockController(mockRep.Object, mockLog.Object);
+            MockRep.Setup(k => k.SellStock(socialSecurityNumber, symbol.ToUpper(), amount)).ReturnsAsync(true);
+            
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
 
-            //
-            var res = await stockController.SellStock(pers, symbol, amount) as OkObjectResult;
-
-            Assert.Equal("Stock sold", res.Value);
+            //Act
+            var result = await _stockController.SellStock(symbol, amount) as OkObjectResult;
+            
+            //Assert
+            Assert.Equal("Stock sold", result.Value);
         }
 
         [Fact]
-        public async Task SellStock_Empty()
+        public async Task SellStock_LoggedInFault()
         {
-            var pers = "12345678910";
+            //Arrange
+            var socialSecurityNumber = "12345678910";
             var symbol = "AAPL";
             var amount = 10;
-            mockRep.Setup(k => k.SellStock(pers, symbol.ToUpper(), amount)).ReturnsAsync(false);
-            var stockController = new StockController(mockRep.Object, mockLog.Object);
-            var res = await stockController.SellStock(pers, symbol, amount) as BadRequestObjectResult;
+            
+            MockRep.Setup(k => k.SellStock(socialSecurityNumber, symbol.ToUpper(), amount)).ReturnsAsync(false);
+            
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+            
+            //Act
+            var result = await _stockController.SellStock(symbol, amount) as BadRequestObjectResult;
 
-            Assert.Equal("Fault in sellStock", res.Value);
+            //Assert
+            Assert.Equal("Fault in sellStock", result.Value);
         }
+        
+        [Fact]
+        public async Task SellStockLoggedInNegativeNumber()
+        {
+            //Arrange
+            var socialSecurityNumber = "12345678910";
+            var symbol = "AAPL";
+            var amount = -10;
+            
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
 
-        //TODO: SearchResult
+            //Act
+            var result = await _stockController.SellStock(symbol, amount) as BadRequestObjectResult;
+            
+            //Assert
+            Assert.Equal("Cannot sell negative stock", result.Value);
+        }
+        
+        [Fact]
+        public async Task SellStockNotLoggedIn()
+        {
+            //Arrange
+            var socialSecurityNumber = "12345678910";
+            var symbol = "AAPL";
+            var amount = 10;
+            
+            mockSession[_loggedIn] = _notLoggedIn;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+            
+            //Act
+            var result = await _stockController.SellStock(symbol, amount) as UnauthorizedResult;
+
+            //Assert
+            Assert.Equal((int)HttpStatusCode.Unauthorized, result.StatusCode);
+        }
+        
         [Fact]
         public async Task SearchResult_Ok()
         {
@@ -222,7 +335,7 @@ namespace UnitTesting_aksjeapp
             stockList.Add(stock3);
 
 
-            mockRep.Setup(k => k.ReturnSearchResults("A")).ReturnsAsync(stockList);
+            MockRep.Setup(k => k.ReturnSearchResults("A")).ReturnsAsync(stockList);
 
             //Act
             var result = await _stockController.SearchResults("A") as OkObjectResult;
@@ -235,7 +348,7 @@ namespace UnitTesting_aksjeapp
         public async Task SearchResult_EmptyKeyPhrase()
         {
             //Arrange
-            mockRep.Setup(k => k.ReturnSearchResults("")).ReturnsAsync(() => null);
+            MockRep.Setup(k => k.ReturnSearchResults("")).ReturnsAsync(() => null);
 
             //Act
             var result = await _stockController.SearchResults("") as BadRequestObjectResult;
@@ -250,7 +363,7 @@ namespace UnitTesting_aksjeapp
             //Arrange
             var stockList = new List<Stock>();
 
-            mockRep.Setup(k => k.ReturnSearchResults("ABCDEFGH")).ReturnsAsync(stockList);
+            MockRep.Setup(k => k.ReturnSearchResults("ABCDEFGH")).ReturnsAsync(stockList);
 
             //Act
             var result = await _stockController.SearchResults("ABCDEFGH") as OkObjectResult;
@@ -260,10 +373,10 @@ namespace UnitTesting_aksjeapp
         }
 
         [Fact]
-        public async Task GetAllTransactions_Ok()
+        public async Task GetAllTransactionsLoggedIn()
         {
             //Arrange
-            var SSN = "12345678910";
+            var socialSecurityNumber = "12345678910";
             var transactions = new List<Transaction>();
             transactions.Add(new Transaction
             {
@@ -273,7 +386,7 @@ namespace UnitTesting_aksjeapp
                 Date = "2022-05-20",
                 Symbol = "APLL",
                 TotalPrice = 456,
-                SocialSecurityNumber = SSN
+                SocialSecurityNumber = socialSecurityNumber
             });
             transactions.Add(new Transaction
             {
@@ -283,7 +396,7 @@ namespace UnitTesting_aksjeapp
                 Date = "2022-10-01",
                 Symbol = "TESL",
                 TotalPrice = 154,
-                SocialSecurityNumber = SSN
+                SocialSecurityNumber = socialSecurityNumber
             });
             transactions.Add(new Transaction
             {
@@ -293,80 +406,120 @@ namespace UnitTesting_aksjeapp
                 Date = "2022-09-14",
                 Symbol = "ALD",
                 TotalPrice = 785,
-                SocialSecurityNumber = SSN
+                SocialSecurityNumber = socialSecurityNumber
             });
-            mockRep.Setup(k => k.GetAllTransactions(SSN)).ReturnsAsync(transactions);
+            MockRep.Setup(k => k.GetAllTransactions(socialSecurityNumber)).ReturnsAsync(transactions);
 
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+                
             //Act
-            var results = await _stockController.GetAllTransactions(SSN) as OkObjectResult;
+            var results = await _stockController.GetAllTransactions() as OkObjectResult;
 
             //Assert
             Assert.Equal<List<Transaction>>(transactions, (List<Transaction>)results.Value);
+        }
+        
+        [Fact]
+        public async Task GetAllTransactionsNotLoggedIn()
+        {
+            //Arrange
+            mockSession[_loggedIn] = _notLoggedIn;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            var results = await _stockController.GetAllTransactions() as UnauthorizedResult;
+
+            //Assert
+            Assert.Equal((int)HttpStatusCode.Unauthorized, results.StatusCode);
         }
 
         [Fact]
         public async Task GetAllTransactions_Empty()
         {
             //Arrange
-            var SSN = "12345678910";
-            mockRep.Setup(k => k.GetAllTransactions(SSN)).ReturnsAsync(new List<Transaction>());
+            var socialSecurityNumber = "12345678910";
+            MockRep.Setup(k => k.GetAllTransactions(socialSecurityNumber)).ReturnsAsync(new List<Transaction>());
 
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+            
             //Act
-            var results = await _stockController.GetAllTransactions(SSN) as OkObjectResult;
+            var results = await _stockController.GetAllTransactions() as OkObjectResult;
 
             //Assert
-            Assert.Null(results);
+            Assert.Equal(new List<Transaction>(),results.Value);
         }
+        
+        [Fact]
+        public async Task GetAllTransactions_CustomerNotFound()
+        {
+            //Arrange
+            var socialSecurityNumber = "12345678910";
+            MockRep.Setup(k => k.GetAllTransactions(socialSecurityNumber)).ReturnsAsync((() => null));
 
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+            
+            //Act
+            var results = await _stockController.GetAllTransactions() as BadRequestObjectResult;
 
-        //GetSpecificTransactions
+            //Assert
+            Assert.Equal("Customer not found",results.Value);
+        }
+        
         [Fact]
         public async Task GetSpecificTransactions_Ok()
         {
             //Arrange
             var symbol = "AAPL";
-            var SSN = "12345678910";
+            var socialSecurityNumber = "12345678910";
 
-            List<Transaction> myList = new List<Transaction>();
+            var myList = new List<Transaction>
+            {
+                new()
+                {
+                    Id = 1,
+                    Amount = 3,
+                    Awaiting = false,
+                    Date = "2022-05-20",
+                    Symbol = "AAPL",
+                    TotalPrice = 456,
+                    SocialSecurityNumber = socialSecurityNumber
+                },
+                new()
+                {
+                    Id = 2,
+                    Amount = 6,
+                    Awaiting = false,
+                    Date = "2022-10-01",
+                    Symbol = "AAPL",
+                    TotalPrice = 154,
+                    SocialSecurityNumber = socialSecurityNumber
+                },
+                new()
+                {
+                    Id = 3,
+                    Amount = 5,
+                    Awaiting = false,
+                    Date = "2022-09-14",
+                    Symbol = "AAPl",
+                    TotalPrice = 785,
+                    SocialSecurityNumber = socialSecurityNumber
+                }
+            };
 
-            myList.Add(new Transaction
-            {
-                Id = 1,
-                Amount = 3,
-                Awaiting = false,
-                Date = "2022-05-20",
-                Symbol = "AAPL",
-                TotalPrice = 456,
-                SocialSecurityNumber = SSN
-            });
-            myList.Add(new Transaction
-            {
-                Id = 2,
-                Amount = 6,
-                Awaiting = false,
-                Date = "2022-10-01",
-                Symbol = "AAPL",
-                TotalPrice = 154,
-                SocialSecurityNumber = SSN
-            });
-            myList.Add(new Transaction
-            {
-                Id = 3,
-                Amount = 5,
-                Awaiting = false,
-                Date = "2022-09-14",
-                Symbol = "AAPl",
-                TotalPrice = 785,
-                SocialSecurityNumber = SSN
-            });
-
-            mockRep.Setup(k => k.GetSpecificTransactions(symbol)).ReturnsAsync(myList);
+            MockRep.Setup(k => k.GetSpecificTransactions(symbol)).ReturnsAsync(myList);
 
             //Act
-            var res = await _stockController.GetSpecificTransactions(symbol) as OkObjectResult;
+            var result = await _stockController.GetSpecificTransactions(symbol) as OkObjectResult;
 
             //Assert
-            Assert.Equal(myList, res.Value);
+            Assert.Equal(myList, result.Value);
         }
 
         [Fact]
@@ -375,19 +528,20 @@ namespace UnitTesting_aksjeapp
             //Arrange
             var symbol = "AAPL";
 
-            mockRep.Setup(k => k.GetSpecificTransactions(symbol)).ReturnsAsync(new List<Transaction>());
+            MockRep.Setup(k => k.GetSpecificTransactions(symbol)).ReturnsAsync(new List<Transaction>());
 
             //Act
-            var res = await _stockController.GetSpecificTransactions(symbol) as BadRequestObjectResult;
+            var result = await _stockController.GetSpecificTransactions(symbol) as BadRequestObjectResult;
 
             //Assert
-            Assert.Equal("No transactions", res.Value);
+            Assert.Equal("No transactions", result.Value);
         }
 
 
         [Fact]
-        public async Task GetTransaction_Ok()
+        public async Task GetTransactionLoggedIn_Ok()
         {
+            //Arrange
             var transaction = new Transaction
             {
                 Id = 1,
@@ -398,25 +552,51 @@ namespace UnitTesting_aksjeapp
                 TotalPrice = 3500
             };
 
-            mockRep.Setup(k => k.GetTransaction(transaction.SocialSecurityNumber, transaction.Id))
-                .ReturnsAsync(transaction);
-            var stockController = new StockController(mockRep.Object, mockLog.Object);
-            var res =
-                await stockController.GetTransaction(transaction.SocialSecurityNumber,
-                    transaction.Id) as OkObjectResult;
+            MockRep.Setup(k => k.GetTransaction(transaction.SocialSecurityNumber, transaction.Id)).ReturnsAsync(transaction);
+            
+            mockSession[_loggedIn] = transaction.SocialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
 
-            Assert.Equal(transaction, transaction);
+            //Act
+            var result = await _stockController.GetTransaction(transaction.Id) as OkObjectResult;
+
+            //Assert
+            Assert.Equal(transaction, result.Value);
+        }
+        
+        [Fact]
+        public async Task GetTransactionNotLoggedIn()
+        {
+            //Arrange
+
+            mockSession[_loggedIn] = _notLoggedIn;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            var result = await _stockController.GetTransaction(It.IsAny<int>()) as UnauthorizedResult;
+
+            //Assert
+            Assert.Equal((int) HttpStatusCode.Unauthorized, result.StatusCode);
         }
 
+
         [Fact]
-        public async Task GetTransaction_Empty()
+        public async Task GetTransactionLoggedIn_Empty()
         {
-            var pers = "12345678910";
+            //Arrange
+            var socialSecurityNumber = "12345678910";
             var id = 10;
 
-            mockRep.Setup(k => k.GetTransaction(pers, id)).ReturnsAsync(() => null);
+            MockRep.Setup(k => k.GetTransaction(socialSecurityNumber, id)).ReturnsAsync(() => null);
 
-            var result = await _stockController.GetTransaction(pers, id) as BadRequestObjectResult;
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            // Act
+            var result = await _stockController.GetTransaction(id) as BadRequestObjectResult;
 
             // Assert
             Assert.Equal("Transaction does not exist", result.Value);
@@ -426,11 +606,9 @@ namespace UnitTesting_aksjeapp
 
         //DeleteTransaction
 
-        //StockChange
         [Fact]
         public async Task StockChange_Ok()
         {
-
             //Arrange
             var symbol = "AAPL";
 
@@ -443,13 +621,13 @@ namespace UnitTesting_aksjeapp
                 Value = 200
             };
 
-            mockRep.Setup(k => k.StockChange(symbol)).ReturnsAsync(myStockChangeValue);
+            MockRep.Setup(k => k.StockChange(symbol)).ReturnsAsync(myStockChangeValue);
 
             //Act
-            var res = await _stockController.StockChange(symbol) as OkObjectResult;
+            var result = await _stockController.StockChange(symbol) as OkObjectResult;
 
             //Assert
-            Assert.Equal(myStockChangeValue, res.Value);
+            Assert.Equal(myStockChangeValue, result.Value);
         }
 
         [Fact]
@@ -458,13 +636,13 @@ namespace UnitTesting_aksjeapp
             //Arrange
             var symbol = "AAPL";
 
-            mockRep.Setup(k => k.StockChange(symbol)).ReturnsAsync(() => null);
+            MockRep.Setup(k => k.StockChange(symbol)).ReturnsAsync(() => null);
 
             //Act
-            var res = await _stockController.StockChange(symbol) as BadRequestObjectResult;
+            var result = await _stockController.StockChange(symbol) as BadRequestObjectResult;
 
             //Assert
-            Assert.Equal("Stockchange not found", res.Value);
+            Assert.Equal("Stockchange not found", result.Value);
         }
 
 
@@ -472,8 +650,6 @@ namespace UnitTesting_aksjeapp
         public async Task GetStockOverview_Ok()
         {
             //Arrange
-            List<StockOverview> myList = new List<StockOverview>();
-
             var myStockOverview = new StockOverview
             {
                 Symbol = "AAPL",
@@ -495,37 +671,38 @@ namespace UnitTesting_aksjeapp
                 Change = -2,
                 Value = 100
             };
+            var myList = new List<StockOverview>
+            {
+                myStockOverview,
+                myStockOverview2,
+                myStockOverview3
+            };
 
-            myList.Add(myStockOverview);
-            myList.Add(myStockOverview2);
-            myList.Add(myStockOverview3);
-
-            mockRep.Setup(k => k.GetStockOverview()).ReturnsAsync(myList);
+            MockRep.Setup(k => k.GetStockOverview()).ReturnsAsync(myList);
 
             //Act
-            var res = await _stockController.GetStockOverview() as OkObjectResult;
+            var result = await _stockController.GetStockOverview() as OkObjectResult;
 
             //Assert
-            Assert.Equal(myList, res.Value);
+            Assert.Equal(myList, result.Value);
         }
 
         [Fact]
         public async Task GetStockOverview_Empty()
         {
             //Arrange
-            mockRep.Setup(k => k.GetStockOverview()).ReturnsAsync(() => null);
+            MockRep.Setup(k => k.GetStockOverview()).ReturnsAsync(() => null);
 
             //Act
-            var res = await _stockController.GetStockOverview() as BadRequestObjectResult;
+            var result = await _stockController.GetStockOverview() as BadRequestObjectResult;
 
             //Assert
-            Assert.Equal("Stock overview not found", res.Value);
+            Assert.Equal("Stock overview not found", result.Value);
         }
 
         [Fact]
         public async Task GetWinners_Ok()
         {
-
             //Arrange
             List<StockChangeValue> myList = new List<StockChangeValue>();
 
@@ -557,34 +734,32 @@ namespace UnitTesting_aksjeapp
             myList.Add(myStockChangeValue2);
             myList.Add(myStockChangeValue3);
 
-            mockRep.Setup(k => k.GetWinners()).ReturnsAsync(myList);
+            MockRep.Setup(k => k.GetWinners()).ReturnsAsync(myList);
 
             //Act
-            var res = await _stockController.GetWinners() as OkObjectResult;
+            var result = await _stockController.GetWinners() as OkObjectResult;
 
             //Assert
-            Assert.Equal(myList, res.Value);
+            Assert.Equal(myList, result.Value);
         }
 
         [Fact]
         public async Task GetWinners_Empty()
         {
             //Arrange
-            mockRep.Setup(k => k.GetWinners()).ReturnsAsync(() => null);
+            MockRep.Setup(k => k.GetWinners()).ReturnsAsync(() => null);
 
             //Act
-            var res = await _stockController.GetWinners() as BadRequestObjectResult;
+            var result = await _stockController.GetWinners() as BadRequestObjectResult;
 
             //Assert
-            Assert.Equal("Winners not found", res.Value);
+            Assert.Equal("Winners not found", result.Value);
         }
 
         [Fact]
         public async Task GetLosers_Ok()
         {
             //Arrange
-            List<StockChangeValue> myList = new List<StockChangeValue>();
-
             var myStockChangeValue = new StockChangeValue()
             {
                 StockId = 1,
@@ -609,37 +784,40 @@ namespace UnitTesting_aksjeapp
                 Change = -2.2,
                 Value = 1000.1
             };
-            myList.Add(myStockChangeValue);
-            myList.Add(myStockChangeValue2);
-            myList.Add(myStockChangeValue3);
+            List<StockChangeValue> myList = new List<StockChangeValue>
+            {
+                myStockChangeValue,
+                myStockChangeValue2,
+                myStockChangeValue3
+            };
 
-            mockRep.Setup(k => k.GetLosers()).ReturnsAsync(myList);
+            MockRep.Setup(k => k.GetLosers()).ReturnsAsync(myList);
 
             //Act
-            var res = await _stockController.GetLosers() as OkObjectResult;
+            var result = await _stockController.GetLosers() as OkObjectResult;
 
             //Assert
-            Assert.Equal(myList, res.Value);
+            Assert.Equal(myList, result.Value);
         }
 
         [Fact]
         public async Task GetLosers_Empty()
         {
             //Arrange
-            mockRep.Setup(k => k.GetLosers()).ReturnsAsync(() => null);
+            MockRep.Setup(k => k.GetLosers()).ReturnsAsync(() => null);
 
             //Act
-            var res = await _stockController.GetLosers() as BadRequestObjectResult;
+            var result = await _stockController.GetLosers() as BadRequestObjectResult;
 
             //Assert
-            Assert.Equal("Losers not found", res.Value);
+            Assert.Equal("Losers not found", result.Value);
         }
 
         [Fact]
-        public async Task GetCustomerPortfolio_Ok()
+        public async Task GetCustomerPortfolioLoggedIn_Ok()
         {
             //Arrange
-            var SSN = "12345678910";
+            var socialSecurityNumber = "12345678910";
 
             List<Transaction> myTransactions = new List<Transaction>();
 
@@ -651,7 +829,7 @@ namespace UnitTesting_aksjeapp
                 Date = "2022-05-20",
                 Symbol = "APLL",
                 TotalPrice = 456,
-                SocialSecurityNumber = SSN
+                SocialSecurityNumber = socialSecurityNumber
             });
             myTransactions.Add(new Transaction
             {
@@ -661,7 +839,7 @@ namespace UnitTesting_aksjeapp
                 Date = "2022-10-01",
                 Symbol = "TESL",
                 TotalPrice = 154,
-                SocialSecurityNumber = SSN
+                SocialSecurityNumber = socialSecurityNumber
             });
             myTransactions.Add(new Transaction
             {
@@ -671,7 +849,7 @@ namespace UnitTesting_aksjeapp
                 Date = "2022-09-14",
                 Symbol = "ALD",
                 TotalPrice = 785,
-                SocialSecurityNumber = SSN
+                SocialSecurityNumber = socialSecurityNumber
             });
 
             Portfolio myPortfolio = new Portfolio();
@@ -680,22 +858,23 @@ namespace UnitTesting_aksjeapp
             myPortfolio.SocialSecurityNumber = "12345678910";
             myPortfolio.Value = 1000;
 
-            List<PortfolioList> myPortfolioList = new List<PortfolioList>();
-
-            myPortfolioList.Add(new PortfolioList
+            List<PortfolioList> myPortfolioList = new List<PortfolioList>
             {
-                PortfolioListId = 1,
-                Symbol = "AAPL",
-                Name = "APPLE NAME",
-                Amount = 1000,
-                Change = 100.1,
-                Value = 20000.1,
-                PortfolioId = 1
-            });
+                new PortfolioList
+                {
+                    PortfolioListId = 1,
+                    Symbol = "AAPL",
+                    Name = "APPLE NAME",
+                    Amount = 1000,
+                    Change = 100.1,
+                    Value = 20000.1,
+                    PortfolioId = 1
+                }
+            };
 
             var myCustomer = new Customer()
             {
-                SocialSecurityNumber = SSN,
+                SocialSecurityNumber = socialSecurityNumber,
                 FirstName = "Stevie",
                 LastName = "Wonder",
                 Address = "Bygaten 1",
@@ -706,27 +885,48 @@ namespace UnitTesting_aksjeapp
                 Portfolio = myPortfolio
             };
 
-            mockRep.Setup(k => k.GetCustomerPortfolio(SSN)).ReturnsAsync(myCustomer);
+            MockRep.Setup(k => k.GetCustomerPortfolio(socialSecurityNumber)).ReturnsAsync(myCustomer);
 
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+            
             //Act
-            var res = await _stockController.GetCustomerPortfolio(SSN) as OkObjectResult;
+            var result = await _stockController.GetCustomerPortfolio() as OkObjectResult;
 
             //Assert
-            Assert.Equal(myCustomer, res.Value);
+            Assert.Equal(myCustomer, result.Value);
+        }
+        [Fact]
+        public async Task GetCustomerPortfolioNotLoggedIn()
+        {
+            //Arrange
+            mockSession[_loggedIn] = _notLoggedIn;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+            
+            //Act
+            var result = await _stockController.GetCustomerPortfolio() as UnauthorizedResult;
+
+            //Assert
+            Assert.Equal((int) HttpStatusCode.Unauthorized, result.StatusCode);
         }
 
         [Fact]
-        public async Task GetCustomerPortfolio_Empty()
+        public async Task GetCustomerPortfolioLoggedIn_Empty()
         {
-            var SSN = "12345678910";
+            var socialSecurityNumber = "12345678910";
 
-            mockRep.Setup(k => k.GetCustomerPortfolio(SSN)).ReturnsAsync(() => null);
+            MockRep.Setup(k => k.GetCustomerPortfolio(socialSecurityNumber)).ReturnsAsync(() => null);
 
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
             //Act
-            var res = await _stockController.GetCustomerPortfolio(SSN) as BadRequestObjectResult;
+            var result = await _stockController.GetCustomerPortfolio() as BadRequestObjectResult;
 
             //Assert
-            Assert.Equal("Customer not found", res.Value);
+            Assert.Equal("Customer not found", result.Value);
         }
 
         [Fact]
@@ -748,15 +948,15 @@ namespace UnitTesting_aksjeapp
                 url = "localhost:3000"
             };
 
-            News myNewsList = new News();
+            var myNewsList = new News();
 
-            List<NewsResults> myResultsList = new List<NewsResults>();
+            var myResultsList = new List<NewsResults>();
             myNewsList.Results = myResultsList;
 
             myResultsList.Add(myNews);
 
-            mockRep.Setup(k => k.GetNews("AAPL")).ReturnsAsync(myNewsList);
-            var stockController = new StockController(mockRep.Object, mockLog.Object);
+            MockRep.Setup(k => k.GetNews("AAPL")).ReturnsAsync(myNewsList);
+            var stockController = new StockController(MockRep.Object, MockLog.Object);
 
             //Act
             var res = await stockController.GetNews("AAPL") as OkObjectResult;
@@ -771,7 +971,7 @@ namespace UnitTesting_aksjeapp
             //Arrange
             var symbol = "AAPL";
 
-            mockRep.Setup(k => k.GetNews(symbol)).ReturnsAsync(new News());
+            MockRep.Setup(k => k.GetNews(symbol)).ReturnsAsync(new News());
 
             //Act
             var res = await _stockController.GetNews(symbol) as BadRequestObjectResult;
@@ -783,103 +983,271 @@ namespace UnitTesting_aksjeapp
         [Fact]
         public async Task GetStockName_Ok()
         {
+            // Arrange
             var symbol = "AAPL";
 
             var name = "Apple inc. Common stock";
 
-            mockRep.Setup(k => k.GetStockName(symbol)).ReturnsAsync(name);
-            var res = await _stockController.GetStockName(symbol) as OkObjectResult;
+            MockRep.Setup(k => k.GetStockName(symbol)).ReturnsAsync(name);
+            
+            //Act
+            var result = await _stockController.GetStockName(symbol) as OkObjectResult;
 
-            Assert.Equal(name, res.Value);
-
+            //Arrange
+            Assert.Equal(name, result.Value);
         }
 
         [Fact]
         public async Task GetStockName_Empty()
         {
+            //Arrange
             var symbol = "AAPL";
 
             var name = "";
 
-            mockRep.Setup(k => k.GetStockName(symbol)).ReturnsAsync(name);
+            MockRep.Setup(k => k.GetStockName(symbol)).ReturnsAsync(name);
+            
+            //Act
             var res = await _stockController.GetStockName(symbol) as BadRequestObjectResult;
 
-            Assert.Equal("Could not find a name for the symbol", res.Value);
-
+            //Assert
+            Assert.Equal("Could not find a stock for the symbol", res.Value);
         }
+        
         [Fact]
-        public async Task UpdateTransaction()
+        public async Task GetStockNameWrongInput()
         {
-            Transaction trans = new Transaction();
-            trans.SocialSecurityNumber = "12345678910";
-            trans.Date = "2022/10/01";
-            trans.Symbol = "AAPL";
-            trans.Amount = 350;
-            trans.TotalPrice = 1800;
-            trans.Awaiting = true;
-
-            mockRep.Setup(k => k.UpdateTransaction(trans)).ReturnsAsync(true);
-
-            var res = await _stockController.UpdateTransaction(trans) as OkObjectResult;
+            //Arrange
+            var symbol = "A";
             
-            Assert.Equal("Transaction updated", res.Value);
+            //Act            
+            var res = await _stockController.GetStockName(symbol) as BadRequestObjectResult;
+
+            Assert.Equal("Fault in input get stock name", res.Value);
         }
+
+        [Fact]
+        public async Task UpdateTransactionLoggedIn_OK()
+        {
+            //Arrange
+            var transaction = new Transaction
+            {
+                SocialSecurityNumber = "12345678910",
+                Date = "2022-10-01",
+                Symbol = "AAPL",
+                Amount = 350,
+                TotalPrice = 1800,
+                Awaiting = true
+            };
+
+            MockRep.Setup(k => k.UpdateTransaction(transaction)).ReturnsAsync(true);
+
+            mockSession[_loggedIn] = transaction;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act            
+            var result = await _stockController.UpdateTransaction(transaction) as OkObjectResult;
+
+            //Assert
+            Assert.Equal("Transaction updated", result.Value);
+        }
+        
+        [Fact]
+        public async Task UpdateTransactionNotLoggedIn()
+        {
+            //Arrange
+            mockSession[_loggedIn] = _notLoggedIn;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            
+            // Act
+            var result = await _stockController.UpdateTransaction(It.IsAny<Transaction>()) as UnauthorizedResult;
+
+            //Assert
+            Assert.Equal((int) HttpStatusCode.Unauthorized, result.StatusCode);
+        }
+
         [Fact]
         public async Task UpdateTransaction_Empty()
         {
-            Transaction trans = new Transaction();
-            trans.SocialSecurityNumber = "12345678910";
-            trans.Date = "2022/10/01";
-            trans.Symbol = "AAPL";
-            trans.Amount = 350;
-            trans.TotalPrice = 1800;
-            trans.Awaiting = true;
+            // Arrange
+            var transaction = new Transaction
+            {
+                SocialSecurityNumber = "12345678910",
+                Date = "2022-10-01",
+                Symbol = "AAPL",
+                Amount = 350,
+                TotalPrice = 1800,
+                Awaiting = true
+            };
 
-            mockRep.Setup(k => k.UpdateTransaction(trans)).ReturnsAsync(false);
+            MockRep.Setup(k => k.UpdateTransaction(transaction)).ReturnsAsync(false);
 
-            var res = await _stockController.UpdateTransaction(trans) as BadRequestObjectResult;
+            mockSession[_loggedIn] = transaction;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            // Act
+            var result = await _stockController.UpdateTransaction(transaction) as BadRequestObjectResult;
             
-            Assert.Equal("Transaction not updated", res.Value);
+            //Assert
+            Assert.Equal("Transaction not updated", result.Value);
         }
 
         [Fact]
         public async Task logIn_Ok()
         {
             //Arrange
+            var line = new User
+            {
+                Username = "12345678910",
+                Password = "123"
+            };
 
-            mockRep.Setup(k => k.LogIn(It.IsAny<User>())).ReturnsAsync(true);
+            MockRep.Setup(k => k.LogIn(It.IsAny<User>())).ReturnsAsync(true);
 
-
+            mockSession[_loggedIn] = line.Username;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
 
             //Act
-            //var res = await _stockController.LogIn(It.IsAny<User>()) as OkObjectResult;
-
+            var res = await _stockController
+                .LogIn(line) as OkObjectResult; // We are not using It.Any<User> since we use the username as session key.
 
             //Assert
+            Assert.Equal((int)HttpStatusCode.OK, res.StatusCode);
+            Assert.Equal("Ok", res.Value);
         }
 
-        public async Task DeleteTransaction()
+        [Fact]
+        public async Task logIn_WrongUsernamePassword()
         {
-            var SSN = "12345678910";
+            //Arrange
+            var line = new User
+            {
+                Username = "12345678910",
+                Password = "123"
+            };
+
+            MockRep.Setup(k => k.LogIn(It.IsAny<User>())).ReturnsAsync(false);
+
+            mockSession[_loggedIn] = _notLoggedIn;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            var result =
+                await _stockController
+                    .LogIn(line) as OkObjectResult; // We are not using It.Any<User> since we use the username as session key.
+
+            //Assert
+            Assert.Equal((int)HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal("Failed", result.Value);
+        }
+
+        [Fact]
+        public async Task logIn_WrongInput()
+        {
+            //Arrange
+            var line = new User
+            {
+                Username = "12345678910",
+                Password = "123"
+            };
+
+            MockRep.Setup(k => k.LogIn(It.IsAny<User>())).ReturnsAsync(true);
+
+            _stockController.ModelState.AddModelError("Username", "Fault in input");
+
+            mockSession[_loggedIn] = line.Username;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            var result = await _stockController.LogIn(line) as BadRequestObjectResult;
+
+            //Assert
+            Assert.Equal((int)HttpStatusCode.BadRequest, result.StatusCode);
+            Assert.Equal("Fault in input", result.Value);
+        }
+        
+        [Fact]
+        public async Task logOut()
+        {
+            //Arrange
+            var username = "12345678910";
+            
+            // Sets a session
+            mockSession[_loggedIn] = username;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            var result = await _stockController.LogOut() as OkObjectResult;
+            
+            //Assert
+            Assert.Equal((int)HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal("", mockSession[_loggedIn]);
+        }
+
+        [Fact]
+        public async Task DeleteTransactionLoggedIn()
+        {
+            //Arrange
+            var socialSecurityNumber = "12345678910";
             var id = 10;
 
-            mockRep.Setup(k => k.DeleteTransaction(SSN, id)).ReturnsAsync(true);
+            MockRep.Setup(k => k.DeleteTransaction(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(true);
 
-            var res = await _stockController.DeleteTransaction(SSN, id) as OkObjectResult;
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
             
-            Assert.Equal("Transaction deleted", res.Value);
+            //Act
+            var result = await _stockController.DeleteTransaction(id) as OkObjectResult;
+
+            //Assert
+            Assert.Equal("Transaction deleted", result.Value);
         }
+        [Fact]
+        public async Task DeleteTransactionNotLoggedIn()
+        {
+            //Arrange
+
+
+            MockRep.Setup(k => k.DeleteTransaction(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(true);
+
+            mockSession[_loggedIn] = _notLoggedIn;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+            
+            //Act
+            var result = await _stockController.DeleteTransaction(It.IsAny<int>()) as UnauthorizedResult;
+
+            //Assert
+            Assert.Equal((int) HttpStatusCode.Unauthorized, result.StatusCode);
+        }
+
         [Fact]
         public async Task DeleteTransaction_Empty()
         {
-            var SSN = "12345678910";
+            //Arrange
+            var socialSecurityNumber = "12345678910";
             var id = 10;
 
-            mockRep.Setup(k => k.DeleteTransaction(SSN, id)).ReturnsAsync(false);
+            MockRep.Setup(k => k.DeleteTransaction(socialSecurityNumber, id)).ReturnsAsync(false);
 
-            var res = await _stockController.DeleteTransaction(SSN, id) as BadRequestObjectResult;
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
             
-            Assert.Equal("Transaction not deleted", res.Value);
+            //Act
+            var result = await _stockController.DeleteTransaction(id) as BadRequestObjectResult;
+
+            //Assert
+            Assert.Equal("Transaction not deleted", result.Value);
         }
-   }
+    }
 }

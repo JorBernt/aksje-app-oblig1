@@ -23,7 +23,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\aksjeapp-backend\aksjeapp_backend.csproj" />
+    <ProjectReference Include="..\aksjeapp-backend\aksjeapp-backend.csproj" />
   </ItemGroup>
 
 </Project>

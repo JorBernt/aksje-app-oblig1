@@ -1,34 +1,38 @@
-﻿namespace aksjeapp_backend.Models;
-
-public class StockOverview
+﻿namespace aksjeapp_backend.Models
 {
-    public string Symbol { get; set; }
-    public string? Name { get; set; }
 
-    private double change;
-    private double value;
-    public double Change
-    {
-        get
-        {
-            return this.change;
-        }
-        set
-        {
-            this.change = Math.Round(value, 2);
-        }
-    }
 
-    public double Value
+    public class StockOverview
     {
-        get
+        public string Symbol { get; set; }
+        public string? Name { get; set; }
+
+        private double change;
+        private double value;
+        public double Change
         {
-            return this.value;
+            get
+            {
+                return this.change;
+            }
+            set
+            {
+                this.change = Math.Round(value, 2);
+            }
         }
-        set
+
+        public double Value
         {
-            this.value = Math.Round(value, 2);
+            get
+            {
+                return this.value;
+            }
+            set
+            {
+                this.value = Math.Round(value, 2);
+            }
         }
+
     }
 
 }

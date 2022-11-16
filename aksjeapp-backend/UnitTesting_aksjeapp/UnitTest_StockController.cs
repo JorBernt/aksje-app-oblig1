@@ -471,9 +471,7 @@ namespace UnitTesting_aksjeapp
             //Assert
             Assert.Equal("Customer not found",results.Value);
         }
-
-
-        //GetSpecificTransactions
+        
         [Fact]
         public async Task GetSpecificTransactions_Ok()
         {
@@ -481,9 +479,9 @@ namespace UnitTesting_aksjeapp
             var symbol = "AAPL";
             var socialSecurityNumber = "12345678910";
 
-            List<Transaction> myList = new List<Transaction>
+            var myList = new List<Transaction>
             {
-                new Transaction
+                new()
                 {
                     Id = 1,
                     Amount = 3,
@@ -493,7 +491,7 @@ namespace UnitTesting_aksjeapp
                     TotalPrice = 456,
                     SocialSecurityNumber = socialSecurityNumber
                 },
-                new Transaction
+                new()
                 {
                     Id = 2,
                     Amount = 6,
@@ -503,7 +501,7 @@ namespace UnitTesting_aksjeapp
                     TotalPrice = 154,
                     SocialSecurityNumber = socialSecurityNumber
                 },
-                new Transaction
+                new()
                 {
                     Id = 3,
                     Amount = 5,
@@ -541,8 +539,9 @@ namespace UnitTesting_aksjeapp
 
 
         [Fact]
-        public async Task GetTransaction_Ok()
+        public async Task GetTransactionLoggedIn_Ok()
         {
+            //Arrange
             var transaction = new Transaction
             {
                 Id = 1,
@@ -553,23 +552,50 @@ namespace UnitTesting_aksjeapp
                 TotalPrice = 3500
             };
 
-            MockRep.Setup(k => k.GetTransaction(transaction.SocialSecurityNumber, transaction.Id))
-                .ReturnsAsync(transaction);
-            var stockController = new StockController(MockRep.Object, MockLog.Object);
-            var res =
-                await stockController.GetTransaction(transaction.Id) as OkObjectResult;
+            MockRep.Setup(k => k.GetTransaction(transaction.SocialSecurityNumber, transaction.Id)).ReturnsAsync(transaction);
+            
+            mockSession[_loggedIn] = transaction.SocialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
 
-            Assert.Equal(transaction, transaction);
+            //Act
+            var result = await _stockController.GetTransaction(transaction.Id) as OkObjectResult;
+
+            //Assert
+            Assert.Equal(transaction, result.Value);
+        }
+        
+        [Fact]
+        public async Task GetTransactionNotLoggedIn()
+        {
+            //Arrange
+
+            mockSession[_loggedIn] = _notLoggedIn;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            var result = await _stockController.GetTransaction(It.IsAny<int>()) as UnauthorizedResult;
+
+            //Assert
+            Assert.Equal((int) HttpStatusCode.Unauthorized, result.StatusCode);
         }
 
+
         [Fact]
-        public async Task GetTransaction_Empty()
+        public async Task GetTransactionLoggedIn_Empty()
         {
+            //Arrange
             var socialSecurityNumber = "12345678910";
             var id = 10;
 
             MockRep.Setup(k => k.GetTransaction(socialSecurityNumber, id)).ReturnsAsync(() => null);
 
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            // Act
             var result = await _stockController.GetTransaction(id) as BadRequestObjectResult;
 
             // Assert

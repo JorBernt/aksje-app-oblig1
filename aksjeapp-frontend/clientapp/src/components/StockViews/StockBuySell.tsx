@@ -1,5 +1,5 @@
 import React, {useRef, useState} from "react";
-import {API, SSN} from "../../Constants";
+import {API} from "../../Constants";
 import LoadingSpinner from "../UI/LoadingSpinner";
 
 type Props = {
@@ -23,7 +23,7 @@ const StockBuySell = (props: Props) => {
 
         setShowLoading(true)
         if (props.data === "Buy")
-            fetch(API.STOCK.BUY_STOCK(SSN, props.symbol, parseInt(inputRef.current.value)), {credentials: 'include'})
+            fetch(API.STOCK.BUY_STOCK(props.symbol, parseInt(inputRef.current.value)), {credentials: 'include'})
                 .then(response => response.text()
                     .then(response => {
                         if (inputRef.current)
@@ -36,7 +36,7 @@ const StockBuySell = (props: Props) => {
                     }))
 
         else
-            fetch(API.STOCK.SELL_STOCK(SSN, props.symbol, parseInt(inputRef.current.value)))
+            fetch(API.STOCK.SELL_STOCK(props.symbol, parseInt(inputRef.current.value)))
                 .then(response => response.text()
                     .then(response => {
                         if (inputRef.current)

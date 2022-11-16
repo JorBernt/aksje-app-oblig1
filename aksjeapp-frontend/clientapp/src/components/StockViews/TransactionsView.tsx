@@ -1,5 +1,5 @@
 import React, {useEffect, useRef, useState} from "react";
-import {API, SSN} from "../../Constants";
+import {API} from "../../Constants";
 import {Transaction} from "../models";
 import {Simulate} from "react-dom/test-utils";
 import Card from "../UI/Card/Card";
@@ -18,7 +18,7 @@ const TransactionsView: React.FC<Props> = (props) => {
     //const isVisible = true;
 
     const loadAllTransactions = () => {
-        fetch(API.STOCK.GET_ALL_TRANSACTIONS("12345678910"), {credentials: 'include',})
+        fetch(API.STOCK.GET_ALL_TRANSACTIONS, {credentials: 'include',})
             .then(response => response.json()
                 .then(response => {
                     setTransactionView(p => [...response])
@@ -36,7 +36,7 @@ const TransactionsView: React.FC<Props> = (props) => {
         loadAllTransactions()
     }, [])
     const handleOnClickDelete = (id: number) => {
-        fetch(API.STOCK.DELETE_TRANSACTION(SSN, id))
+        fetch(API.STOCK.DELETE_TRANSACTION(id))
             .then(result => {
                 loadAllTransactions()
                 props.callBack();

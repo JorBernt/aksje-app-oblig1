@@ -451,7 +451,7 @@ namespace UnitTesting_aksjeapp
             var results = await _stockController.GetAllTransactions() as OkObjectResult;
 
             //Assert
-            Assert.Null(results);
+            Assert.Equal(new List<Transaction>(),results.Value);
         }
         
         [Fact]
@@ -788,7 +788,7 @@ namespace UnitTesting_aksjeapp
         }
 
         [Fact]
-        public async Task GetCustomerPortfolio_Ok()
+        public async Task GetCustomerPortfolioLoggedIn_Ok()
         {
             //Arrange
             var socialSecurityNumber = "12345678910";
@@ -861,25 +861,46 @@ namespace UnitTesting_aksjeapp
 
             MockRep.Setup(k => k.GetCustomerPortfolio(socialSecurityNumber)).ReturnsAsync(myCustomer);
 
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+            
             //Act
-            var res = await _stockController.GetCustomerPortfolio() as OkObjectResult;
+            var result = await _stockController.GetCustomerPortfolio() as OkObjectResult;
 
             //Assert
-            Assert.Equal(myCustomer, res.Value);
+            Assert.Equal(myCustomer, result.Value);
+        }
+        [Fact]
+        public async Task GetCustomerPortfolioNotLoggedIn()
+        {
+            //Arrange
+            mockSession[_loggedIn] = _notLoggedIn;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+            
+            //Act
+            var result = await _stockController.GetCustomerPortfolio() as UnauthorizedResult;
+
+            //Assert
+            Assert.Equal((int) HttpStatusCode.Unauthorized, result.StatusCode);
         }
 
         [Fact]
-        public async Task GetCustomerPortfolio_Empty()
+        public async Task GetCustomerPortfolioLoggedIn_Empty()
         {
             var socialSecurityNumber = "12345678910";
 
             MockRep.Setup(k => k.GetCustomerPortfolio(socialSecurityNumber)).ReturnsAsync(() => null);
 
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
             //Act
-            var res = await _stockController.GetCustomerPortfolio() as BadRequestObjectResult;
+            var result = await _stockController.GetCustomerPortfolio() as BadRequestObjectResult;
 
             //Assert
-            Assert.Equal("Customer not found", res.Value);
+            Assert.Equal("Customer not found", result.Value);
         }
 
         [Fact]

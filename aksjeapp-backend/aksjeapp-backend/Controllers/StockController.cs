@@ -241,7 +241,7 @@ namespace aksjeapp_backend.Controller
                 return Unauthorized();
             }
 
-            string socialSecurityNumber = HttpContext.Session.GetString(_loggedIn);
+            var socialSecurityNumber = HttpContext.Session.GetString(_loggedIn);
             var customer = await _db.GetCustomerPortfolio(socialSecurityNumber);
             if (customer == null)
             {

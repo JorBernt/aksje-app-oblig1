@@ -268,13 +268,14 @@ namespace aksjeapp_backend.Controller
         public async Task<ActionResult> GetStockName(string symbol)
         {
             symbol = symbol.ToUpper();
-            Regex reg = new Regex(@"^[A-Z]{2,4");
-            if (reg.IsMatch(symbol)) {
+            Regex reg = new Regex(@"^[A-Z]{2,4}");
+            if (reg.IsMatch(symbol)) 
+            {
             var name = await _db.GetStockName(symbol);
             if (name == "")
             {
                 _logger.LogInformation("No stocks found in database");
-                return BadRequest("Could not find a stock");
+                return BadRequest("Could not find a stock for the symbol");
             }
 
             return Ok(name);

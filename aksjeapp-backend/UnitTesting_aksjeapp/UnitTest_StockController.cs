@@ -983,27 +983,47 @@ namespace UnitTesting_aksjeapp
         [Fact]
         public async Task GetStockName_Ok()
         {
+            // Arrange
             var symbol = "AAPL";
 
             var name = "Apple inc. Common stock";
 
             MockRep.Setup(k => k.GetStockName(symbol)).ReturnsAsync(name);
-            var res = await _stockController.GetStockName(symbol) as OkObjectResult;
+            
+            //Act
+            var result = await _stockController.GetStockName(symbol) as OkObjectResult;
 
-            Assert.Equal(name, res.Value);
+            //Arrange
+            Assert.Equal(name, result.Value);
         }
 
         [Fact]
         public async Task GetStockName_Empty()
         {
+            //Arrange
             var symbol = "AAPL";
 
             var name = "";
 
             MockRep.Setup(k => k.GetStockName(symbol)).ReturnsAsync(name);
+            
+            //Act
             var res = await _stockController.GetStockName(symbol) as BadRequestObjectResult;
 
-            Assert.Equal("Could not find a name for the symbol", res.Value);
+            //Assert
+            Assert.Equal("Could not find a stock for the symbol", res.Value);
+        }
+        
+        [Fact]
+        public async Task GetStockNameWrongInput()
+        {
+            //Arrange
+            var symbol = "A";
+            
+            //Act            
+            var res = await _stockController.GetStockName(symbol) as BadRequestObjectResult;
+
+            Assert.Equal("Fault in input get stock name", res.Value);
         }
 
         [Fact]
@@ -1195,7 +1215,7 @@ namespace UnitTesting_aksjeapp
         public async Task DeleteTransactionNotLoggedIn()
         {
             //Arrange
-            var id = 10;
+
 
             MockRep.Setup(k => k.DeleteTransaction(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(true);
 
@@ -1204,7 +1224,7 @@ namespace UnitTesting_aksjeapp
             _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
             
             //Act
-            var result = await _stockController.DeleteTransaction(id) as UnauthorizedResult;
+            var result = await _stockController.DeleteTransaction(It.IsAny<int>()) as UnauthorizedResult;
 
             //Assert
             Assert.Equal((int) HttpStatusCode.Unauthorized, result.StatusCode);

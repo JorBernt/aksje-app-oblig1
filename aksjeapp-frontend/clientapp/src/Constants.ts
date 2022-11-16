@@ -16,32 +16,29 @@ export const API = {
                 return `${stockURL}GetStockPrices?symbol=${symbol}&fromDate=${fromDate}&toDate=${toDate}`
             },
         BUY_STOCK:
-            (socialSecurityNumber: string, symbol: string, number: number): string => {
-                return `${stockURL}BuyStock?socialSecurityNumber=${socialSecurityNumber}&symbol=${symbol}&number=${number}`
+            (symbol: string, number: number): string => {
+                return `${stockURL}BuyStock?symbol=${symbol}&number=${number}`
             },
         SELL_STOCK:
-            (socialSecurityNumber: string, symbol: string, number: number): string => {
-                return `${stockURL}SellStock?socialSecurityNumber=${socialSecurityNumber}&symbol=${symbol}&number=${number}`
+            (symbol: string, number: number): string => {
+                return `${stockURL}SellStock?symbol=${symbol}&number=${number}`
             },
         SEARCH_RESULTS:
             (keyPhrase: string): string => {
                 return `${stockURL}SearchResults?keyPhrase=${keyPhrase}`;
             },
-        GET_ALL_TRANSACTIONS:
-            (socialSecurityNumber: string): string => {
-                return `${stockURL}GetAllTransactions?socialSecurityNumber=${socialSecurityNumber}`
-            },
+        GET_ALL_TRANSACTIONS: stockURL + "GetAllTransactions",
         GET_SPECIFIC_TRANSACTIONS:
             (symbol: string): string => {
                 return `${stockURL}GetSpecificTransactions?symbol=${symbol}`
             },
         GET_TRANSACTION:
-            (socialSecurityNumber: string, id: number): string => {
-                return `${stockURL}GetTransaction?socialSecurityNumber=${socialSecurityNumber}&id=${id}`
+            (id: number): string => {
+                return `${stockURL}GetTransaction?id=${id}`
             },
         DELETE_TRANSACTION:
-            (socialSecurityNumber: string, id: number): string => {
-                return `${stockURL}DeleteTransaction?socialSecurityNumber=${socialSecurityNumber}&id=${id}`
+            (id: number): string => {
+                return `${stockURL}DeleteTransaction?id=${id}`
             },
         STOCK_CHANGE:
             (symbol: string): string => {
@@ -57,10 +54,7 @@ export const API = {
                 return `${stockURL}GetStockName?symbol=${symbol}`
             },
 
-        GET_CUSTOMER_PORTFOLIO:
-            (socialSecurityNumber: string) => {
-                return `${stockURL}GetCustomerPortfolio?socialSecurityNumber=${socialSecurityNumber}`
-            }
+        GET_CUSTOMER_PORTFOLIO: stockURL + "GetCustomerPortfolio",
     },
     CLIENT: {
         LOGIN: async (user: User): Promise<boolean | unknown> => {

@@ -6,11 +6,13 @@ import Button from "../UI/Input/Button";
 import {useNavigate} from "react-router-dom";
 import {User} from "../models";
 import {API} from "../../Constants";
+import {useLoggedInContext} from "../../App";
 
 const LoginPage = () => {
     const navigate = useNavigate();
     const usernameRef = React.createRef<HTMLInputElement>()
     const passwordRef = React.createRef<HTMLInputElement>()
+    const loggedInContext = useLoggedInContext()
     const handleOnClick = () => {
         if (!usernameRef.current || !passwordRef.current)
             return
@@ -19,8 +21,10 @@ const LoginPage = () => {
             password: passwordRef.current.value
         };
         API.CLIENT.LOGIN(user).then(response => {
-            if (response)
+            if (response) {
                 navigate("/profile")
+                loggedInContext.setLoggedIn(true)
+            }
         })
     }
     const handleNavigateClick = () => {

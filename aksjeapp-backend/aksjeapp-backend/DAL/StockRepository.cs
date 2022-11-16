@@ -528,7 +528,6 @@ namespace aksjeapp_backend.DAL
                 {
                     return false;
                 }
-
                 // Gets transaction objects from DB
                 var transactionsBought = await _db.TransactionsBought.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
                 var transactionsSold = await _db.TransactionsSold.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
@@ -541,14 +540,13 @@ namespace aksjeapp_backend.DAL
                 {
                     portfolio = new Portfolio();
                     portfolio.SocialSecurityNumber = socialSecurityNumber;
-                    await _db.Portfolios.AddAsync(portfolio);
+                    customerFromDB.Portfolio = portfolio;
                 }
 
                 // Resets portfolio value
                 portfolio.Value = 0;
-
                 var portfolioList = await _db.PortfolioList.Where(k => k.PortfolioId == portfolio.PortfolioId).ToListAsync();
-
+                
                 // Initilizes a portfoliolist object if it does not exist
                 if (portfolioList == null)
                 {
@@ -660,10 +658,14 @@ namespace aksjeapp_backend.DAL
                 }
 
                 // Runs UpdatePortfolio to update it
-                await UpdatePortfolio(socialSecurityNumber);
+                bool updated = await UpdatePortfolio(socialSecurityNumber);
+                if (!updated)
+                {
+                    return null;
+                }
 
                 var portfolio = await _db.Portfolios.FirstOrDefaultAsync(k => k.SocialSecurityNumber == socialSecurityNumber);
-                var portfolioList = await _db.PortfolioList.ToListAsync();
+                var portfolioList = await _db.PortfolioList.Where(k => k.PortfolioId == portfolio.PortfolioId).ToListAsync();
 
                 // Adds portfoliolist to portfolio
                 if (portfolio == null)
@@ -754,7 +756,6 @@ namespace aksjeapp_backend.DAL
 
                 if (userFound == null)
                 {
-                    Console.WriteLine("userFound == null");
                     return false;
                 }
 

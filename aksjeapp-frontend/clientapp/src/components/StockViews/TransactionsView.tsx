@@ -56,6 +56,7 @@ const TransactionsView: React.FC<Props> = (props) => {
             setEditTransactionArray(t)
             fetch(API.STOCK.UPDATE_TRANSACTION, {
                 method: "POST",
+                credentials: 'include',
                 headers: {
                     "Content-Type": "application/json",
                     "access-control-allow-origin": "",

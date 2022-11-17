@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {useNavigate} from 'react-router-dom'
 import {API} from "../../Constants";
 import {useLoggedInContext} from "../../App";
@@ -10,8 +10,6 @@ type Props = {
 
 const NavbarLinkDropDown: React.FC<Props> = (props) => {
 
-    const [titles, setTitles] = useState<string[]>([""])
-    useEffect(() => setTitles(props.texts), [props.texts])
     const loggedInContext = useLoggedInContext()
     let navigate = useNavigate();
     const handleOnClick = (link: string) => {

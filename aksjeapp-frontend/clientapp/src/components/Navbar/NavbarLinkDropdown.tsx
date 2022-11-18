@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React from 'react';
 import {useNavigate} from 'react-router-dom'
 import {API} from "../../Constants";
 import {useLoggedInContext} from "../../App";
@@ -6,12 +6,11 @@ import {useLoggedInContext} from "../../App";
 type Props = {
     links: string[];
     texts: string[];
+    color: string
 }
 
 const NavbarLinkDropDown: React.FC<Props> = (props) => {
 
-    const [titles, setTitles] = useState<string[]>([""])
-    useEffect(() => setTitles(props.texts), [props.texts])
     const loggedInContext = useLoggedInContext()
     let navigate = useNavigate();
     const handleOnClick = (link: string) => {
@@ -37,7 +36,7 @@ const NavbarLinkDropDown: React.FC<Props> = (props) => {
                 </button>
                 <div>
                     <button
-                        className={"absolute opacity-0 group-hover:opacity-100 pt-0 group-hover:pt-6 z-0 transition-all  bg-gradient-to-t hover:from-red-200 from-gray-300 hover:to-transparent to-transparent ease-in-out p-5 mx-5  hover:text-white hover:rounded-xl rounded-xl hover:shadow-xl hover:shadow-red-200 w-40 transition duration-300 ease-in-out"}
+                        className={"absolute opacity-0 group-hover:opacity-100 pt-0 group-hover:pt-6 z-0 transition-all  bg-gradient-to-t from-gray-300 hover:to-transparent to-transparent ease-in-out p-5 mx-5  hover:text-white hover:rounded-xl rounded-xl hover:shadow-xl w-40 transition duration-300 ease-in-out " + (`hover:from-${props.color}-200 hover:shadow-${props.color}-200`)}
                         onClick={() => handleOnClick(props.links[1])}>
                         <p className="text-xl text-center text-black">{props.texts[1]}</p>
                     </button>

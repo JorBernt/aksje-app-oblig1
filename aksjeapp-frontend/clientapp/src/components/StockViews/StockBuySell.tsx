@@ -8,6 +8,7 @@ type Props = {
     symbol: string
     cost: number
     callBack: any
+    disabled?: boolean
 };
 
 const StockBuySell = (props: Props) => {
@@ -90,13 +91,13 @@ const StockBuySell = (props: Props) => {
                         <p className="text-2xl ">{amount} </p>
                         <input
                             className="mx-4 w-24 bg-transparent focus:border focus:border-pink-500 rounded pl-4 border border-black"
-                            type="number" ref={inputRef} onChange={handleOnChange}/>
+                            type="number" ref={inputRef} onChange={handleOnChange} disabled={props.disabled}/>
 
                         <p className="ml-1 self-end text-2xl">{totalSum.toFixed(2)} $</p>
                     </div>
                     <div className="flex justify-center">
                         <button
-                            className={className} onClick={handleOnClickBuySell}>{props.data}
+                            className={className} onClick={handleOnClickBuySell} disabled={props.disabled}>{props.data}
                         </button>
                     </div>
                 </div>

@@ -1216,7 +1216,6 @@ namespace UnitTesting_aksjeapp
         {
             //Arrange
 
-
             MockRep.Setup(k => k.DeleteTransaction(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(true);
 
             mockSession[_loggedIn] = _notLoggedIn;

@@ -9,10 +9,12 @@ namespace aksjeapp_backend.DAL
     public class StockRepository : IStockRepository
     {
         private readonly StockContext _db;
+        private ILogger<StockRepository> _logger;
 
-        public StockRepository(StockContext db)
+        public StockRepository(StockContext db, ILogger<StockRepository> logger)
         {
             _db = db;
+            _logger = logger;
         }
 
         public async Task<List<Stock>> GetAllStocks()
@@ -29,6 +31,7 @@ namespace aksjeapp_backend.DAL
 
             if (results == null)
             {
+                _logger.LogInformation("Could not get the results from API");
                 return null;
             }
 
@@ -66,7 +69,7 @@ namespace aksjeapp_backend.DAL
             stock.Last = results[^1].ClosePrice;
             stock.Change = resPercent;
             stock.TodayDifference = results[^1].ClosePrice - results[^2].ClosePrice;
-            stock.Buy = 0;
+            stock.Buy = 0;                                                         //TODO: Se på disse om man kan hente noe nyttig data
             stock.Sell = 0;
             stock.High = results[^1].HighestPrice;
             stock.Low = results[^1].LowestPrice;
@@ -85,6 +88,7 @@ namespace aksjeapp_backend.DAL
                 // Checks if customer exists
                 if (customer == null)
                 {
+                    _logger.LogInformation("Customer does not exist in buy stock");
                     return false;
                 }
                 //Get todays price and and set the todays date
@@ -93,6 +97,7 @@ namespace aksjeapp_backend.DAL
                 // If we should get an error with the price it will return false and not complete the transaction
                 if (stockPrice.ClosePrice == 0)
                 {
+                    _logger.LogInformation("Price is 0 and will not buy stock");
                     return false;
                 }
 
@@ -117,6 +122,7 @@ namespace aksjeapp_backend.DAL
             }
             catch
             {
+                _logger.LogInformation("Error in buy stock for" + socialSecurityNumber);
                 return false;
             }
         }
@@ -136,6 +142,7 @@ namespace aksjeapp_backend.DAL
                 // Checks if customer exists
                 if (customer == null)
                 {
+                    _logger.LogInformation("Could not find customer in sell stock");
                     return false;
                 }
 
@@ -143,17 +150,20 @@ namespace aksjeapp_backend.DAL
                 var portfolio = await _db.Portfolios.FirstOrDefaultAsync(k => k.SocialSecurityNumber == socialSecurityNumber);
                 if (portfolio == null)
                 {
+                    _logger.LogInformation("Customer does not hava a portfolio");
                     return false;
                 }
 
                 var portfolioList = await _db.PortfolioList.FirstOrDefaultAsync(k => k.PortfolioId == portfolio.PortfolioId && k.Symbol == symbol);
                 if (portfolioList == null)
                 {
+                    _logger.LogInformation("Customer does not hava a stock from this particular stock");
                     return false;
                 }
                 // If we does not have enough of that stock
                 if (portfolioList.Amount < number)
                 {
+                    _logger.LogInformation("Customer does not have enough of this stock");
                     return false;
                 }
 
@@ -163,6 +173,7 @@ namespace aksjeapp_backend.DAL
                 // If we should get an error with the price it will return false and not complete the transaction
                 if (stockPrice.ClosePrice == 0)
                 {
+                    _logger.LogInformation("Stock price is 0 will not complete sell");
                     return false;
                 }
 
@@ -177,8 +188,7 @@ namespace aksjeapp_backend.DAL
                     Amount = number,
                     TotalPrice = totalPrice
                 };
-
-                //customer.TransactionsSold.Add(stockTransaction);
+                
                 await _db.TransactionsSold.AddAsync(stockTransaction);
                 customer.Balance += stockTransaction.TotalPrice;
 
@@ -188,6 +198,7 @@ namespace aksjeapp_backend.DAL
             }
             catch
             {
+                _logger.LogInformation("Error in sell stock for " + socialSecurityNumber);
                 return false;
             }
 
@@ -197,19 +208,17 @@ namespace aksjeapp_backend.DAL
         {
             try
             {
-                if (keyPhrase.Equals(""))
-                {
-                    return null;
-                }
-
-                var stocks = await _db.Stocks
-                    .Where(k => k.Symbol.Contains(keyPhrase) || k.Name.ToUpper().Contains(keyPhrase) ||
-                                k.Country.ToUpper().Contains(keyPhrase) || k.Sector.ToUpper().Contains(keyPhrase))
+                var stocks = await _db.Stocks.Where(k => 
+                        k.Symbol.Contains(keyPhrase) || 
+                        k.Name.ToUpper().Contains(keyPhrase) || 
+                        k.Country.ToUpper().Contains(keyPhrase) || 
+                        k.Sector.ToUpper().Contains(keyPhrase))
                     .OrderBy(k => k.Name).ToListAsync();
                 return stocks;
             }
             catch
             {
+                _logger.LogInformation("Error in return search result method");
                 return new List<Stock>();
             }
         }
@@ -221,6 +230,7 @@ namespace aksjeapp_backend.DAL
 
             if (customer == null)
             {
+                _logger.LogInformation("Customer does not exist");
                 return null;
             }
             // Lists all transactions that belongs to the owner

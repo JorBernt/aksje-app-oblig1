@@ -1174,7 +1174,7 @@ namespace UnitTesting_aksjeapp
         }
         
         [Fact]
-        public async Task logOut()
+        public void LogOut()
         {
             //Arrange
             var username = "12345678910";
@@ -1185,7 +1185,7 @@ namespace UnitTesting_aksjeapp
             _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
 
             //Act
-            var result = await _stockController.LogOut() as OkObjectResult;
+            var result = _stockController.LogOut() as OkObjectResult;
             
             //Assert
             Assert.Equal((int)HttpStatusCode.OK, result.StatusCode);

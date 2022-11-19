@@ -1,8 +1,8 @@
-﻿using aksjeapp_backend.Models;
+﻿using System.Security.Cryptography;
+using aksjeapp_backend.Models;
 using aksjeapp_backend.Models.News;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
 
 namespace aksjeapp_backend.DAL
 {
@@ -728,6 +728,28 @@ namespace aksjeapp_backend.DAL
         {
             var stock = await _db.Stocks.FindAsync(symbol);
             return stock == null ? "" : stock.Name;
+        }
+
+        public async Task<bool> ChangePassword(User user)
+        {
+            try
+            {
+                var userFromDb = await _db.Users.FindAsync(user.Username);
+
+                byte[] salt = GenSalt();
+                byte[] password = GenHash(user.Password, salt);
+
+                userFromDb.Password = password;
+                userFromDb.Salt = salt;
+
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+            
         }
 
         public static byte[] GenHash(string password, byte[] salt)

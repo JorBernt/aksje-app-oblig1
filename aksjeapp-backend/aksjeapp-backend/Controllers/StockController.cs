@@ -32,14 +32,16 @@ public class StockController : ControllerBase
         return Ok(allStocks);
     }
 
-    public async Task<ActionResult>
-        GetStockPrices(string symbol, string fromDate, string toDate) // Date should be written as "YYYY-MM-DD"
+    public async Task<ActionResult> GetStockPrices(string symbol, string fromDate, string toDate) // Date should be written as "YYYY-MM-DD"     TODO: Regex on from and to date?
     {
-        if (symbol == "")
+        symbol = symbol.ToUpper();
+        var reg = new Regex(@"^[A-Z]{2,4}");
+        if (!reg.IsMatch(symbol))
         {
-            _logger.LogInformation("Empty stock parameter");
-            return BadRequest("Empty stock parameter");
+            _logger.LogInformation("Fault in input in getstockprices");
+            return BadRequest("Fault in input");
         }
+
 
         var stockPrices = await _db.GetStockPrices(symbol.ToUpper(), fromDate, toDate);
 
@@ -59,6 +61,14 @@ public class StockController : ControllerBase
             return Unauthorized();
         }
 
+        symbol = symbol.ToUpper();
+        var reg = new Regex(@"^[A-Z]{2,4}");
+        if (!reg.IsMatch(symbol))
+        {
+            _logger.LogInformation("Fault in input in buy stock");
+            return BadRequest("Fault in input");
+        }
+
         if (number < 0)
         {
             _logger.LogInformation("Inserted negative number in amount");
@@ -66,7 +76,7 @@ public class StockController : ControllerBase
         }
 
         var socialSecurityNumber = HttpContext.Session.GetString(_loggedIn);
-        var returnOK = await _db.BuyStock(socialSecurityNumber, symbol.ToUpper(), number);
+        var returnOK = await _db.BuyStock(socialSecurityNumber, symbol, number);
         if (!returnOK)
         {
             _logger.LogInformation("Fault in buyStock");
@@ -90,7 +100,7 @@ public class StockController : ControllerBase
             _logger.LogInformation("Fault in input in sell stock");
             return BadRequest("Fault in input");
         }
-        
+
         if (number < 0)
         {
             _logger.LogInformation("Inserted negative number in amount");
@@ -176,7 +186,7 @@ public class StockController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult> UpdateTransaction([FromBody] Transaction transaction)
+    public async Task<ActionResult> UpdateTransaction([FromBody] Transaction transaction) //TODO: Regex on transactions
     {
         if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
         {
@@ -284,11 +294,19 @@ public class StockController : ControllerBase
 
     public async Task<ActionResult> GetNews(string symbol)
     {
+        symbol = symbol.ToUpper();
+        var reg = new Regex(@"^[A-Z]{2,4}");
+        if (!reg.IsMatch(symbol))
+        {
+            _logger.LogInformation("Fault in input in sell stock");
+            return BadRequest("Fault in input");
+        }
+        
         var news = await _db.GetNews(symbol.ToUpper());
 
         if (news.Results == null)
         {
-            _logger.LogInformation("Fault");
+            _logger.LogInformation("Could not find any news about" + symbol);
             return BadRequest("Could not find any news");
         }
 
@@ -299,19 +317,20 @@ public class StockController : ControllerBase
     {
         symbol = symbol.ToUpper();
         var reg = new Regex(@"^[A-Z]{2,4}");
-        if (reg.IsMatch(symbol))
+        if (!reg.IsMatch(symbol))
         {
-            var name = await _db.GetStockName(symbol);
-            if (name == "")
-            {
-                _logger.LogInformation("No stocks found in database");
-                return BadRequest("Could not find a stock for the symbol");
-            }
-
-            return Ok(name);
+            _logger.LogInformation("Fault in input getStockName");
+            return BadRequest("Fault in input");
+        }
+        var name = await _db.GetStockName(symbol);
+        if (name == "")
+        {
+            _logger.LogInformation("No stocks found in database");
+            return BadRequest("Could not find a stock for the symbol");
         }
 
-        return BadRequest("Fault in input get stock name");
+        return Ok(name);
+
     }
 
     [HttpPost]
@@ -324,7 +343,7 @@ public class StockController : ControllerBase
             bool returOk = await _db.ChangePassword(user);
             if (!returOk)
             {
-                _logger.LogInformation("Password for " + user.Username + " not updated");
+                _logger.LogInformation($"Password for {user.Username} not updated");
                 return BadRequest("Password not updated");
             }
 

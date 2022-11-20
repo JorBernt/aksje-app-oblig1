@@ -120,7 +120,7 @@ namespace aksjeapp_backend.DAL
         }
 
         // List with tokens for the Poltgon API
-        public static List<string> polygonKeys = new() { "C1cckwJuZuvEgVJbCmv42HuUZnJSgjeJ", "uWXhChA2H2mRpH7fCrGH5NebvagOZEBT", "udqqYjjU5_yjzUpSGVpLBaqGv54SWsIY", "rt8cZtaDtDUSPGsC0nPpHKnl9tpGPPld", "ku6Bcu6IthG2r5m4pBV8bozJqhOobJWq", "vmCz3EMpwNkSZH_1ekwUvCpJ_dPR2Zhy", "bUPoDNh4OFrbTkQ6DLpsSweKMZKaCqcG", "hK9nttsunnnZ4WqCz1cWJC6yZ7l4LM2U", "eBe50HwzILuzw_bAEwqCHOnMOHbkVjdu", "G_pBRj9ts_Bcbwzl2vKEbdW_i9_XROND", "nPAR1NjKbrPpKmnnXFyRViftAUH8CJZ4"};
+        private static List<string> polygonKeys = new() { "C1cckwJuZuvEgVJbCmv42HuUZnJSgjeJ", "uWXhChA2H2mRpH7fCrGH5NebvagOZEBT", "udqqYjjU5_yjzUpSGVpLBaqGv54SWsIY", "rt8cZtaDtDUSPGsC0nPpHKnl9tpGPPld", "ku6Bcu6IthG2r5m4pBV8bozJqhOobJWq", "vmCz3EMpwNkSZH_1ekwUvCpJ_dPR2Zhy", "bUPoDNh4OFrbTkQ6DLpsSweKMZKaCqcG", "hK9nttsunnnZ4WqCz1cWJC6yZ7l4LM2U", "eBe50HwzILuzw_bAEwqCHOnMOHbkVjdu", "G_pBRj9ts_Bcbwzl2vKEbdW_i9_XROND", "nPAR1NjKbrPpKmnnXFyRViftAUH8CJZ4"};
 
         public static string PolygonKeys()
         {

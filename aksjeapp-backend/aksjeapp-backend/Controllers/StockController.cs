@@ -33,7 +33,7 @@ public class StockController : ControllerBase
     }
 
     public async Task<ActionResult>
-        GetStockPrices(string symbol, string fromDate, string toDate) // dato skal skrives som "YYYY-MM-DD"
+        GetStockPrices(string symbol, string fromDate, string toDate) // Date should be written as "YYYY-MM-DD"
     {
         if (symbol == "")
         {
@@ -54,7 +54,11 @@ public class StockController : ControllerBase
 
     public async Task<ActionResult> BuyStock(string symbol, int number)
     {
-        if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn))) return Unauthorized();
+        if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
+        {
+            return Unauthorized();
+        }
+
         if (number < 0)
         {
             _logger.LogInformation("Inserted negative number in amount");
@@ -74,7 +78,19 @@ public class StockController : ControllerBase
 
     public async Task<ActionResult> SellStock(string symbol, int number)
     {
-        if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn))) return Unauthorized();
+        if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
+        {
+            return Unauthorized();
+        }
+
+        symbol = symbol.ToUpper();
+        var reg = new Regex(@"^[A-Z]{2,4}");
+        if (!reg.IsMatch(symbol))
+        {
+            _logger.LogInformation("Fault in input in sell stock");
+            return BadRequest("Fault in input");
+        }
+        
         if (number < 0)
         {
             _logger.LogInformation("Inserted negative number in amount");
@@ -82,7 +98,7 @@ public class StockController : ControllerBase
         }
 
         var socialSecurityNumber = HttpContext.Session.GetString(_loggedIn);
-        var returnOK = await _db.SellStock(socialSecurityNumber, symbol.ToUpper(), number);
+        var returnOK = await _db.SellStock(socialSecurityNumber, symbol, number);
         if (!returnOK)
         {
             _logger.LogInformation("Fault in sellStock");
@@ -94,7 +110,10 @@ public class StockController : ControllerBase
 
     public async Task<ActionResult> SearchResults(string keyPhrase)
     {
-        if (keyPhrase == "") return BadRequest("KeyPhrase is empty");
+        if (keyPhrase == "")
+        {
+            return BadRequest("KeyPhrase is empty");
+        }
 
         var searchReults = await _db.ReturnSearchResults(keyPhrase.ToUpper());
         return Ok(searchReults);
@@ -102,7 +121,11 @@ public class StockController : ControllerBase
 
     public async Task<ActionResult> GetAllTransactions()
     {
-        if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn))) return Unauthorized();
+        if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
+        {
+            return Unauthorized();
+        }
+
         var socialSecurityNumber = HttpContext.Session.GetString(_loggedIn);
         var transactions = await _db.GetAllTransactions(socialSecurityNumber);
         if (transactions == null)
@@ -116,20 +139,32 @@ public class StockController : ControllerBase
 
     public async Task<ActionResult> GetSpecificTransactions(string symbol)
     {
-        var transactions = await _db.GetSpecificTransactions(symbol);
-        if (transactions.Count <= 0)
+        symbol = symbol.ToUpper();
+        var reg = new Regex(@"^[A-Z]{2,4}");
+        if (reg.IsMatch(symbol))
         {
-            _logger.LogInformation("No transactions");
-            return BadRequest("No transactions");
+            var transactions = await _db.GetSpecificTransactions(symbol);
+            if (transactions.Count <= 0)
+            {
+                _logger.LogInformation("No transactions");
+                return BadRequest("No transactions");
+            }
+
+            return Ok(transactions);
         }
 
-        return Ok(transactions);
+        _logger.LogInformation("Fault in input in GetSpecificTransaction");
+        return BadRequest("Fault in input");
     }
 
     public async Task<ActionResult> GetTransaction(int id)
     {
-        if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn))) return Unauthorized();
-        var socialSecurityNumber = HttpContext.Session.GetString(_loggedIn);
+        if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
+        {
+            return Unauthorized();
+        }
+
+        var socialSecurityNumber = HttpContext.Session.GetString(_loggedIn)!;
         var transaction = await _db.GetTransaction(socialSecurityNumber, id);
         if (transaction == null)
         {
@@ -143,7 +178,11 @@ public class StockController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> UpdateTransaction([FromBody] Transaction transaction)
     {
-        if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn))) return Unauthorized();
+        if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
+        {
+            return Unauthorized();
+        }
+
         var returnOK = await _db.UpdateTransaction(transaction);
         if (!returnOK)
         {
@@ -156,7 +195,11 @@ public class StockController : ControllerBase
 
     public async Task<ActionResult> DeleteTransaction(int id)
     {
-        if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn))) return Unauthorized();
+        if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
+        {
+            return Unauthorized();
+        }
+
         var socialSecurityNumber = HttpContext.Session.GetString(_loggedIn);
         var returnOK = await _db.DeleteTransaction(socialSecurityNumber, id);
         if (!returnOK)
@@ -170,14 +213,22 @@ public class StockController : ControllerBase
 
     public async Task<ActionResult> StockChange(string symbol)
     {
-        var stockChange = await _db.StockChange(symbol);
-        if (stockChange == null)
+        symbol = symbol.ToUpper();
+        var reg = new Regex(@"^[A-Z]{2,4}");
+        if (reg.IsMatch(symbol))
         {
-            _logger.LogInformation("StockChange not found");
-            return BadRequest("Stockchange not found");
+            var stockChange = await _db.StockChange(symbol);
+            if (stockChange == null)
+            {
+                _logger.LogInformation("StockChange not found");
+                return BadRequest("Stockchange not found");
+            }
+
+            return Ok(stockChange);
         }
 
-        return Ok(stockChange);
+        _logger.LogInformation("Fault in input in spesific transaction method");
+        return BadRequest("Fault in input");
     }
 
     public async Task<ActionResult> GetStockOverview()
@@ -276,8 +327,10 @@ public class StockController : ControllerBase
                 _logger.LogInformation("Password for " + user.Username + " not updated");
                 return BadRequest("Password not updated");
             }
+
             return Ok("Password updated");
         }
+
         _logger.LogInformation("Username or password does not correspond with regex");
         return BadRequest("Fault in input");
     }

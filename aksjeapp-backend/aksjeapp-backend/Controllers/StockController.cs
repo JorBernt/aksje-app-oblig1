@@ -32,18 +32,19 @@ public class StockController : ControllerBase
         return Ok(allStocks);
     }
 
-    public async Task<ActionResult> GetStockPrices(string symbol, string fromDate, string toDate) // Date should be written as "YYYY-MM-DD"     TODO: Regex on from and to date?
+    public async Task<ActionResult> GetStockPrices(string symbol, string fromDate) // Date should be written as "YYYY-MM-DD"     TODO: Mulighet til å velge hvor mange dager som skal synes på grafen
     {
         symbol = symbol.ToUpper();
         var reg = new Regex(@"^[A-Z]{2,4}");
-        if (!reg.IsMatch(symbol))
+        var regDate = new Regex(@"^[0-9]{4}-[0-9]{2}-[0-9]{2}");
+
+        if (!reg.IsMatch(symbol) || !regDate.IsMatch(fromDate))
         {
             _logger.LogInformation("Fault in input in getstockprices");
             return BadRequest("Fault in input");
         }
 
-
-        var stockPrices = await _db.GetStockPrices(symbol.ToUpper(), fromDate, toDate);
+        var stockPrices = await _db.GetStockPrices(symbol, fromDate);
 
         if (stockPrices == null)
         {

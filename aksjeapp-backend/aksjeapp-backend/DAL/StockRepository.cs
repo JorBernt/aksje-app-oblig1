@@ -23,59 +23,61 @@ namespace aksjeapp_backend.DAL
             return aksjeListe;
         }
 
-        public async Task<StockPrices>
-            GetStockPrices(string symbol, string fromDate, string toDate) // dato skal skrives som "YYYY-MM-DD"
+        public async Task<StockPrices> GetStockPrices(string symbol, string fromDate) // dato skal skrives som "YYYY-MM-DD"
         {
-            var stock = await PolygonAPI.GetStockPrices(symbol, fromDate, toDate, 1);
-
-            var results = stock.results;
-
-            if (results == null)
+            try
             {
-                _logger.LogInformation("Could not get the results from API");
-                return null;
-            }
+                
+                //DateTime date;
+                var date = DateTime.Parse(fromDate);
+                //Goes back to friday if it is a saturday or sunday
+                date = BackToFriday(date);
+                
 
+                var stock = await PolygonAPI.GetStockPrices(symbol, date.ToString("yyyy-MM-dd"), GetTodaysDate().ToString("yyyy-MM-dd"), 1);
 
-            DateTime date;
+                var results = stock.results;
 
-            if (DateTime.TryParse(fromDate, out date))
-            {
-                //Skips saturdays and sunday since we does not receive any data from those days
-                foreach (var stocks in results)
+                if (results == null)
                 {
-                    if (date.DayOfWeek.Equals(DayOfWeek.Saturday))
-                    {
-                        date = date.AddDays(2);
-                    }
-
-                    if (date.DayOfWeek.Equals(DayOfWeek.Sunday))
-                    {
-                        date = date.AddDays(1);
-                    }
-
-                    stocks.Date = date.ToString("yyyy-MM-dd");
-                    date = date.AddDays(1);
+                    _logger.LogInformation("Could not get the results from API");
+                    return null;
                 }
 
-                stock.results = results;
+
+                    //Skips saturdays and sunday since we does not receive any data from those days
+                    foreach (var stocks in results)
+                    {
+                        date = GoToMonday(date);
+
+                        stocks.Date = date.ToString("yyyy-MM-dd");
+                        date = date.AddDays(1);
+
+                    stock.results = results;
+                }
+
+                double res1 = results[^1].ClosePrice;
+                double res2 = results[^2].ClosePrice;
+                double resDiff = res1 - res2;
+                double resAvg = (res1 + res2) / 2;
+                double resPercent = (resDiff / ((resAvg) / 2) * 100) / 2;
+
+                stock.Name = symbol;
+                stock.Last = results[^1].ClosePrice;
+                stock.Change = resPercent;
+                stock.TodayDifference = results[^1].ClosePrice - results[^2].ClosePrice;
+                stock.Buy = 0; //TODO: Se på disse om man kan hente noe nyttig data
+                stock.Sell = 0;
+                stock.High = results[^1].HighestPrice;
+                stock.Low = results[^1].LowestPrice;
+                return stock;
             }
-
-            double res1 = results[^1].ClosePrice;
-            double res2 = results[^2].ClosePrice;
-            double resDiff = res1 - res2;
-            double resAvg = (res1 + res2) / 2;
-            double resPercent = (resDiff / ((resAvg) / 2) * 100) / 2;
-
-            stock.Name = symbol;
-            stock.Last = results[^1].ClosePrice;
-            stock.Change = resPercent;
-            stock.TodayDifference = results[^1].ClosePrice - results[^2].ClosePrice;
-            stock.Buy = 0; //TODO: Se på disse om man kan hente noe nyttig data
-            stock.Sell = 0;
-            stock.High = results[^1].HighestPrice;
-            stock.Low = results[^1].LowestPrice;
-            return stock;
+            catch (Exception e)
+            {
+                _logger.LogInformation(e.Message);
+                return null;
+            }
+            
         }
 
         public async Task<bool> BuyStock(string socialSecurityNumber, string symbol, int number)
@@ -830,6 +832,13 @@ namespace aksjeapp_backend.DAL
                 20); // Using fixed date since it takes a couple of minutes to get the stock change
 
             // If day of week is a weekend then the last price if from friday
+            date = BackToFriday(date);
+
+            return date;
+        }
+
+        private static DateTime BackToFriday(DateTime date)
+        {
             if (date.DayOfWeek.Equals(DayOfWeek.Saturday))
             {
                 date = date.AddDays(-1);
@@ -838,6 +847,20 @@ namespace aksjeapp_backend.DAL
             if (date.DayOfWeek.Equals(DayOfWeek.Sunday))
             {
                 date = date.AddDays(-2);
+            }
+
+            return date;
+        }
+        private static DateTime GoToMonday(DateTime date)
+        {
+            if (date.DayOfWeek.Equals(DayOfWeek.Saturday))
+            {
+                date = date.AddDays(2);
+            }
+
+            if (date.DayOfWeek.Equals(DayOfWeek.Sunday))
+            {
+                date = date.AddDays(1);
             }
 
             return date;

@@ -61,13 +61,29 @@ namespace aksjeapp_backend.DAL
                 double resDiff = res1 - res2;
                 double resAvg = (res1 + res2) / 2;
                 double resPercent = (resDiff / ((resAvg) / 2) * 100) / 2;
+                
+                // Getting buy and sell numbers
+                var boughtList = await _db.TransactionsBought.Where(k => symbol == symbol).ToListAsync();
+                int bought = 0;
+                foreach (var transaction in boughtList)
+                {
+                    bought += transaction.Amount;
+                }
+                
+                var soldList = await _db.TransactionsSold.Where(k => symbol == symbol).ToListAsync();
+                int sold = 0;
+                foreach (var transaction in soldList)
+                {
+                    bought += transaction.Amount;
+                }
+                
 
                 stock.Name = symbol;
                 stock.Last = results[^1].ClosePrice;
                 stock.Change = resPercent;
                 stock.TodayDifference = results[^1].ClosePrice - results[^2].ClosePrice;
-                stock.Buy = 0; //TODO: Se på disse om man kan hente noe nyttig data
-                stock.Sell = 0;
+                stock.Buy = bought;
+                stock.Sell = sold;
                 stock.High = results[^1].HighestPrice;
                 stock.Low = results[^1].LowestPrice;
                 return stock;
@@ -112,13 +128,12 @@ namespace aksjeapp_backend.DAL
                 var stockTransaction = new TransactionBought
                 {
                     Date = date,
-                    SocialSecurityNumber = socialSecurityNumber,
                     Symbol = symbol,
                     Amount = number,
                     TotalPrice = totalPrice
                 };
-
-                await _db.TransactionsBought.AddAsync(stockTransaction);
+                customer.TransactionsBought.Add(stockTransaction);
+                //await _db.TransactionsBought.AddAsync(stockTransaction);
                 customer.Balance -= stockTransaction.TotalPrice - 5; //5 dollars in brokerage 
                 await _db.SaveChangesAsync();
 
@@ -134,7 +149,6 @@ namespace aksjeapp_backend.DAL
 
         public async Task<bool> SellStock(string socialSecurityNumber, string symbol, int number)
         {
-            int number1 = number;
             // Gets todays date
             string date = GetTodaysDate().ToString("yyyy-MM-dd");
 
@@ -142,7 +156,6 @@ namespace aksjeapp_backend.DAL
             {
                 await UpdatePortfolio(socialSecurityNumber);
                 var customer = await _db.Customers.FindAsync(socialSecurityNumber);
-                //var portfolio = _db.Portfolios
 
                 // Checks if customer exists
                 if (customer == null)
@@ -152,8 +165,7 @@ namespace aksjeapp_backend.DAL
                 }
 
                 // Finds the stock we want to sell
-                var portfolio =
-                    await _db.Portfolios.FirstOrDefaultAsync(k => k.SocialSecurityNumber == socialSecurityNumber);
+                var portfolio = await _db.Portfolios.FirstOrDefaultAsync(k => k.SocialSecurityNumber == socialSecurityNumber);
                 if (portfolio == null)
                 {
                     _logger.LogInformation("Customer does not hava a portfolio");
@@ -162,6 +174,7 @@ namespace aksjeapp_backend.DAL
 
                 var portfolioList = await _db.PortfolioList.FirstOrDefaultAsync(k =>
                     k.PortfolioId == portfolio.PortfolioId && k.Symbol == symbol);
+                // Customer does not have any of this stock
                 if (portfolioList == null)
                 {
                     _logger.LogInformation("Customer does not hava a stock from this particular stock");
@@ -191,13 +204,12 @@ namespace aksjeapp_backend.DAL
                 var stockTransaction = new TransactionSold
                 {
                     Date = date,
-                    SocialSecurityNumber = socialSecurityNumber,
                     Symbol = symbol,
                     Amount = number,
                     TotalPrice = totalPrice
                 };
 
-                await _db.TransactionsSold.AddAsync(stockTransaction);
+                customer.TransactionsSold.Add(stockTransaction);
                 customer.Balance += stockTransaction.TotalPrice;
 
                 await _db.SaveChangesAsync();
@@ -238,12 +250,16 @@ namespace aksjeapp_backend.DAL
             if (customer == null)
             {
                 _logger.LogInformation("Customer does not exist");
+                return null;  
+            }
+            
+            if ((customer.TransactionsBought == null || customer.TransactionsSold == null))
+            {
                 return null;
             }
 
             // Lists all transactions that belongs to the owner
-            var transactionsfromDb = await _db.TransactionsBought
-                .Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
+            var transactionsfromDb = customer.TransactionsBought.ToList();
 
             var transactions = new List<Transaction>();
 
@@ -253,7 +269,7 @@ namespace aksjeapp_backend.DAL
                 var transaction1 = new Transaction
                 {
                     Id = transactionDB.BoughtId,
-                    SocialSecurityNumber = transactionDB.SocialSecurityNumber,
+                    SocialSecurityNumber = customer.SocialSecurityNumber,
                     Date = transactionDB.Date,
                     Symbol = transactionDB.Symbol,
                     Amount = transactionDB.Amount,
@@ -268,15 +284,14 @@ namespace aksjeapp_backend.DAL
             }
 
             // Lists all the transactions that is sold too, just as negative number
-            var transactionsfromDbSold = await _db.TransactionsSold
-                .Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
+            var transactionsfromDbSold = customer.TransactionsSold;
 
             foreach (var transactionDBSold in transactionsfromDbSold)
             {
                 var transaction1 = new Transaction
                 {
                     Id = -1,
-                    SocialSecurityNumber = transactionDBSold.SocialSecurityNumber,
+                    SocialSecurityNumber = customer.SocialSecurityNumber,
                     Date = transactionDBSold.Date,
                     Symbol = transactionDBSold.Symbol,
                     Amount = -transactionDBSold.Amount,
@@ -297,31 +312,29 @@ namespace aksjeapp_backend.DAL
                 var transactions = new List<Transaction>();
 
 
-                foreach (var transactionDB in transactionsfromDb)
+                foreach (var transactionDb in transactionsfromDb)
                 {
                     var transaction1 = new Transaction
                     {
-                        Id = transactionDB.BoughtId,
-                        SocialSecurityNumber = transactionDB.SocialSecurityNumber,
-                        Date = transactionDB.Date,
-                        Symbol = transactionDB.Symbol,
-                        Amount = transactionDB.Amount,
-                        TotalPrice = transactionDB.TotalPrice
+                        Id = transactionDb.BoughtId,
+                        Date = transactionDb.Date,
+                        Symbol = transactionDb.Symbol,
+                        Amount = transactionDb.Amount,
+                        TotalPrice = transactionDb.TotalPrice
                     };
                     transactions.Add(transaction1);
                 }
 
                 var transactionsfromDbSold = await _db.TransactionsSold.Where(k => k.Symbol == symbol).ToListAsync();
-                foreach (var transactionDB in transactionsfromDbSold)
+                foreach (var transactionDb in transactionsfromDbSold)
                 {
                     var transaction1 = new Transaction
                     {
-                        Id = transactionDB.SoldId,
-                        SocialSecurityNumber = transactionDB.SocialSecurityNumber,
-                        Date = transactionDB.Date,
-                        Symbol = transactionDB.Symbol,
-                        Amount = -transactionDB.Amount,
-                        TotalPrice = transactionDB.TotalPrice
+                        Id = transactionDb.SoldId,
+                        Date = transactionDb.Date,
+                        Symbol = transactionDb.Symbol,
+                        Amount = -transactionDb.Amount,
+                        TotalPrice = transactionDb.TotalPrice
                     };
                     transactions.Add(transaction1);
                 }
@@ -341,11 +354,13 @@ namespace aksjeapp_backend.DAL
                 return null;
             }
 
-            var transactionfromDB = await _db.TransactionsBought.FindAsync(id);
+            var transactionfromDB = customer.TransactionsBought.Find(k => k.BoughtId == id);
+            
+            //Builds transaction object
             var transaction = new Transaction
             {
                 Id = transactionfromDB.BoughtId,
-                SocialSecurityNumber = transactionfromDB.SocialSecurityNumber,
+                SocialSecurityNumber = customer.SocialSecurityNumber,
                 Date = transactionfromDB.Date,
                 Symbol = transactionfromDB.Symbol,
                 Amount = transactionfromDB.Amount,
@@ -541,10 +556,8 @@ namespace aksjeapp_backend.DAL
                 }
 
                 // Gets transaction objects from DB
-                var transactionsBought = await _db.TransactionsBought
-                    .Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
-                var transactionsSold = await _db.TransactionsSold
-                    .Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
+                var transactionsBought = customerFromDb.TransactionsBought;
+                var transactionsSold = customerFromDb.TransactionsSold;
 
                 StockChangeValue stockChange;
 
@@ -658,8 +671,7 @@ namespace aksjeapp_backend.DAL
                     return null;
                 }
 
-                var transactionsfromDb = await _db.TransactionsBought
-                    .Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
+                var transactionsfromDb = customerFromDb.TransactionsBought;
                 List<Transaction> transactions = new List<Transaction>();
 
                 // Builds transaction list
@@ -668,7 +680,7 @@ namespace aksjeapp_backend.DAL
                     var transaction1 = new Transaction
                     {
                         Id = transactionDB.BoughtId,
-                        SocialSecurityNumber = transactionDB.SocialSecurityNumber,
+                        SocialSecurityNumber = customerFromDb.SocialSecurityNumber,
                         Date = transactionDB.Date,
                         Symbol = transactionDB.Symbol,
                         Amount = transactionDB.Amount,

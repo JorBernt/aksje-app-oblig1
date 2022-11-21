@@ -63,14 +63,14 @@ namespace aksjeapp_backend.DAL
                 double resPercent = (resDiff / ((resAvg) / 2) * 100) / 2;
                 
                 // Getting buy and sell numbers
-                var boughtList = await _db.TransactionsBought.Where(k => symbol == symbol).ToListAsync();
+                var boughtList = await _db.TransactionsBought.Where(k => k.Symbol == symbol).ToListAsync();
                 int bought = 0;
                 foreach (var transaction in boughtList)
                 {
                     bought += transaction.Amount;
                 }
                 
-                var soldList = await _db.TransactionsSold.Where(k => symbol == symbol).ToListAsync();
+                var soldList = await _db.TransactionsSold.Where(k => k.Symbol == symbol).ToListAsync();
                 int sold = 0;
                 foreach (var transaction in soldList)
                 {

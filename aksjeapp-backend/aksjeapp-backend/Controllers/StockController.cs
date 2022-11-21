@@ -46,7 +46,7 @@ public class StockController : ControllerBase
 
         var stockPrices = await _db.GetStockPrices(symbol, fromDate);
 
-        if (stockPrices == null)
+        if(stockPrices == null)
         {
             _logger.LogInformation("GetStockPrices not found");
             return BadRequest("Not found");

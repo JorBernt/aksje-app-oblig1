@@ -23,7 +23,7 @@ namespace aksjeapp_backend.DAL
             return aksjeListe;
         }
 
-        public async Task<StockPrices> GetStockPrices(string symbol, string fromDate) // dato skal skrives som "YYYY-MM-DD"
+        public async Task<StockPrices?> GetStockPrices(string symbol, string fromDate) // dato skal skrives som "YYYY-MM-DD"
         {
             try
             {

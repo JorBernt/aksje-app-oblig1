@@ -25,7 +25,7 @@ namespace aksjeapp_backend.DAL
                     }
                     if (json.Contains("error"))
                     {
-                        if (json.Contains("could not parse"))
+                        if (json.Contains("could not parse") || json.Contains("The parameter"))
                         {
                             return null;
                         }
@@ -34,7 +34,7 @@ namespace aksjeapp_backend.DAL
 
                         return await GetStockPrices(symbol, fromDate, toDate, interval); // Starts over
                     }
-
+                    
                     return JsonConvert.DeserializeObject<StockPrices>(json);
 
                 }
@@ -42,7 +42,6 @@ namespace aksjeapp_backend.DAL
             }
             catch
             {
-                Console.WriteLine("Cannot getStockPrices");
                 return null;
             }
         }
@@ -64,7 +63,7 @@ namespace aksjeapp_backend.DAL
 
                     }
 
-
+                    Console.WriteLine(json);
                     // Checks if the API returns a bad response
                     if (json.Contains("error"))
                     {
@@ -72,7 +71,7 @@ namespace aksjeapp_backend.DAL
                         return await GetOpenClosePrice(symbol, date); // Starts over
                     }
 
-
+                    
                     return JsonConvert.DeserializeObject<OpenCloseStockPrice>(json);
 
                 }
@@ -128,7 +127,6 @@ namespace aksjeapp_backend.DAL
             var polygonKey = polygonKeys[0];
             polygonKeys.RemoveAt(0);
             polygonKeys.Add(polygonKey);
-            Console.WriteLine(polygonKey);
             return polygonKey;
         }
     }

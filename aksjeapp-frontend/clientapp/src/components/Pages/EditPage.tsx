@@ -17,10 +17,10 @@ const EditPage = () => {
         const userData: UserData = {
             firstname: String(firstNameRef.current?.value),
             lastname: String(lastNameRef.current?.value),
-            ssn: String(ssnRef.current?.value),
+            socialsecuritynumber: String(ssnRef.current?.value),
             address: String(addressRef.current?.value),
             postalcode: Number(pCodeRef.current?.value),
-            postaladdress: String(pAddressRef.current?.value),
+            postcity: String(pAddressRef.current?.value),
             password: String(passwordRef.current?.value)
         }
         console.log(userData)

@@ -57,9 +57,9 @@ export interface News {
 export interface UserData {
     firstname: string;
     lastname: string;
-    ssn: string;
+    socialsecuritynumber: string;
     address?: string;
     postalcode: number;
-    postaladdress: string;
+    postcity: string;
     password: string;
 }

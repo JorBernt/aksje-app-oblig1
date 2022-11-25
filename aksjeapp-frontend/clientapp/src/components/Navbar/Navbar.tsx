@@ -23,7 +23,8 @@ const Navbar = () => {
                     <Divider/>
                     {
                         loggedInContext.loggedIn ?
-                            <NavbarLinkDropDown links={["/profile", "/logout"]} texts={["Profile", "Log Out"]}
+                            <NavbarLinkDropDown links={["/profile", "/edit", "/logout"]}
+                                                texts={["Profile", "Edit", "Log Out"]}
                                                 color={"red"}/>
                             :
                             <NavbarLinkDropDown links={["/login", "/register"]} texts={["Log In", "Register"]}

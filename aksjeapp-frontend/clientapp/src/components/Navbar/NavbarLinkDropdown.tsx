@@ -36,11 +36,20 @@ const NavbarLinkDropDown: React.FC<Props> = (props) => {
                 </button>
                 <div>
                     <button
-                        className={"absolute opacity-0 group-hover:opacity-100 pt-0 group-hover:pt-6 z-0 transition-all  bg-gradient-to-t from-gray-300 hover:to-transparent to-transparent ease-in-out p-5 mx-5  hover:text-white hover:rounded-xl rounded-xl hover:shadow-xl w-40 transition duration-300 ease-in-out " + (`hover:from-${props.color}-200 hover:shadow-${props.color}-200`)}
+                        className={`z-10 absolute opacity-0 group/2 group-hover:opacity-100 pt-0 group-hover:pt-6 z-0 transition-all  bg-gradient-to-t from-gray-${props.links.length > 2 ? '100' : '300'} hover:to-transparent to-transparent ease-in-out p-5 mx-5  hover:text-white hover:rounded-xl rounded-xl hover:shadow-xl w-40 transition duration-300 ease-in-out ` + (`hover:from-${props.color}-200 hover:shadow-${props.color}-200`)}
                         onClick={() => handleOnClick(props.links[1])}>
-                        <p className="text-xl text-center text-black">{props.texts[1]}</p>
+                        <p className="group-hover/2:scale-110 text-xl text-center text-black transition ease-in-out">{props.texts[1]}</p>
                     </button>
                 </div>
+                {props.texts.length > 2 &&
+                    <div>
+                        <button
+                            className={"absolute opacity-0 group-hover:opacity-100 pt-0 group/2 group-hover:pt-[5.2rem] z-0 transition-all  bg-gradient-to-t from-gray-300 hover:to-transparent to-transparent ease-in-out p-5 mx-5  hover:text-white hover:rounded-xl rounded-xl hover:shadow-xl w-40 transition duration-300 ease-in-out " + (`hover:from-${props.color}-200 hover:shadow-${props.color}-200`)}
+                            onClick={() => handleOnClick(props.links[2])}>
+                            <p className="group-hover/2:scale-110 text-xl text-center text-black transition ease-in-out">{props.texts[2]}</p>
+                        </button>
+                    </div>
+                }
             </div>
         </>
     )

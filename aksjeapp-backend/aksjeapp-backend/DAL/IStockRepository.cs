@@ -22,6 +22,7 @@ public interface IStockRepository
     Task<List<StockChangeValue>> GetLosers();
     Task<News> GetNews(string symbol);
     Task<string> GetStockName(string symbol);
+    Task<bool> RegisterCustomer(Customer customer);
     Task<bool> ChangePassword(User user);
     Task<bool> LogIn(User user);
 }

@@ -1,4 +1,4 @@
-import {User} from "./components/models";
+import {User, UserData} from "./components/models";
 
 export const DATE_TODAY = new Date().toLocaleDateString("nb-NO").replace("/", "-");
 
@@ -67,6 +67,22 @@ export const API = {
                         'Access-Control-Allow-Headers': 'Content-Type, Authorization, Set-Cookie',
                     },
                     body: JSON.stringify(user)
+                });
+                return response.status === 200;
+            } catch (error: unknown) {
+                return error;
+            }
+        },
+        REGISTER_CUSTOMER: async (userData: UserData): Promise<boolean | unknown> => {
+            try {
+                const response = await fetch(`${stockURL}RegisterCustomer`, {
+                    method: "POST",
+                    credentials: 'include',
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Access-Control-Allow-Headers': 'Content-Type, Authorization, Set-Cookie',
+                    },
+                    body: JSON.stringify(userData)
                 });
                 return response.status === 200;
             } catch (error: unknown) {

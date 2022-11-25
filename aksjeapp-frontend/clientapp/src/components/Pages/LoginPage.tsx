@@ -43,7 +43,7 @@ const LoginPage = () => {
                 <Card>
                     <div className="flex flex-col h-fit items-center w-72">
                         <h1 className={"text-center text-2xl mb-4"}>Login</h1>
-                        <InputField type={"text"} label={"Email"} ref={usernameRef} onKeyDown={handleOnKeyDown}/>
+                        <InputField type={"text"} label={"SSN"} ref={usernameRef} onKeyDown={handleOnKeyDown}/>
                         <InputField type={"password"} label={"Password"} ref={passwordRef} onKeyDown={handleOnKeyDown}/>
                         <div className="mt-4">
                             <Button text={"Log in"} onClick={handleOnClick}/>

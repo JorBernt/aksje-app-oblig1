@@ -375,6 +375,18 @@ public class StockController : ControllerBase
         _logger.LogInformation("Fault in regular expression in logIn");
         return BadRequest("Fault in input");
     }
+    
+    [HttpPost]
+    public async Task<ActionResult> RegisterCustomer([FromBody] Customer customer)
+    {
+        var returnOk = await _db.RegisterCustomer(customer);
+        if (!returnOk)
+        {
+            _logger.LogInformation("Fault in registerCustomer");
+            return BadRequest("Fault in registerCustomer");
+        }
+        return Ok("Customer registered");
+    }
 
     public ActionResult LogOut()
     {

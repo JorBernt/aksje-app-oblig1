@@ -37,7 +37,7 @@ const StockBuySell = (props: Props) => {
                     }))
 
         else
-            fetch(API.STOCK.SELL_STOCK(props.symbol, parseInt(inputRef.current.value)))
+            fetch(API.STOCK.SELL_STOCK(props.symbol, parseInt(inputRef.current.value)), {credentials: 'include'})
                 .then(response => response.text()
                     .then(response => {
                         if (inputRef.current)

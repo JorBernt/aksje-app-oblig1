@@ -53,3 +53,10 @@ export interface News {
     stocks: string[],
     url: string
 }
+
+export interface UserData {
+    firstname: string;
+    lastname: string;
+    ssn: string;
+    password: string;
+}

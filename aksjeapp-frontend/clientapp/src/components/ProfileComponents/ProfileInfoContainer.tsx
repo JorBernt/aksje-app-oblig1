@@ -1,6 +1,8 @@
 import DataDisplay from "../UI/TextDisplay/DataDisplay";
 import React from "react";
 import {ProfileInfo} from "../models";
+import Button from "../UI/Input/Button";
+import {useNavigate} from "react-router-dom";
 
 type Props = {
     profileInfo?: ProfileInfo
@@ -9,8 +11,13 @@ type Props = {
 const ProfileInfoContainer: React.FC<Props> = (props) => {
     let number: number = 8200.80
     let diff: number = -0.09
-
     const profileInfo = props.profileInfo;
+    const navigate = useNavigate();
+
+    const handleOnClick = () => {
+        navigate("/edit")
+    }
+
 
     return (
         <>
@@ -28,6 +35,9 @@ const ProfileInfoContainer: React.FC<Props> = (props) => {
                                      color={+diff < 0 ? "text-red-500" : "text-green-500"}/>
                         <DataDisplay title="Today +/-" content={(number > 0 ? "+" : "") + number + "$"}
                                      color={+number < 0 ? "text-red-500" : "text-green-500"}/>
+                        <div className="w-fill flex justify-center mt-4">
+                            <Button text={"Edit Profile"} onClick={handleOnClick}/>
+                        </div>
                     </div>
                 </>
             }

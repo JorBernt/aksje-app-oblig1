@@ -13,11 +13,10 @@ namespace aksjeapp_backend.DAL
         public string LastName { get; set; }
         public string Address { get; set; }
         public double Balance { get; set; }
-        public virtual List<TransactionBought>? TransactionsBought { get; set; }
-        virtual public List<TransactionSold>? TransactionsSold { get; set; }
-        virtual public Portfolio? Portfolio { get; set; }
-        virtual public PostalAreas PostalArea { get; set; }
-
+        public virtual List<TransactionBought> TransactionsBought { get; set; } = null!;
+        public virtual List<TransactionSold> TransactionsSold { get; set; } = null!;
+        public virtual Portfolio? Portfolio { get; set; }
+        public virtual PostalAreas PostalArea { get; set; } = null!;
     }
     public class PostalAreas
     {
@@ -29,7 +28,6 @@ namespace aksjeapp_backend.DAL
     public class Users
     {
         [Key]
-        public int UserId { get; set; }
         public string Username { get; set; }
         public byte[] Password { get; set; }
         public byte[] Salt { get; set; }
@@ -41,7 +39,7 @@ namespace aksjeapp_backend.DAL
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int BoughtId { get; set; }
 
-        public string SocialSecurityNumber { get; set; }
+        //public string SocialSecurityNumber { get; set; }
         public string Date { get; set; }
         public string Symbol { get; set; }
         public int Amount { get; set; }
@@ -51,11 +49,11 @@ namespace aksjeapp_backend.DAL
         {
             get
             {
-                return this.totalPrice;
+                return totalPrice;
             }
             set
             {
-                this.totalPrice = Math.Round(value, 2);
+                totalPrice = Math.Round(value, 2);
             }
         }
 
@@ -65,10 +63,7 @@ namespace aksjeapp_backend.DAL
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int SoldId { get; set; }
-
-        [ForeignKey("Customers")]
-        public string SocialSecurityNumber { get; set; }
-        public string Date { get; set; }
+        public string Date { get; set; } //TODO: Bytte til datetime datatype?
         public string Symbol { get; set; }
         public int Amount { get; set; }
 
@@ -129,8 +124,6 @@ namespace aksjeapp_backend.DAL
         public StockContext(DbContextOptions<StockContext> options) : base(options)
         {
             Database.EnsureCreated();
-
-
         }
         public DbSet<Stock> Stocks { get; set; }
 

@@ -1,5 +1,6 @@
 ﻿using aksjeapp_backend.DAL;
 using Microsoft.AspNetCore.Mvc;
+
 namespace aksjeapp_backend.Controller
 {
     [Route("[controller]/[action]")]
@@ -18,6 +19,7 @@ namespace aksjeapp_backend.Controller
         [HttpPost]
         public async Task<ActionResult> RegisterCustomer([FromBody] Customer customer)
         {
+            Console.WriteLine(HttpContext.Session.GetString("SocialSecurityNumber"));
             var returnOk = await _db.RegisterCustomer(customer);
             if (!returnOk)
             {
@@ -26,5 +28,7 @@ namespace aksjeapp_backend.Controller
             }
             return Ok("Customer registered");
         }
+
+        
     }
 }

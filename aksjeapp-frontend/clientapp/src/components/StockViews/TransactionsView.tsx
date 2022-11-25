@@ -36,7 +36,7 @@ const TransactionsView: React.FC<Props> = (props) => {
         loadAllTransactions()
     }, [])
     const handleOnClickDelete = (id: number) => {
-        fetch(API.STOCK.DELETE_TRANSACTION(id))
+        fetch(API.STOCK.DELETE_TRANSACTION(id), {'credentials': "include"})
             .then(result => {
                 loadAllTransactions()
                 props.callBack();

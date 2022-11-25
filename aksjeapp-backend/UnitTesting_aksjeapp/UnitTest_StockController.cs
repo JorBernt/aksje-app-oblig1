@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System.Net;
+using System.Net.Sockets;
 using Results = aksjeapp_backend.Models.Results;
 
 namespace UnitTesting_aksjeapp
@@ -109,10 +110,10 @@ namespace UnitTesting_aksjeapp
                 results = results
             };
 
-            MockRep.Setup(k => k.GetStockPrices("AAPL", "2022-05-11", "2022-05-12")).ReturnsAsync(stockPrices);
+            MockRep.Setup(k => k.GetStockPrices("AAPL", "2022-05-11")).ReturnsAsync(stockPrices);
 
             //Act
-            var result = await _stockController.GetStockPrices("AAPL", "2022-05-11", "2022-05-12") as OkObjectResult;
+            var result = await _stockController.GetStockPrices("AAPL", "2022-05-11") as OkObjectResult;
 
             //Assert
             Assert.Equal(stockPrices, result.Value);
@@ -122,28 +123,28 @@ namespace UnitTesting_aksjeapp
         public async Task GetStockPrices_EmptySymbol()
         {
             //Arrange
-
+            
 
             //Act
-            var result = await _stockController.GetStockPrices("", "", "") as BadRequestObjectResult;
+            var result = await _stockController.GetStockPrices("", "2022-10-24") as BadRequestObjectResult;
 
             //Assert 
             Assert.Equal((int)HttpStatusCode.BadRequest, result.StatusCode);
-            Assert.Equal("Empty stock parameter", result.Value);
+            Assert.Equal("Fault in input", result.Value);
         }
 
         [Fact]
-        public async Task GetStockPrices_Empty()
+        public async Task GetStockPrices_EmptyDate()
         {
             //Arrange
-            MockRep.Setup(k => k.GetStockPrices("AAPL", "", "")).ReturnsAsync(() => null);
+            //MockRep.Setup(k => k.GetStockPrices("AAPL", "")).ReturnsAsync(() => null);
 
             //Act
-            var result = await _stockController.GetStockPrices("AAPL", "", "") as BadRequestObjectResult;
+            var result = await _stockController.GetStockPrices("AAPL", "") as BadRequestObjectResult;
 
             //Assert
             Assert.Equal((int) HttpStatusCode.BadRequest, result.StatusCode);
-            Assert.Equal("Not found", result.Value);
+            Assert.Equal("Fault in input", result.Value);
         }
 
         [Fact]
@@ -1023,7 +1024,7 @@ namespace UnitTesting_aksjeapp
             //Act            
             var res = await _stockController.GetStockName(symbol) as BadRequestObjectResult;
 
-            Assert.Equal("Fault in input get stock name", res.Value);
+            Assert.Equal("Fault in input ", res.Value);
         }
 
         [Fact]
@@ -1174,7 +1175,7 @@ namespace UnitTesting_aksjeapp
         }
         
         [Fact]
-        public async Task logOut()
+        public void LogOut()
         {
             //Arrange
             var username = "12345678910";
@@ -1185,7 +1186,7 @@ namespace UnitTesting_aksjeapp
             _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
 
             //Act
-            var result = await _stockController.LogOut() as OkObjectResult;
+            var result = _stockController.LogOut() as OkObjectResult;
             
             //Assert
             Assert.Equal((int)HttpStatusCode.OK, result.StatusCode);

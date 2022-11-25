@@ -35,7 +35,7 @@ const EditPage = () => {
                     <div className="flex flex-col h-fit items-center">
                         <h1 className={"text-center text-2xl mb-4"}>Edit</h1>
                         <InputField type={"text"} label={"Name"} ref={nameRef}/>
-                        <InputField type={"text"} label={"Email"} ref={emailRef}/>
+                        <InputField type={"text"} label={"SSN"} ref={emailRef}/>
                         <InputField type={"text"} label={"Phone"} ref={phoneRef}/>
                         <InputField type={"password"} label={"Password"} ref={passwordRef}/>
 

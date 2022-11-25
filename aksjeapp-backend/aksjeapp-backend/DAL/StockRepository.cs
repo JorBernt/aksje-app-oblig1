@@ -1,18 +1,20 @@
-﻿using aksjeapp_backend.Models;
+﻿using System.Security.Cryptography;
+using aksjeapp_backend.Models;
 using aksjeapp_backend.Models.News;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.EntityFrameworkCore;
-using System.Security.Cryptography;
 
 namespace aksjeapp_backend.DAL
 {
     public class StockRepository : IStockRepository
     {
         private readonly StockContext _db;
+        private ILogger<StockRepository> _logger;
 
-        public StockRepository(StockContext db)
+        public StockRepository(StockContext db, ILogger<StockRepository> logger)
         {
             _db = db;
+            _logger = logger;
         }
 
         public async Task<List<Stock>> GetAllStocks()
@@ -21,56 +23,77 @@ namespace aksjeapp_backend.DAL
             return aksjeListe;
         }
 
-        public async Task<StockPrices> GetStockPrices(string symbol, string fromDate, string toDate) // dato skal skrives som "YYYY-MM-DD"
+        public async Task<StockPrices?> GetStockPrices(string symbol, string fromDate) // dato skal skrives som "YYYY-MM-DD"
         {
-            var stock = await PolygonAPI.GetStockPrices(symbol, fromDate, toDate, 1);
-
-            var results = stock.results;
-
-            if (results == null)
+            try
             {
-                return null;
-            }
+                
+                //DateTime date;
+                var date = DateTime.Parse(fromDate);
+                //Goes back to friday if it is a saturday or sunday
+                date = BackToFriday(date);
+                
 
+                var stock = await PolygonAPI.GetStockPrices(symbol, date.ToString("yyyy-MM-dd"), GetTodaysDate().ToString("yyyy-MM-dd"), 1);
 
-            DateTime date;
+                var results = stock.results;
 
-            if (DateTime.TryParse(fromDate, out date))
-            {
-                foreach (var stocks in results)
+                if (results == null)
                 {
-                    if (date.DayOfWeek.Equals(DayOfWeek.Saturday))
-                    {
-                        date = date.AddDays(2);
-                    }
-
-                    if (date.DayOfWeek.Equals(DayOfWeek.Sunday))
-                    {
-                        date = date.AddDays(1);
-                    }
-
-                    stocks.Date = date.ToString("yyyy-MM-dd");
-                    date = date.AddDays(1);
+                    _logger.LogInformation("Could not get the results from API");
+                    return null;
                 }
 
-                stock.results = results;
+
+                    //Skips saturdays and sunday since we does not receive any data from those days
+                    foreach (var stocks in results)
+                    {
+                        date = GoToMonday(date);
+
+                        stocks.Date = date.ToString("yyyy-MM-dd");
+                        date = date.AddDays(1);
+
+                    stock.results = results;
+                }
+
+                double res1 = results[^1].ClosePrice;
+                double res2 = results[^2].ClosePrice;
+                double resDiff = res1 - res2;
+                double resAvg = (res1 + res2) / 2;
+                double resPercent = (resDiff / ((resAvg) / 2) * 100) / 2;
+                
+                // Getting buy and sell numbers
+                var boughtList = await _db.TransactionsBought.Where(k => k.Symbol == symbol).ToListAsync();
+                int bought = 0;
+                foreach (var transaction in boughtList)
+                {
+                    bought += transaction.Amount;
+                }
+                
+                var soldList = await _db.TransactionsSold.Where(k => k.Symbol == symbol).ToListAsync();
+                int sold = 0;
+                foreach (var transaction in soldList)
+                {
+                    bought += transaction.Amount;
+                }
+                
+
+                stock.Name = symbol;
+                stock.Last = results[^1].ClosePrice;
+                stock.Change = resPercent;
+                stock.TodayDifference = results[^1].ClosePrice - results[^2].ClosePrice;
+                stock.Buy = bought;
+                stock.Sell = sold;
+                stock.High = results[^1].HighestPrice;
+                stock.Low = results[^1].LowestPrice;
+                return stock;
             }
-
-            double res1 = results[^1].ClosePrice;
-            double res2 = results[^2].ClosePrice;
-            double resDiff = res1 - res2;
-            double resAvg = (res1 + res2) / 2;
-            double resPercent = (resDiff / ((resAvg) / 2) * 100) / 2;
-
-            stock.Name = symbol;
-            stock.Last = results[^1].ClosePrice;
-            stock.Change = resPercent;
-            stock.TodayDifference = results[^1].ClosePrice - results[^2].ClosePrice;
-            stock.Buy = 0;
-            stock.Sell = 0;
-            stock.High = results[^1].HighestPrice;
-            stock.Low = results[^1].LowestPrice;
-            return stock;
+            catch (Exception e)
+            {
+                _logger.LogInformation(e.Message);
+                return null;
+            }
+            
         }
 
         public async Task<bool> BuyStock(string socialSecurityNumber, string symbol, int number)
@@ -85,14 +108,17 @@ namespace aksjeapp_backend.DAL
                 // Checks if customer exists
                 if (customer == null)
                 {
+                    _logger.LogInformation("Customer does not exist in buy stock");
                     return false;
                 }
+
                 //Get todays price and and set the todays date
                 var stockPrice = await PolygonAPI.GetOpenClosePrice(symbol, date);
 
                 // If we should get an error with the price it will return false and not complete the transaction
                 if (stockPrice.ClosePrice == 0)
                 {
+                    _logger.LogInformation("Price is 0 and will not buy stock");
                     return false;
                 }
 
@@ -102,28 +128,27 @@ namespace aksjeapp_backend.DAL
                 var stockTransaction = new TransactionBought
                 {
                     Date = date,
-                    SocialSecurityNumber = socialSecurityNumber,
                     Symbol = symbol,
                     Amount = number,
                     TotalPrice = totalPrice
                 };
-
-                await _db.TransactionsBought.AddAsync(stockTransaction);
+                customer.TransactionsBought.Add(stockTransaction);
+                //await _db.TransactionsBought.AddAsync(stockTransaction);
                 customer.Balance -= stockTransaction.TotalPrice - 5; //5 dollars in brokerage 
                 await _db.SaveChangesAsync();
 
                 //await UpdatePortfolio(socialSecurityNumber);
                 return true;
             }
-            catch
+            catch (Exception e)
             {
+                _logger.LogInformation(e.Message);
                 return false;
             }
         }
 
         public async Task<bool> SellStock(string socialSecurityNumber, string symbol, int number)
         {
-            int number1 = number;
             // Gets todays date
             string date = GetTodaysDate().ToString("yyyy-MM-dd");
 
@@ -131,11 +156,11 @@ namespace aksjeapp_backend.DAL
             {
                 await UpdatePortfolio(socialSecurityNumber);
                 var customer = await _db.Customers.FindAsync(socialSecurityNumber);
-                //var portfolio = _db.Portfolios
 
                 // Checks if customer exists
                 if (customer == null)
                 {
+                    _logger.LogInformation("Could not find customer in sell stock");
                     return false;
                 }
 
@@ -143,17 +168,23 @@ namespace aksjeapp_backend.DAL
                 var portfolio = await _db.Portfolios.FirstOrDefaultAsync(k => k.SocialSecurityNumber == socialSecurityNumber);
                 if (portfolio == null)
                 {
+                    _logger.LogInformation("Customer does not hava a portfolio");
                     return false;
                 }
 
-                var portfolioList = await _db.PortfolioList.FirstOrDefaultAsync(k => k.PortfolioId == portfolio.PortfolioId && k.Symbol == symbol);
+                var portfolioList = await _db.PortfolioList.FirstOrDefaultAsync(k =>
+                    k.PortfolioId == portfolio.PortfolioId && k.Symbol == symbol);
+                // Customer does not have any of this stock
                 if (portfolioList == null)
                 {
+                    _logger.LogInformation("Customer does not hava a stock from this particular stock");
                     return false;
                 }
+
                 // If we does not have enough of that stock
                 if (portfolioList.Amount < number)
                 {
+                    _logger.LogInformation("Customer does not have enough of this stock");
                     return false;
                 }
 
@@ -163,6 +194,7 @@ namespace aksjeapp_backend.DAL
                 // If we should get an error with the price it will return false and not complete the transaction
                 if (stockPrice.ClosePrice == 0)
                 {
+                    _logger.LogInformation("Stock price is 0 will not complete sell");
                     return false;
                 }
 
@@ -172,44 +204,40 @@ namespace aksjeapp_backend.DAL
                 var stockTransaction = new TransactionSold
                 {
                     Date = date,
-                    SocialSecurityNumber = socialSecurityNumber,
                     Symbol = symbol,
                     Amount = number,
                     TotalPrice = totalPrice
                 };
 
-                //customer.TransactionsSold.Add(stockTransaction);
-                await _db.TransactionsSold.AddAsync(stockTransaction);
+                customer.TransactionsSold.Add(stockTransaction);
                 customer.Balance += stockTransaction.TotalPrice;
 
                 await _db.SaveChangesAsync();
 
                 return true;
             }
-            catch
+            catch (Exception e)
             {
+                _logger.LogInformation(e.Message);
                 return false;
             }
-
         }
 
         public async Task<List<Stock>> ReturnSearchResults(string keyPhrase)
         {
             try
             {
-                if (keyPhrase.Equals(""))
-                {
-                    return null;
-                }
-
-                var stocks = await _db.Stocks
-                    .Where(k => k.Symbol.Contains(keyPhrase) || k.Name.ToUpper().Contains(keyPhrase) ||
-                                k.Country.ToUpper().Contains(keyPhrase) || k.Sector.ToUpper().Contains(keyPhrase))
+                var stocks = await _db.Stocks.Where(k =>
+                        k.Symbol.Contains(keyPhrase) ||
+                        k.Name.ToUpper().Contains(keyPhrase) ||
+                        k.Country.ToUpper().Contains(keyPhrase) ||
+                        k.Sector.ToUpper().Contains(keyPhrase))
                     .OrderBy(k => k.Name).ToListAsync();
                 return stocks;
             }
-            catch
+            catch (Exception e)
             {
+                _logger.LogInformation(e.Message);
                 return new List<Stock>();
             }
         }
@@ -221,10 +249,17 @@ namespace aksjeapp_backend.DAL
 
             if (customer == null)
             {
+                _logger.LogInformation("Customer does not exist");
+                return null;  
+            }
+            
+            if ((customer.TransactionsBought == null || customer.TransactionsSold == null))
+            {
                 return null;
             }
+
             // Lists all transactions that belongs to the owner
-            var transactionsfromDb = await _db.TransactionsBought.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
+            var transactionsfromDb = customer.TransactionsBought.ToList();
 
             var transactions = new List<Transaction>();
 
@@ -234,7 +269,7 @@ namespace aksjeapp_backend.DAL
                 var transaction1 = new Transaction
                 {
                     Id = transactionDB.BoughtId,
-                    SocialSecurityNumber = transactionDB.SocialSecurityNumber,
+                    SocialSecurityNumber = customer.SocialSecurityNumber,
                     Date = transactionDB.Date,
                     Symbol = transactionDB.Symbol,
                     Amount = transactionDB.Amount,
@@ -244,19 +279,19 @@ namespace aksjeapp_backend.DAL
                 {
                     transaction1.Awaiting = true;
                 }
-                transactions.Add(transaction1);
 
+                transactions.Add(transaction1);
             }
 
             // Lists all the transactions that is sold too, just as negative number
-            var transactionsfromDbSold = await _db.TransactionsSold.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
+            var transactionsfromDbSold = customer.TransactionsSold;
 
             foreach (var transactionDBSold in transactionsfromDbSold)
             {
                 var transaction1 = new Transaction
                 {
                     Id = -1,
-                    SocialSecurityNumber = transactionDBSold.SocialSecurityNumber,
+                    SocialSecurityNumber = customer.SocialSecurityNumber,
                     Date = transactionDBSold.Date,
                     Symbol = transactionDBSold.Symbol,
                     Amount = -transactionDBSold.Amount,
@@ -264,50 +299,44 @@ namespace aksjeapp_backend.DAL
                 };
 
                 transactions.Add(transaction1);
-
             }
-            return transactions;
 
+            return transactions;
         }
 
         public async Task<List<Transaction>> GetSpecificTransactions(string symbol)
         {
-            if (symbol != null)
+            if (symbol != "")
             {
                 var transactionsfromDb = await _db.TransactionsBought.Where(k => k.Symbol == symbol).ToListAsync();
                 var transactions = new List<Transaction>();
 
 
-                foreach (var transactionDB in transactionsfromDb)
+                foreach (var transactionDb in transactionsfromDb)
                 {
                     var transaction1 = new Transaction
                     {
-                        Id = transactionDB.BoughtId,
-                        SocialSecurityNumber = transactionDB.SocialSecurityNumber,
-                        Date = transactionDB.Date,
-                        Symbol = transactionDB.Symbol,
-                        Amount = transactionDB.Amount,
-                        TotalPrice = transactionDB.TotalPrice
-
+                        Id = transactionDb.BoughtId,
+                        Date = transactionDb.Date,
+                        Symbol = transactionDb.Symbol,
+                        Amount = transactionDb.Amount,
+                        TotalPrice = transactionDb.TotalPrice
                     };
                     transactions.Add(transaction1);
-
                 }
 
                 var transactionsfromDbSold = await _db.TransactionsSold.Where(k => k.Symbol == symbol).ToListAsync();
-                foreach (var transactionDB in transactionsfromDbSold)
+                foreach (var transactionDb in transactionsfromDbSold)
                 {
                     var transaction1 = new Transaction
                     {
-                        Id = transactionDB.SoldId,
-                        SocialSecurityNumber = transactionDB.SocialSecurityNumber,
-                        Date = transactionDB.Date,
-                        Symbol = transactionDB.Symbol,
-                        Amount = -transactionDB.Amount,
-                        TotalPrice = transactionDB.TotalPrice
+                        Id = transactionDb.SoldId,
+                        Date = transactionDb.Date,
+                        Symbol = transactionDb.Symbol,
+                        Amount = -transactionDb.Amount,
+                        TotalPrice = transactionDb.TotalPrice
                     };
                     transactions.Add(transaction1);
-
                 }
 
                 return transactions;
@@ -324,11 +353,14 @@ namespace aksjeapp_backend.DAL
             {
                 return null;
             }
-            var transactionfromDB = await _db.TransactionsBought.FindAsync(id);
+
+            var transactionfromDB = customer.TransactionsBought.Find(k => k.BoughtId == id);
+            
+            //Builds transaction object
             var transaction = new Transaction
             {
                 Id = transactionfromDB.BoughtId,
-                SocialSecurityNumber = transactionfromDB.SocialSecurityNumber,
+                SocialSecurityNumber = customer.SocialSecurityNumber,
                 Date = transactionfromDB.Date,
                 Symbol = transactionfromDB.Symbol,
                 Amount = transactionfromDB.Amount,
@@ -347,28 +379,31 @@ namespace aksjeapp_backend.DAL
                 {
                     return false;
                 }
+
                 var transaction = await _db.TransactionsBought.FindAsync(changeTransaction.Id);
-                if (transaction.Date.Equals(GetTodaysDate().ToString("yyyy-MM-dd")))
+                if (!transaction.Date.Equals(GetTodaysDate().ToString("yyyy-MM-dd")))
                 {
-                    //Removes transaction price from customers balance
-                    customer.Balance += transaction.TotalPrice;
-
-                    // Gets todays price for the new stock
-                    var stockPrice = await PolygonAPI.GetOpenClosePrice(changeTransaction.Symbol, GetTodaysDate().ToString("yyyy-MM-dd"));
-
-                    transaction.Symbol = changeTransaction.Symbol;
-                    transaction.Amount = changeTransaction.Amount;
-                    transaction.TotalPrice = stockPrice.ClosePrice * changeTransaction.Amount;
-
-                    customer.Balance -= transaction.TotalPrice;
-                    await _db.SaveChangesAsync();
-                    return true;
+                    return false;
                 }
+                //Removes transaction price from customers balance
+                customer.Balance += transaction.TotalPrice;
 
-                return false;
+                // Gets todays price for the new stock
+                var stockPrice = await PolygonAPI.GetOpenClosePrice(changeTransaction.Symbol,
+                    GetTodaysDate().ToString("yyyy-MM-dd"));
+
+                transaction.Symbol = changeTransaction.Symbol;
+                transaction.Amount = changeTransaction.Amount;
+                transaction.TotalPrice = stockPrice.ClosePrice * changeTransaction.Amount;
+
+                customer.Balance -= transaction.TotalPrice;
+                await _db.SaveChangesAsync();
+                return true;
+
             }
-            catch
+            catch (Exception e)
             {
+                _logger.LogInformation(e.Message);
                 return false;
             }
         }
@@ -378,43 +413,32 @@ namespace aksjeapp_backend.DAL
             try
             {
                 var customer = await _db.Customers.FindAsync(socialSecurityNumber);
-                if (customer != null)
+                if (customer == null)
                 {
-                    var transaction = _db.TransactionsBought.Find(id);
-
-                    //Returns if the transaction does not exist
-                    if (transaction == null)
-                    {
-                        return false;
-                    }
-
-                    // Deletes transaction that is still active
-                    if (transaction.Date.Equals(GetTodaysDate().ToString("yyyy-MM-dd")))
-                    {
-                        _db.TransactionsBought.Remove(transaction);
-                        customer.Balance += transaction.TotalPrice + 5; //Updates balance for customer and refunds brokerage fee
-                        await _db.SaveChangesAsync();
-                        return true;
-                    }
-                    else
-                    {
-                        _db.TransactionsBought.Remove(transaction);
-                        await _db.SaveChangesAsync();
-                        return true;
-                    }
+                    _logger.LogInformation("Customer is not in database");
+                    return false;
                 }
 
-                // If the customer is not in the database
+                var transaction = await _db.TransactionsBought.FindAsync(id);
+                
+                // Deletes transaction that is still active
+                if (transaction.Date.Equals(GetTodaysDate().ToString("yyyy-MM-dd")))
+                {
+                    _db.TransactionsBought.Remove(transaction);
+                    customer.Balance +=
+                        transaction.TotalPrice + 5; //Updates balance for customer and refunds brokerage fee
+                    await _db.SaveChangesAsync();
+                    return true;
+                }
                 return false;
             }
-            catch
+            catch(Exception e)
             {
+                _logger.LogInformation(e.Message);
                 return false;
             }
         }
-
-        // Might save to DB to save API calls to polygon
-        // StockChange for a single stock the last week
+        
         public async Task<StockChangeValue> StockChange(string symbol)
         {
             try
@@ -450,6 +474,7 @@ namespace aksjeapp_backend.DAL
                 {
                     return null;
                 }
+
                 List<Models.Results> results = stockPrice1.results;
 
                 double res1 = results[^1].ClosePrice;
@@ -466,9 +491,10 @@ namespace aksjeapp_backend.DAL
                     Value = results.Last().ClosePrice
                 };
 
-                var stockChange2 = await _db.StockChangeValues.FirstOrDefaultAsync(k => k.Symbol == symbol && k.Date == GetTodaysDate().ToString("yyyy-MM-dd"));
+                var stockChange2 = await _db.StockChangeValues.FirstOrDefaultAsync(k =>
+                    k.Symbol == symbol && k.Date == GetTodaysDate().ToString("yyyy-MM-dd"));
 
-                // Returns stockChange if its already in the database. If not it will access the API
+                // Returns stockChange if its already in the database.
                 if (stockChange2 != null)
                 {
                     return stockChange2;
@@ -479,10 +505,10 @@ namespace aksjeapp_backend.DAL
                 await _db.SaveChangesAsync();
 
                 return stockChange;
-
             }
-            catch
+            catch (Exception e)
             {
+                _logger.LogInformation(e.Message);
                 return null;
             }
         }
@@ -498,8 +524,6 @@ namespace aksjeapp_backend.DAL
                 foreach (var stock in stocks)
                 {
                     var myStock = await StockChange(stock.Symbol);
-                    if (myStock == null)
-                        continue;
                     var stockObject = new StockOverview()
                     {
                         Symbol = stock.Symbol,
@@ -512,41 +536,48 @@ namespace aksjeapp_backend.DAL
 
                 return list;
             }
-            catch
+            catch (Exception e)
             {
+                _logger.LogInformation(e.Message);
                 return null;
             }
         }
+
         private async Task<bool> UpdatePortfolio(string socialSecurityNumber)
         {
             try
             {
                 // Gets customer object from DB
-                var customerFromDB = await _db.Customers.FindAsync(socialSecurityNumber);
+                var customerFromDb = await _db.Customers.FindAsync(socialSecurityNumber);
 
-                if (customerFromDB == null)
+                if (customerFromDb == null)
                 {
                     return false;
                 }
+
                 // Gets transaction objects from DB
-                var transactionsBought = await _db.TransactionsBought.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
-                var transactionsSold = await _db.TransactionsSold.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
+                var transactionsBought = customerFromDb.TransactionsBought;
+                var transactionsSold = customerFromDb.TransactionsSold;
 
                 StockChangeValue stockChange;
 
-                var portfolio = await _db.Portfolios.FirstOrDefaultAsync(k => k.SocialSecurityNumber == socialSecurityNumber);
+                var portfolio =
+                    await _db.Portfolios.FirstOrDefaultAsync(k => k.SocialSecurityNumber == socialSecurityNumber);
                 // Initilizes a portfolio object if it does not exist
                 if (portfolio == null)
                 {
-                    portfolio = new Portfolio();
-                    portfolio.SocialSecurityNumber = socialSecurityNumber;
-                    customerFromDB.Portfolio = portfolio;
+                    portfolio = new Portfolio
+                    {
+                        SocialSecurityNumber = socialSecurityNumber
+                    };
+                    customerFromDb.Portfolio = portfolio;
                 }
 
                 // Resets portfolio value
                 portfolio.Value = 0;
-                var portfolioList = await _db.PortfolioList.Where(k => k.PortfolioId == portfolio.PortfolioId).ToListAsync();
-                
+                var portfolioList = await _db.PortfolioList.Where(k => k.PortfolioId == portfolio.PortfolioId)
+                    .ToListAsync();
+
                 // Initilizes a portfoliolist object if it does not exist
                 if (portfolioList == null)
                 {
@@ -574,7 +605,6 @@ namespace aksjeapp_backend.DAL
                     // Adds the first of this symbol to portfolio list
                     else
                     {
-
                         var portfolioItem = new PortfolioList()
                         {
                             Symbol = transaction.Symbol,
@@ -584,9 +614,9 @@ namespace aksjeapp_backend.DAL
                             PortfolioId = portfolio.PortfolioId,
                         };
                         portfolioList.Add(portfolioItem); // Adds the new portfolio item to the portfolio list. It will be added to the DB when we save later
-
                     }
                 }
+
                 portfolio.StockPortfolio = portfolioList;
 
                 // Subtracts the stocks from TransactionsSold
@@ -614,13 +644,14 @@ namespace aksjeapp_backend.DAL
                     portfolio.Value += stock.Value;
                 }
 
-                customerFromDB.Portfolio = portfolio;
+                customerFromDb.Portfolio = portfolio;
 
                 await _db.SaveChangesAsync();
                 return true;
             }
-            catch
+            catch (Exception e)
             {
+                _logger.LogInformation(e.Message);
                 return false;
             }
         }
@@ -632,23 +663,24 @@ namespace aksjeapp_backend.DAL
             {
                 // Return name, cumtomer info, combined list of transactions, total value of portfolio
 
-                var customerFromDB = await _db.Customers.FindAsync(socialSecurityNumber);
+                var customerFromDb = await _db.Customers.FindAsync(socialSecurityNumber);
 
-                if (customerFromDB == null)
+                if (customerFromDb == null)
                 {
+                    _logger.LogInformation("Customer not found");
                     return null;
                 }
 
-                var transactionsfromDB = await _db.TransactionsBought.Where(k => k.SocialSecurityNumber == socialSecurityNumber).ToListAsync();
+                var transactionsfromDb = customerFromDb.TransactionsBought;
                 List<Transaction> transactions = new List<Transaction>();
 
                 // Builds transaction list
-                foreach (var transactionDB in transactionsfromDB)
+                foreach (var transactionDB in transactionsfromDb)
                 {
                     var transaction1 = new Transaction
                     {
                         Id = transactionDB.BoughtId,
-                        SocialSecurityNumber = transactionDB.SocialSecurityNumber,
+                        SocialSecurityNumber = customerFromDb.SocialSecurityNumber,
                         Date = transactionDB.Date,
                         Symbol = transactionDB.Symbol,
                         Amount = transactionDB.Amount,
@@ -664,8 +696,10 @@ namespace aksjeapp_backend.DAL
                     return null;
                 }
 
-                var portfolio = await _db.Portfolios.FirstOrDefaultAsync(k => k.SocialSecurityNumber == socialSecurityNumber);
-                var portfolioList = await _db.PortfolioList.Where(k => k.PortfolioId == portfolio.PortfolioId).ToListAsync();
+                var portfolio =
+                    await _db.Portfolios.FirstOrDefaultAsync(k => k.SocialSecurityNumber == socialSecurityNumber);
+                var portfolioList = await _db.PortfolioList.Where(k => k.PortfolioId == portfolio.PortfolioId)
+                    .ToListAsync();
 
                 // Adds portfoliolist to portfolio
                 if (portfolio == null)
@@ -676,29 +710,29 @@ namespace aksjeapp_backend.DAL
                 {
                     portfolio.StockPortfolio = portfolioList;
                 }
+
                 //Converts Customers to Customer
                 var customer = new Customer()
                 {
-                    SocialSecurityNumber = customerFromDB.SocialSecurityNumber,
-                    FirstName = customerFromDB.FirstName,
-                    LastName = customerFromDB.LastName,
-                    Address = customerFromDB.Address,
-                    Balance = customerFromDB.Balance,
+                    SocialSecurityNumber = customerFromDb.SocialSecurityNumber,
+                    FirstName = customerFromDb.FirstName,
+                    LastName = customerFromDb.LastName,
+                    Address = customerFromDb.Address,
+                    Balance = customerFromDb.Balance,
                     Transactions = transactions,
-                    PostalCode = customerFromDB.PostalArea.PostalCode,
-                    PostCity = customerFromDB.PostalArea.PostCity,
+                    PostalCode = customerFromDb.PostalArea.PostalCode,
+                    PostCity = customerFromDb.PostalArea.PostCity,
                     Portfolio = portfolio
-
                 };
 
 
                 return customer;
             }
-            catch
+            catch (Exception e)
             {
+                _logger.LogInformation(e.Message);
                 return null;
             }
-
         }
 
         public async Task<List<StockChangeValue>> GetWinners()
@@ -724,20 +758,43 @@ namespace aksjeapp_backend.DAL
             var News = await PolygonAPI.GetNews(symbol);
             return News;
         }
+
         public async Task<string> GetStockName(string symbol)
         {
             var stock = await _db.Stocks.FindAsync(symbol);
             return stock == null ? "" : stock.Name;
         }
 
+        public async Task<bool> ChangePassword(User user)
+        {
+            try
+            {
+                var userFromDb = await _db.Users.FindAsync(user.Username);
+
+                byte[] salt = GenSalt();
+                byte[] password = GenHash(user.Password, salt);
+
+                userFromDb.Password = password;
+                userFromDb.Salt = salt;
+
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation(e.Message);
+                return false;
+            }
+        }
+
         public static byte[] GenHash(string password, byte[] salt)
         {
             return KeyDerivation.Pbkdf2(
-                                password: password,
-                                salt: salt,
-                                prf: KeyDerivationPrf.HMACSHA512,
-                                iterationCount: 1000,
-                                numBytesRequested: 32);
+                password: password,
+                salt: salt,
+                prf: KeyDerivationPrf.HMACSHA512,
+                iterationCount: 1000,
+                numBytesRequested: 32);
         }
 
         public static byte[] GenSalt()
@@ -766,12 +823,13 @@ namespace aksjeapp_backend.DAL
                 {
                     return true;
                 }
+
                 Console.WriteLine("return false");
                 return false;
             }
             catch (Exception e)
             {
-                Console.WriteLine("Catch");
+                _logger.LogInformation(e.Message);
                 return false;
             }
         }
@@ -782,21 +840,42 @@ namespace aksjeapp_backend.DAL
             //date1 = date.AddDays(-1)
 
 
-            var date = new DateTime(2022, 09, 20);  // Using fixed date since it takes a couple of minutes to get the stock change
+            var date = new DateTime(2022, 09,
+                20); // Using fixed date since it takes a couple of minutes to get the stock change
 
             // If day of week is a weekend then the last price if from friday
+            date = BackToFriday(date);
+
+            return date;
+        }
+
+        private static DateTime BackToFriday(DateTime date)
+        {
             if (date.DayOfWeek.Equals(DayOfWeek.Saturday))
             {
                 date = date.AddDays(-1);
             }
+
             if (date.DayOfWeek.Equals(DayOfWeek.Sunday))
             {
                 date = date.AddDays(-2);
             }
 
             return date;
-
         }
+        private static DateTime GoToMonday(DateTime date)
+        {
+            if (date.DayOfWeek.Equals(DayOfWeek.Saturday))
+            {
+                date = date.AddDays(2);
+            }
 
+            if (date.DayOfWeek.Equals(DayOfWeek.Sunday))
+            {
+                date = date.AddDays(1);
+            }
+
+            return date;
+        }
     }
 }

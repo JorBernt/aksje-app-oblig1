@@ -4,9 +4,12 @@ import Card from "../UI/Card/Card";
 import InputField from "../UI/Input/InputField";
 import Button from "../UI/Input/Button";
 import {UserData} from "../models";
+import {API} from "../../Constants";
+import {useNavigate} from "react-router-dom";
 
 
 const LoginPage = () => {
+    const navigate = useNavigate();
     const firstNameRef = React.createRef<HTMLInputElement>()
     const lastNameRef = React.createRef<HTMLInputElement>()
     const ssnRef = React.createRef<HTMLInputElement>()
@@ -29,6 +32,12 @@ const LoginPage = () => {
             postcity: String(pAddressRef.current?.value),
             password: String(passwordRef.current?.value)
         }
+
+        API.CLIENT.REGISTER_CUSTOMER(userData).then(response => {
+            if (response) {
+                navigate("/login")
+            }
+        })
         console.log(userData)
     }
     return (

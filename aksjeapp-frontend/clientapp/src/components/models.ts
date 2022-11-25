@@ -58,5 +58,8 @@ export interface UserData {
     firstname: string;
     lastname: string;
     ssn: string;
+    address?: string;
+    postalcode: number;
+    postaladdress: string;
     password: string;
 }

@@ -9,15 +9,20 @@ const EditPage = () => {
     const firstNameRef = React.createRef<HTMLInputElement>()
     const lastNameRef = React.createRef<HTMLInputElement>()
     const ssnRef = React.createRef<HTMLInputElement>()
+    const addressRef = React.createRef<HTMLInputElement>()
+    const pCodeRef = React.createRef<HTMLInputElement>()
+    const pAddressRef = React.createRef<HTMLInputElement>()
     const passwordRef = React.createRef<HTMLInputElement>()
     const handleOnClick = () => {
         const userData: UserData = {
             firstname: String(firstNameRef.current?.value),
             lastname: String(lastNameRef.current?.value),
             ssn: String(ssnRef.current?.value),
+            address: String(addressRef.current?.value),
+            postalcode: Number(pCodeRef.current?.value),
+            postaladdress: String(pAddressRef.current?.value),
             password: String(passwordRef.current?.value)
         }
-        console.log(userData)
         console.log(userData)
     }
     return (
@@ -30,6 +35,9 @@ const EditPage = () => {
                         <InputField type={"text"} label={"First Name"} ref={firstNameRef}/>
                         <InputField type={"text"} label={"Last Name"} ref={lastNameRef}/>
                         <InputField type={"text"} label={"SSN"} ref={ssnRef}/>
+                        <InputField type={"text"} label={"Address"} ref={addressRef}/>
+                        <InputField type={"number"} label={"Postal Code"} ref={pCodeRef}/>
+                        <InputField type={"text"} label={"Postal Address"} ref={pAddressRef}/>
                         <InputField type={"password"} label={"Password"} ref={passwordRef}/>
 
                         <div className="mt-4">

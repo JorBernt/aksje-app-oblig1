@@ -26,11 +26,20 @@ const TransactionContainer = (props: Props) => {
 
     useEffect(() => {
         fetch(API.STOCK.GET_SPECIFIC_TRANSACTIONS(props.symbol))
+            .then(response => {
+                if (!response.ok)
+                    throw new Error("Could not get transaction")
+                return response;
+            })
             .then(response => response.json()
                 .then(response => {
                     setTransactionView([...response])
-                }).catch(e => {
                 }))
+            .catch((ignore: Error) => ignore)
+            .catch((error: Error) => {
+                console.log(error.message)
+            })
+
     }, [props.symbol, props.reloadComponent])
 
 
@@ -55,15 +64,15 @@ const TransactionContainer = (props: Props) => {
                         transactionView.map((val) => {
                             counter++;
                             return counter % 2 !== 0 ?
-                                <div
-                                    className="hover:scale-105 hover:bg-gradient-to-br hover:from-white hover:to-gray-200 hover:rounded-lg rounded-lg transition duration-150 ease-in-out text-stock-preview-text-1 font-semibold">
+                                <div key={counter}
+                                     className="hover:scale-105 hover:bg-gradient-to-br hover:from-white hover:to-gray-200 hover:rounded-lg rounded-lg transition duration-150 ease-in-out text-stock-preview-text-1 font-semibold">
                                     <TransactionPreview transaction={val}/>
                                 </div> :
-                                <div
-                                    className="hover:scale-105 transition duration-150 ease-in-out bg-gradient-to-tl rounded-lg from-green-500 to-blue-700 text-stock-preview-text-2 font-semibold">
+                                <div key={counter}
+                                     className="hover:scale-105 transition duration-150 ease-in-out bg-gradient-to-tl rounded-lg from-green-500 to-blue-700 text-stock-preview-text-2 font-semibold">
                                     <TransactionPreview transaction={val}/>
                                 </div>
-                    })}
+                        })}
                 </div>
             </div>
         </>

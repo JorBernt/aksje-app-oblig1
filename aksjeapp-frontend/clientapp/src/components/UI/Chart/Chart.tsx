@@ -1,7 +1,7 @@
 import React from 'react';
 import {CartesianGrid, Line, LineChart, Tooltip, TooltipProps, XAxis, YAxis} from "recharts";
 import LoadingSpinner from "../LoadingSpinner";
-import {MappableData} from "../../StockViews/SingleStockView";
+import {MappableData} from "../../models";
 
 type Props = {
     data?: Array<MappableData>,

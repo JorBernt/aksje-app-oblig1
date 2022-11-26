@@ -29,6 +29,8 @@ const SearchBar: React.FC<Props> = () => {
         if (typeof query === "undefined")
             return
         setInput(query)
+        if (query === "")
+            return
         fetch(API.STOCK.SEARCH_RESULTS(query))
             .then(response => response.json()
                 .then(response => setSearchResult(() => [...response]))
@@ -50,10 +52,10 @@ const SearchBar: React.FC<Props> = () => {
                     role="menu" aria-orientation="vertical" aria-labelledby="menu-button">
                     {searchResult.length !== 0 &&
                         <div className="py-1" role="none">
-                            {searchResult.map(data => {
+                            {searchResult.map((data, index) => {
                                 return (
-                                    <div
-                                        className={"cursor-pointer flex flex-row justify-between hover:bg-gradient-to-br hover:from-white hover:to-gray-200 hover:rounded-lg transition duration-150 ease-in-out group hover:animate-pulse"}>
+                                    <div key={index}
+                                         className={"cursor-pointer flex flex-row justify-between hover:bg-gradient-to-br hover:from-white hover:to-gray-200 hover:rounded-lg transition duration-150 ease-in-out group hover:animate-pulse"}>
                                         <div onClick={() => handleOnClick(data)}
                                              className="text-gray-700 block px-4 py-2 text-sm hover:scale-105 truncate w-96 group-hover:font-bold"
                                              role="menuitem"

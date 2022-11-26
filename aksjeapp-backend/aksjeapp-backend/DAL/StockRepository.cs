@@ -841,15 +841,16 @@ namespace aksjeapp_backend.DAL
         {
             try
             {
-                var customerFromDb = await _db.Customers.FirstOrDefaultAsync(k => k.SocialSecurityNumber == customer.SocialSecurityNumber);
+                /*Console.WriteLine(customer.LastName);
+                var customerFromDb = await _db.Customers.FindAsync(customer.SocialSecurityNumber);
                 if (customerFromDb != null)
                 {
                     _logger.LogInformation("Customer already exists in database");
                     return false;
-                }
+                }*/
 
                 byte[] salt = GenSalt();
-                byte[] hash = GenHash("123", salt);
+                byte[] hash = GenHash("12345678", salt);
                 var user = new Users
                 {
                     Username = customer.SocialSecurityNumber,
@@ -857,16 +858,7 @@ namespace aksjeapp_backend.DAL
                     Password = hash
                 };
 
-                var postalArea = await _db.PostalAreas.FindAsync(customer.PostalCode);
                 
-                if (postalArea == null)
-                {
-                    postalArea = new PostalAreas
-                    {
-                        PostalCode = customer.PostalCode,
-                        PostCity = customer.PostCity
-                    };
-                }
 
                 var c = new Customers
                 {
@@ -875,8 +867,24 @@ namespace aksjeapp_backend.DAL
                     LastName = customer.LastName,
                     Address = customer.Address,
                     Balance = 0,
-                    PostalArea = postalArea
                 };
+                
+                var checkPostalArea = await _db.PostalAreas.FindAsync(customer.PostalCode);
+                
+                if (checkPostalArea == null)
+                {
+                    var postalArea = new PostalAreas
+                    {
+                        PostalCode = customer.PostalCode,
+                        PostCity = customer.PostCity
+                    };
+                    c.PostalArea = postalArea;
+                }
+                else
+                {
+                    c.PostalArea = checkPostalArea;
+                }
+                
                 await _db.Users.AddAsync(user);
                 await _db.Customers.AddAsync(c);
                 await _db.SaveChangesAsync();

@@ -379,6 +379,7 @@ public class StockController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> RegisterCustomer([FromBody] Customer customer)
     {
+        Console.WriteLine(customer.PostalCode);
         var returnOk = await _db.RegisterCustomer(customer);
         if (!returnOk)
         {

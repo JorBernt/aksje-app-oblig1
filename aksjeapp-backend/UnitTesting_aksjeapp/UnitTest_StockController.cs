@@ -1024,7 +1024,7 @@ namespace UnitTesting_aksjeapp
             //Act            
             var res = await _stockController.GetStockName(symbol) as BadRequestObjectResult;
 
-            Assert.Equal("Fault in input ", res.Value);
+            Assert.Equal("Fault in input", res.Value);
         }
 
         [Fact]

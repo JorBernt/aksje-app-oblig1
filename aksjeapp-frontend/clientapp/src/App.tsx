@@ -1,4 +1,4 @@
-import React, {createContext, useContext, useState} from 'react';
+import React, {createContext, useContext, useEffect, useState} from 'react';
 import './App.css';
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import LandingPage from "./components/Pages/LandingPage";
@@ -35,10 +35,12 @@ export const [useLoggedInContext, LoggedInContextProvider] = createCtx<LoggedInC
 function App() {
 
     const [loggedIn, setLoggedIn] = useState(false)
-    API.CLIENT.AUTHENTICATE_USER().then(response => {
-        if (response)
-            setLoggedIn(true)
-    })
+    useEffect(() => {
+        API.CLIENT.AUTHENTICATE_USER().then(response => {
+            if (response)
+                setLoggedIn(true)
+        })
+    }, [])
 
     return (
         <Router>

@@ -7,28 +7,39 @@ type Props = {
     reloadComponent: boolean
 }
 
-const TransactionContainer = (props: Props) => {
-    const testTransaction = [{
-        id: 0,
-        socialSecurityNumber: "",
-        date: "",
-        symbol: "",
-        amount: 0,
-        totalPrice: 0,
-        isActive: true,
-        awaiting: false
-    }];
+interface Transaction {
+    id: number,
+    socialSecurityNumber: string,
+    date: string,
+    symbol: string,
+    amount: number,
+    totalPrice: number,
+    isActive: boolean,
+    awaiting: boolean
+}
 
-    const [transactionView, setTransactionView] = useState(testTransaction);
+
+const TransactionContainer = (props: Props) => {
+
+
+    const [transactionView, setTransactionView] = useState<Transaction[]>([]);
 
     useEffect(() => {
         fetch(API.STOCK.GET_SPECIFIC_TRANSACTIONS(props.symbol))
+            .then(response => {
+                if (!response.ok)
+                    throw new Error("Could not get transaction")
+                return response;
+            })
             .then(response => response.json()
                 .then(response => {
-                    setTransactionView(p => [...response])
-                }).catch(e => {
-                    setTransactionView(testTransaction)
+                    setTransactionView([...response])
                 }))
+            .catch((ignore: Error) => ignore)
+            .catch((error: Error) => {
+                console.log(error.message)
+            })
+
     }, [props.symbol, props.reloadComponent])
 
 
@@ -53,15 +64,15 @@ const TransactionContainer = (props: Props) => {
                         transactionView.map((val) => {
                             counter++;
                             return counter % 2 !== 0 ?
-                                <div
-                                    className="hover:scale-105 hover:bg-gradient-to-br hover:from-white hover:to-gray-200 hover:rounded-lg rounded-lg transition duration-150 ease-in-out text-stock-preview-text-1 font-semibold">
+                                <div key={counter}
+                                     className="hover:scale-105 hover:bg-gradient-to-br hover:from-white hover:to-gray-200 hover:rounded-lg rounded-lg transition duration-150 ease-in-out text-stock-preview-text-1 font-semibold">
                                     <TransactionPreview transaction={val}/>
                                 </div> :
-                                <div
-                                    className="hover:scale-105 transition duration-150 ease-in-out bg-gradient-to-tl rounded-lg from-green-500 to-blue-700 text-stock-preview-text-2 font-semibold">
+                                <div key={counter}
+                                     className="hover:scale-105 transition duration-150 ease-in-out bg-gradient-to-tl rounded-lg from-green-500 to-blue-700 text-stock-preview-text-2 font-semibold">
                                     <TransactionPreview transaction={val}/>
                                 </div>
-                    })}
+                        })}
                 </div>
             </div>
         </>

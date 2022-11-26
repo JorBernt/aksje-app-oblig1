@@ -1,4 +1,4 @@
-import {User, UserData} from "./components/models";
+import {StockData, User, UserData} from "./components/models";
 
 export const DATE_TODAY = new Date().toLocaleDateString("nb-NO").replace("/", "-");
 
@@ -12,8 +12,17 @@ export const API = {
     STOCK: {
         GET_ALL_STOCKS: stockURL + "GetAllStocks",
         GET_STOCK_PRICES:
-            (symbol: string, fromDate: string, toDate: string): string => {
-                return `${stockURL}GetStockPrices?symbol=${symbol}&fromDate=${fromDate}&toDate=${toDate}`
+            async (symbol: string, fromDate: string, toDate: string): Promise<StockData> => {
+                return await fetch(`${stockURL}GetStockPrices?symbol=${symbol}&fromDate=${fromDate}&toDate=${toDate}`)
+                    .then(response => {
+                        if (!response.ok)
+                            throw new Error("Could not fetch stock prices")
+                        return response;
+                    })
+                    .then(response => response.json())
+                    .catch((error: Error) => {
+                        console.log(error.message)
+                    })
             },
         BUY_STOCK:
             (symbol: string, number: number): string => {
@@ -89,15 +98,15 @@ export const API = {
                 return error;
             }
         },
-        AUTHENTICATE_USER: async (): Promise<boolean | unknown> => {
+        AUTHENTICATE_USER: async (): Promise<boolean> => {
             try {
                 const response = await fetch(`${stockURL}IsLoggedIn`, {
                     method: "GET",
                     credentials: 'include',
                 });
-                return response.status === 200;
-            } catch (error: unknown) {
-                return error;
+                return response.text().then(t => t === "true")
+            } catch (ignore) {
+                return false;
             }
         },
         LOGOUT: async (): Promise<boolean | unknown> => {

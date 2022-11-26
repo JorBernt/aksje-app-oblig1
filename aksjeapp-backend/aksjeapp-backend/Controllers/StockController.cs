@@ -1,6 +1,7 @@
 ﻿using System.Text.RegularExpressions;
 using aksjeapp_backend.DAL;
 using aksjeapp_backend.Models;
+using Castle.Core.Internal;
 using Microsoft.AspNetCore.Mvc;
 
 namespace aksjeapp_backend.Controller;
@@ -121,9 +122,9 @@ public class StockController : ControllerBase
 
     public async Task<ActionResult> SearchResults(string keyPhrase)
     {
-        if (keyPhrase == "")
+        if (keyPhrase.IsNullOrEmpty())
         {
-            return BadRequest("KeyPhrase is empty");
+            return Ok(new List<Stock>());
         }
 
         var searchReults = await _db.ReturnSearchResults(keyPhrase.ToUpper());
@@ -158,7 +159,7 @@ public class StockController : ControllerBase
             if (transactions.Count <= 0)
             {
                 _logger.LogInformation("No transactions");
-                return BadRequest("No transactions");
+                return Ok(null);
             }
 
             return Ok(transactions);
@@ -398,9 +399,9 @@ public class StockController : ControllerBase
     {
         if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
         {
-            return Unauthorized();
+            return Ok(false);
         }
 
-        return Ok();
+        return Ok(true);
     }
 }

@@ -47,16 +47,11 @@ const TransactionContainer = (props: Props) => {
                 <hr className="border-black pb-1 "/>
                 <div className="w-full px-5 h-[14.25rem] scroll max-h-screen overflow-y-auto
                 scrollbar scrollbar-track-white scrollbar-thumb-rounded-3xl scrollbar-thin scrollbar-thumb-blue-700 ">
-                    {transactionView.map((val) => {
-                        counter++;
-                        if (val.socialSecurityNumber.length === 0)
-                            return (
-                                <>
-                                    <p className="text-center">No transactions to show.</p>
-                                </>
-                            )
-
-                        else
+                    {transactionView.length === 0 ?
+                        <p className="text-center">No transactions to show.</p>
+                        :
+                        transactionView.map((val) => {
+                            counter++;
                             return counter % 2 !== 0 ?
                                 <div
                                     className="hover:scale-105 hover:bg-gradient-to-br hover:from-white hover:to-gray-200 hover:rounded-lg rounded-lg transition duration-150 ease-in-out text-stock-preview-text-1 font-semibold">

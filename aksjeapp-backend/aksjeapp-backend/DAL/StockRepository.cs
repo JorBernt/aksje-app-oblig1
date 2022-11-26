@@ -841,13 +841,12 @@ namespace aksjeapp_backend.DAL
         {
             try
             {
-                /*Console.WriteLine(customer.LastName);
                 var customerFromDb = await _db.Customers.FindAsync(customer.SocialSecurityNumber);
                 if (customerFromDb != null)
                 {
                     _logger.LogInformation("Customer already exists in database");
                     return false;
-                }*/
+                }
 
                 byte[] salt = GenSalt();
                 byte[] hash = GenHash("12345678", salt);
@@ -896,6 +895,44 @@ namespace aksjeapp_backend.DAL
             }
 
             return true;
+        }
+
+        public async Task<bool> UpdateCustomer(Customer customer)
+        {
+            try
+            {
+                var customerFromDb = await _db.Customers.FindAsync(customer.SocialSecurityNumber);
+                //Checks if customer exits
+                if (customerFromDb == null)
+                {
+                    return false;
+                }
+
+                var checkPostalArea = customerFromDb.PostalArea;
+
+                // If postal code is changed
+                if (!checkPostalArea.PostalCode.Equals(customer.PostalCode))
+                {
+                    var postalArea = new PostalAreas
+                    {
+                        PostalCode = customer.PostalCode,
+                        PostCity = customer.PostCity
+                    };
+                    customerFromDb.PostalArea = postalArea;
+                }
+
+                customerFromDb.FirstName = customer.FirstName;
+                customerFromDb.LastName = customer.LastName;
+                customerFromDb.Address = customer.Address;
+
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation(e.Message);
+                return false;
+            }
         }
 
         public static DateTime GetTodaysDate()

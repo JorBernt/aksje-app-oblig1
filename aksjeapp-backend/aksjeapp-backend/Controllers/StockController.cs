@@ -354,6 +354,42 @@ public class StockController : ControllerBase
         _logger.LogInformation("Username or password does not correspond with regex");
         return BadRequest("Fault in input");
     }
+    [HttpPost]
+    public async Task<ActionResult> RegisterCustomer([FromBody] Customer customer)
+    {
+        var returnOk = await _db.RegisterCustomer(customer);
+        if (!returnOk)
+        {
+            _logger.LogInformation("Fault in registerCustomer");
+            return BadRequest("Fault in registerCustomer");
+        }
+        return Ok("Customer registered");
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> UpdateCustomer([FromBody] Customer customer)
+    {
+        if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
+        {
+            return Unauthorized();
+        }
+        
+        if (ModelState.IsValid)
+        {
+            bool returOk = await _db.UpdateCustomer(customer);
+            if (!returOk)
+            {
+                _logger.LogInformation("Customer not updated");
+                return BadRequest("Customer not updated");
+            }
+
+            return Ok("Customer updated");
+        }
+
+        _logger.LogInformation("Input not valid in Update cutomer");
+        return BadRequest("Fault in input");
+    }
+
 
     [HttpPost]
     public async Task<ActionResult> LogIn([FromBody] User user)
@@ -376,19 +412,7 @@ public class StockController : ControllerBase
         return BadRequest("Fault in input");
     }
     
-    [HttpPost]
-    public async Task<ActionResult> RegisterCustomer([FromBody] Customer customer)
-    {
-        Console.WriteLine(customer.PostalCode);
-        var returnOk = await _db.RegisterCustomer(customer);
-        if (!returnOk)
-        {
-            _logger.LogInformation("Fault in registerCustomer");
-            return BadRequest("Fault in registerCustomer");
-        }
-        return Ok("Customer registered");
-    }
-
+    
     public ActionResult LogOut()
     {
         HttpContext.Session.SetString(_loggedIn, "");

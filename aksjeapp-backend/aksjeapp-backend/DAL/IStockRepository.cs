@@ -23,6 +23,7 @@ public interface IStockRepository
     Task<News> GetNews(string symbol);
     Task<string> GetStockName(string symbol);
     Task<bool> RegisterCustomer(Customer customer);
+    Task<bool> UpdateCustomer(Customer customer);
     Task<bool> ChangePassword(User user);
     Task<bool> LogIn(User user);
 }

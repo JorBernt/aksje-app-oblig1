@@ -369,7 +369,8 @@ public class StockController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> UpdateCustomer([FromBody] Customer customer)
     {
-        if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn)))
+        var socialSecurityNumber = HttpContext.Session.GetString(_loggedIn);
+        if (string.IsNullOrEmpty(socialSecurityNumber) || customer.SocialSecurityNumber.Equals(socialSecurityNumber))
         {
             return Unauthorized();
         }
@@ -388,6 +389,56 @@ public class StockController : ControllerBase
 
         _logger.LogInformation("Input not valid in Update cutomer");
         return BadRequest("Fault in input");
+    }
+
+    public async Task<ActionResult> Deposit(double amount)
+    {
+        var socialSecurityNumber = HttpContext.Session.GetString(_loggedIn);
+        if (string.IsNullOrEmpty(socialSecurityNumber))
+        {
+            return Unauthorized();
+        }
+
+        if (amount <= 0)
+        {
+            _logger.LogInformation("Depositet negatice amount");
+            return BadRequest("Cannot deposit negative or 0");
+        }
+
+        var returnOk = await _db.Deposit(socialSecurityNumber,amount);
+        if (!returnOk)
+        {
+            _logger.LogInformation("Amount not deposited");
+            return BadRequest("Amount not deposited");
+        }
+
+        return Ok("Amount deposited");
+
+    }
+    
+    public async Task<ActionResult> Withdraw(double amount)
+    {
+        var socialSecurityNumber = HttpContext.Session.GetString(_loggedIn);
+        if (string.IsNullOrEmpty(socialSecurityNumber))
+        {
+            return Unauthorized();
+        }
+
+        if (amount <= 0)
+        {
+            _logger.LogInformation("Withdrawn negative amount");
+            return BadRequest("Cannot withdraw negative or 0");
+        }
+
+        var returnOk = await _db.Withdraw(socialSecurityNumber,amount);
+        if (!returnOk)
+        {
+            _logger.LogInformation("Amount not withdrawn");
+            return BadRequest("Amount not withdrawn");
+        }
+
+        return Ok("Amount withdrawn");
+
     }
 
 

@@ -789,54 +789,8 @@ namespace aksjeapp_backend.DAL
                 return false;
             }
         }
-
-        public static byte[] GenHash(string password, byte[] salt)
-        {
-            return KeyDerivation.Pbkdf2(
-                password: password,
-                salt: salt,
-                prf: KeyDerivationPrf.HMACSHA512,
-                iterationCount: 1000,
-                numBytesRequested: 32);
-        }
-
-        public static byte[] GenSalt()
-        {
-            var csp = RandomNumberGenerator.Create();
-            var salt = new byte[24];
-            csp.GetBytes(salt);
-            return salt;
-        }
-
-        public async Task<bool> LogIn(User user)
-        {
-            try
-            {
-                var userFound = await _db.Users.FirstOrDefaultAsync(k => k.Username == user.Username);
-
-                if (userFound == null)
-                {
-                    return false;
-                }
-
-                byte[] hash = GenHash(user.Password, userFound.Salt);
-                bool ok = hash.SequenceEqual(userFound.Password);
-
-                if (ok)
-                {
-                    return true;
-                }
-
-                Console.WriteLine("return false");
-                return false;
-            }
-            catch (Exception e)
-            {
-                _logger.LogInformation(e.Message);
-                return false;
-            }
-        }
-
+        
+        
         public async Task<bool> RegisterCustomer(Customer customer)
         {
             try
@@ -935,6 +889,105 @@ namespace aksjeapp_backend.DAL
             }
         }
 
+        public async Task<bool> Deposit(string socialSecurityNumber ,double amount)
+        {
+            try
+            {
+                var customer = await _db.Customers.FindAsync(socialSecurityNumber);
+
+                if (customer == null)
+                {
+                    return false;
+                }
+
+                customer.Balance += amount;
+                await _db.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation(e.Message);
+                return false;
+            }
+        }
+        
+        public async Task<bool> Withdraw(string socialSecurityNumber ,double amount)
+        {
+            try
+            {
+                var customer = await _db.Customers.FindAsync(socialSecurityNumber);
+
+                if (customer == null)
+                {
+                    return false;
+                }
+
+                if (customer.Balance < amount)
+                {
+                    return false;
+                }
+                
+                customer.Balance -= amount;
+                await _db.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation(e.Message);
+                return false;
+            }
+        }
+        
+        
+
+        public static byte[] GenHash(string password, byte[] salt)
+        {
+            return KeyDerivation.Pbkdf2(
+                password: password,
+                salt: salt,
+                prf: KeyDerivationPrf.HMACSHA512,
+                iterationCount: 1000,
+                numBytesRequested: 32);
+        }
+
+        public static byte[] GenSalt()
+        {
+            var csp = RandomNumberGenerator.Create();
+            var salt = new byte[24];
+            csp.GetBytes(salt);
+            return salt;
+        }
+
+        public async Task<bool> LogIn(User user)
+        {
+            try
+            {
+                var userFound = await _db.Users.FirstOrDefaultAsync(k => k.Username == user.Username);
+
+                if (userFound == null)
+                {
+                    return false;
+                }
+
+                byte[] hash = GenHash(user.Password, userFound.Salt);
+                bool ok = hash.SequenceEqual(userFound.Password);
+
+                if (ok)
+                {
+                    return true;
+                }
+                
+                return false;
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation(e.Message);
+                return false;
+            }
+        }
+        
         public static DateTime GetTodaysDate()
         {
             //DateTime date1 = DateTime.Now;

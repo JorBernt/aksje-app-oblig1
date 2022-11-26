@@ -7,27 +7,29 @@ type Props = {
     reloadComponent: boolean
 }
 
-const TransactionContainer = (props: Props) => {
-    const testTransaction = [{
-        id: 0,
-        socialSecurityNumber: "",
-        date: "",
-        symbol: "",
-        amount: 0,
-        totalPrice: 0,
-        isActive: true,
-        awaiting: false
-    }];
+interface Transaction {
+    id: number,
+    socialSecurityNumber: string,
+    date: string,
+    symbol: string,
+    amount: number,
+    totalPrice: number,
+    isActive: boolean,
+    awaiting: boolean
+}
 
-    const [transactionView, setTransactionView] = useState(testTransaction);
+
+const TransactionContainer = (props: Props) => {
+
+
+    const [transactionView, setTransactionView] = useState<Transaction[]>([]);
 
     useEffect(() => {
         fetch(API.STOCK.GET_SPECIFIC_TRANSACTIONS(props.symbol))
             .then(response => response.json()
                 .then(response => {
-                    setTransactionView(p => [...response])
+                    setTransactionView([...response])
                 }).catch(e => {
-                    setTransactionView(testTransaction)
                 }))
     }, [props.symbol, props.reloadComponent])
 

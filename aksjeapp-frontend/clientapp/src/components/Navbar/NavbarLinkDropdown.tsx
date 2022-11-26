@@ -29,11 +29,13 @@ const NavbarLinkDropDown: React.FC<Props> = (props) => {
         <>
             <div className={"group"}>
                 <button
-                    className=" z-20 p-5 mx-5 group-hover:bg-gradient-to-tl group-hover:from-gradient-start group-hover:to-gradient-end group-hover:scale-105 group-hover:text-white group-hover:rounded-xl rounded-xl  w-40 transition duration-300 ease-in-out "
+                    className=" z-30 p-5 mx-5 group-hover:bg-gradient-to-tl group-hover:from-gradient-start group-hover:to-gradient-end group-hover:scale-105 group-hover:text-white group-hover:rounded-xl rounded-xl  w-40 transition duration-300 ease-in-out "
                     onClick={() => handleOnClick(props.links[0])}
                 >
                     <div className="flex w-fill justify-center gap-2">
-                        <p className="text-xl text-center ">{props.texts[0]}</p>
+                        <p className="text-xl text-center ">
+                            {props.texts[0]}
+                        </p>
                         <svg
                             className="svg-icon w-6 group-hover:rotate-180 transition-all easy-in-out hover:delay-200 duration-300 group-hover:fill-white"
                             viewBox="0 0 20 20">
@@ -44,25 +46,26 @@ const NavbarLinkDropDown: React.FC<Props> = (props) => {
                 </button>
                 <div>
                     <button
-                        className={`z-10 group-hover:delay-200 absolute opacity-0 group/2 group-hover:opacity-100 pt-0 group-hover:pt-6 z-0 transition-all  bg-gradient-to-t from-gray-${props.links.length > 2 ? '200' : '300'} hover:to-transparent to-transparent ease-in-out p-5 mx-5  hover:text-white hover:rounded-xl rounded-xl  w-40 transition duration-300 ease-in-out ` + (`hover:from-${props.color}-200 hover:shadow-${props.color}-200`)}
+                        className={`z-40 group-hover:delay-200 absolute opacity-0 group/2 group-hover:opacity-100 pt-0 group-hover:pt-6 z-0 transition-all  bg-gradient-to-t from-gray-${props.links.length > 2 ? '200' : '300'} hover:to-transparent to-transparent ease-in-out p-5 mx-5  hover:text-white hover:rounded-xl rounded-xl  w-40 transition duration-300 ease-in-out ` + (`hover:from-${props.color}-200 hover:shadow-${props.color}-200`)}
                         onClick={() => handleOnClick(props.links[1])}>
-                        <p className="group-hover/2:text-green-400 opacity-0 group-hover:opacity-100 group-hover:delay-200 group-hover/2:scale-110 text-xl text-center text-black transition-all ease-in-out">{props.texts[1]}</p>
+                        <p className="group-hover/2:text-green-400 opacity-0 group-hover:opacity-100 group-hover:delay-200 group-hover/2:scale-110 text-xl text-center text-black transition-all ease-in-out">
+                            {props.texts[1]}
+                        </p>
                     </button>
                 </div>
 
                 {props.texts.length > 2 &&
                     <div>
-
                         <button
-
-                            className={"absolute group-hover:delay-200 opacity-0 group-hover:opacity-100 pt-0 group/2 group-hover:pt-[5.2rem] z-0 transition-all  bg-gradient-to-t from-gray-300 hover:to-transparent to-transparent ease-in-out p-5 mx-5  hover:text-white hover:rounded-xl rounded-xl shadow-xl w-40 transition duration-300 ease-in-out " + (`hover:from-${props.color}-200 hover:shadow-${props.color}-200`)}
+                            className={"z-0 absolute group-hover:delay-200 opacity-0 group-hover:opacity-100 pt-0 group/2 group-hover:pt-[5.2rem] z-0 transition-all  bg-gradient-to-t from-gray-300 hover:to-transparent to-transparent ease-in-out p-5 mx-5  hover:text-white hover:rounded-xl rounded-xl shadow-xl w-40 transition duration-300 ease-in-out " + (`hover:from-${props.color}-200 hover:shadow-${props.color}-200`)}
                             onClick={() => handleOnClick(props.links[2])}>
                             <div className={"w-fill flex justify-center"}>
                                 <div
                                     className={"opacity-0 group-hover:opacity-100 w-1 group-hover:w-24 h-[0.05rem] bg-black -mt-4 transition-all ease-in-out group-hover:delay-500 duration-500"}></div>
                             </div>
-                            <p className="group-hover/2:text-red-500 opacity-0 group-hover:opacity-100 group-hover:delay-400 group-hover/2:scale-110 text-xl text-center text-black transition ease-in-out">{props.texts[2]}</p>
-
+                            <p className="group-hover/2:text-red-500 opacity-0 group-hover:opacity-100 group-hover:delay-400 group-hover/2:scale-110 text-xl text-center text-black transition ease-in-out">
+                                {props.texts[2]}
+                            </p>
                         </button>
                     </div>
                 }

@@ -16,13 +16,12 @@ const TransactionsView: React.FC<Props> = (props) => {
     //const isVisible = true;
 
     const loadAllTransactions = () => {
-        fetch(API.STOCK.GET_ALL_TRANSACTIONS, {credentials: 'include',})
+        fetch(API.STOCK.GET_ALL_TRANSACTIONS, {credentials: 'include',}).then(response => {
+            if (!response.ok)
+                throw new Error("Could not load transactions")
+            return response
+        })
             .then(response => response.json()
-                .then(response => {
-                    if (!response.ok)
-                        throw new Error("Could not load transactions")
-                    return response
-                })
                 .then(response => {
                     setTransactionView(p => [...response])
                     for (let i = 0; i < transactionView.length; i++) {

@@ -73,7 +73,7 @@ const InputField: React.FC<Props> = React.forwardRef<HTMLInputElement, Props>((p
                            style={{outline: "none"}} ref={ref}
                            onKeyDown={(event => props.onKeyDown && props.onKeyDown(event.key))}
                            onChange={handleChange}
-                           value={values.password}>
+                           value={props.type === "password" ? values.password : value}/>
 
                     {
                         <div className="-mr-12">
@@ -86,7 +86,6 @@ const InputField: React.FC<Props> = React.forwardRef<HTMLInputElement, Props>((p
                     }
                 </div>
                 <p style={{color: 'red'}}>{message}</p>
-
             </div>
         </>
     )

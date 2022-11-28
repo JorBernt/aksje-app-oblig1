@@ -73,18 +73,15 @@ const SingleStockView: React.FC<Props> = (props) => {
                 }
                 {!loading &&
                     <>
-                        <div className="grid grid-rows-3 grid-cols-3 mt-5 h-[14rem]">
+                        <div className="grid grid-rows-3 grid-cols-3 mt-5 pt-10 h-[14rem]">
                             <DataDisplay title={"Symbol"} content={stockData?.name}></DataDisplay>
                             <DataDisplay title={"Last"} content={stockData?.last}></DataDisplay>
                             <DataDisplay title={"Today %"} content={stockData?.change.toFixed(2) + "%"}
                                          color={colorHandler(stockData?.change)}></DataDisplay>
                             <DataDisplay title={"Today +/-"} content={stockData?.todayDifference.toFixed(2)}
                                          color={colorHandler(stockData?.todayDifference)}></DataDisplay>
-                            <DataDisplay title={"Buy"} content={"TBA"}></DataDisplay>
-                            <DataDisplay title={"Sell"} content={"TBA"}></DataDisplay>
                             <DataDisplay title={"High"} content={stockData?.high}></DataDisplay>
                             <DataDisplay title={"Low"} content={stockData?.low}></DataDisplay>
-                            <DataDisplay title={"Turnover"} content={stockData?.turnover}></DataDisplay>
                         </div>
                     </>
                 }

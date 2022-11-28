@@ -44,7 +44,7 @@ const ProfileInfoContainer: React.FC<Props> = (props) => {
             {
                 !profileInfo &&
                 <>
-                    <div className="flex justify-center items-center h-80">
+                    <div className="flex justify-center items-center w-full h-full">
                         <h2>No profile data</h2>
                     </div>
                 </>

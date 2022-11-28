@@ -764,6 +764,14 @@ namespace aksjeapp_backend.DAL
         public async Task<News> GetNews(string symbol)
         {
             var News = await PolygonAPI.GetNews(symbol);
+            foreach (var n in News.Results)
+            {
+                var date = n.Date.Split('T')[0];
+                var time = n.Date.Split('T')[1];
+                var newTime = time.Remove(time.Length - 4);
+                n.Date = date + "  " + newTime;
+
+            }
             return News;
         }
 

@@ -1420,8 +1420,111 @@ namespace UnitTesting_aksjeapp
 
             //Assert
             Assert.Equal((int) HttpStatusCode.OK, result.StatusCode);
-            Assert.False((bool)result.Value);
+            Assert.False((bool) result.Value);
         }
+
+        [Fact]
+        public async Task Deposit_LoggedIn()
+        {
+            //Arrange
+            double amount = 10000;
+            string socialSecurityNumber = "12345678910";
+            
+            
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            MockRep.Setup(k => k.Deposit(socialSecurityNumber, amount)).ReturnsAsync(true);
+            
+            //Act
+            var result = await _stockController.Deposit(amount) as OkObjectResult;
+            
+            //Assert
+            Assert.Equal("Amount deposited", result.Value);
+
+        }
+        
+        [Fact]
+        public async Task Deposit_Fault_LoggedIn()
+        {
+            //Arrange
+            string socialSecurityNumber = "12345678910";
+            double amount = 10000;
+            
+            
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            MockRep.Setup(k => k.Deposit(It.IsAny<string>(), It.IsAny<double>())).ReturnsAsync(false);
+            
+            //Act
+            var result = await _stockController.Deposit(amount) as BadRequestObjectResult;
+            
+            //Assert
+            Assert.Equal("Amount not deposited", result.Value);
+
+        }
+        
+        [Fact]
+        public async Task Deposit_NegativeAmount_LoggedIn()
+        {
+            //Arrange
+            string socialSecurityNumber = "12345678910";
+            double amount = -10000;
+            
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            var result = await _stockController.Deposit(amount) as BadRequestObjectResult;
+            
+            //Assert
+            Assert.Equal("Cannot deposit negative or 0", result.Value);
+
+        }
+        
+        [Fact]
+        public async Task Deposit_Zero_LoggedIn()
+        {
+            //Arrange
+            string socialSecurityNumber = "12345678910";
+            double amount = 0;
+            
+            
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            var result = await _stockController.Deposit(amount) as BadRequestObjectResult;
+            
+            //Assert
+            Assert.Equal("Cannot deposit negative or 0", result.Value);
+
+        }
+        
+        [Fact]
+        public async Task Deposit_NotLoggedIn()
+        {
+            //Arrange
+
+
+            mockSession[_loggedIn] = "";
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            var result = await _stockController.Deposit(It.IsAny<double>()) as UnauthorizedResult;
+            
+            //Assert
+            Assert.Equal((int) HttpStatusCode.Unauthorized, result.StatusCode);
+
+        }
+        
+        
 
     }
 }

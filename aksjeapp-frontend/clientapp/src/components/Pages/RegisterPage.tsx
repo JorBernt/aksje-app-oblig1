@@ -23,6 +23,15 @@ const LoginPage = () => {
             console.log("Passwords don't match!")
             return;
         }
+        if (String(firstNameRef.current?.value) === "" ||
+            String(lastNameRef.current?.value) === "" ||
+            String(addressRef.current?.value) === "" ||
+            String(pCodeRef.current?.value) === "" ||
+            String(pAddressRef.current?.value) === "" ||
+            String(passwordRef.current?.value) === "") {
+            return;
+        }
+        console.log(pCodeRef.current?.value)
         const userData: UserData = {
             firstname: String(firstNameRef.current?.value),
             lastname: String(lastNameRef.current?.value),
@@ -38,7 +47,6 @@ const LoginPage = () => {
                 navigate("/login")
             }
         })
-        console.log(userData)
     }
     return (
         <>

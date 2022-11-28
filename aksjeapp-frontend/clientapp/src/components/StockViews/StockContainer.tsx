@@ -42,7 +42,7 @@ const StockContainer = (props: Props) => {
     }, [props.data, props.API])
     let counter: number = 0;
     const headers = "text-stock-preview-text-1 grid px-5 " + (props.showAmount ? "grid-cols-5" : "grid-cols-4");
-    const className = "w-max px-5 scroll max-h-screen overflow-y-auto scrollbar scrollbar-track-white scrollbar-thumb-rounded-3xl scrollbar-thin scrollbar-thumb-blue-700 " + props.height;
+    const className = "w-full px-5 scroll max-h-screen overflow-y-auto scrollbar scrollbar-track-white scrollbar-thumb-rounded-3xl scrollbar-thin scrollbar-thumb-blue-700 " + props.height;
     return (
         <>
             <div className="justify-center flex-row px-0 min-w-max">
@@ -72,7 +72,7 @@ const StockContainer = (props: Props) => {
                                 <p className={"w-96 flex justify-center mt-48 text-6xl"}>ERROR!</p>
                             }
                             {showLoading && !error &&
-                                <div className="flex justify-center items-center w-64 h-48">
+                                <div className="flex justify-center items-center w-full h-full">
                                     <LoadingSpinner/>
                                 </div>
                             }

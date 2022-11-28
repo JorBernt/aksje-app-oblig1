@@ -1,6 +1,9 @@
 import {IconButton} from "@material-ui/core";
-import {Visibility, VisibilityOff} from "@material-ui/icons";
 import React, {useEffect, useState} from "react";
+
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
+
 
 type Props = {
     type: string,
@@ -21,10 +24,7 @@ const InputField: React.FC<Props> = React.forwardRef<HTMLInputElement, Props>((p
     }, [props.initVal])
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-
         setMessage(event.target.value);
-        console.log(event.target.value);
-        console.log(props.label)
         setValues({password: event.target.value, showPassword: values.showPassword});
 
         setValue(event.target.value);
@@ -62,6 +62,7 @@ const InputField: React.FC<Props> = React.forwardRef<HTMLInputElement, Props>((p
     const handleClickShowPassword = () => {
         setValues({...values, showPassword: !values.showPassword});
     };
+
     return (
         <>
             <div className="flex flex-col justify-between my-2 text-l mx-8">
@@ -73,16 +74,13 @@ const InputField: React.FC<Props> = React.forwardRef<HTMLInputElement, Props>((p
                            onKeyDown={(event => props.onKeyDown && props.onKeyDown(event.key))}
                            onChange={handleChange}
                            value={values.password}>
-                    </input>
 
                     {
-
-                        props.label === "Password" &&
                         <div className="-mr-12">
                             <IconButton
                                 onClick={handleClickShowPassword}
                             >
-                                {values.showPassword ? <Visibility/> : <VisibilityOff/>}
+                                {values.showPassword ? <VisibilityIcon/> : <VisibilityOffIcon/>}
                             </IconButton>
                         </div>
                     }
@@ -93,5 +91,4 @@ const InputField: React.FC<Props> = React.forwardRef<HTMLInputElement, Props>((p
         </>
     )
 })
-
 export default InputField;

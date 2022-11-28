@@ -135,6 +135,28 @@ export const API = {
             } catch (error: unknown) {
                 return error;
             }
+        },
+        WITHDRAW: async (amount: number): Promise<boolean | Error> => {
+            try {
+                const response = await fetch(`${stockURL}Withdraw?amount=${amount}`, {
+                    credentials: 'include',
+                });
+                return response.status === 200;
+            } catch (error) {
+                console.log("Withdraw", error)
+                return false
+            }
+        },
+        DEPOSIT: async (amount: number): Promise<boolean> => {
+            try {
+                const response = await fetch(`${stockURL}Deposit?amount=${amount}`, {
+                    credentials: 'include',
+                });
+                return response.status === 200;
+            } catch (error) {
+                console.log("Deposit", error)
+                return false
+            }
         }
     }
 }

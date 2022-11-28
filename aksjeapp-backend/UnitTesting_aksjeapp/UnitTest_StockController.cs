@@ -1392,6 +1392,38 @@ namespace UnitTesting_aksjeapp
         }
 
         [Fact]
+        public void IsLoggedIn_LoggedIn()
+        {
+            //Arrange
+            mockSession[_loggedIn] = "12345678910";
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            var result = _stockController.IsLoggedIn() as OkObjectResult;
+
+            //Assert
+            Assert.Equal((int) HttpStatusCode.OK, result.StatusCode);
+            Assert.True((bool)result.Value);
+        }
+
+        [Fact]
+        public void IsLoggedIn_NotLoggedIn()
+        {
+            //Arrange
+            mockSession[_loggedIn] = _notLoggedIn;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            var result = _stockController.IsLoggedIn() as OkObjectResult;
+
+            //Assert
+            Assert.Equal((int) HttpStatusCode.OK, result.StatusCode);
+            Assert.False((bool)result.Value);
+        }
+
+        [Fact]
         public async Task DeleteTransactionLoggedIn()
         {
             //Arrange
@@ -1403,7 +1435,7 @@ namespace UnitTesting_aksjeapp
             mockSession[_loggedIn] = socialSecurityNumber;
             mockHttpContext.Setup(k => k.Session).Returns(mockSession);
             _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
-            
+
             //Act
             var result = await _stockController.DeleteTransaction(id) as OkObjectResult;
 
@@ -1420,7 +1452,7 @@ namespace UnitTesting_aksjeapp
             mockSession[_loggedIn] = _notLoggedIn;
             mockHttpContext.Setup(k => k.Session).Returns(mockSession);
             _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
-            
+
             //Act
             var result = await _stockController.DeleteTransaction(It.IsAny<int>()) as UnauthorizedResult;
 
@@ -1440,7 +1472,7 @@ namespace UnitTesting_aksjeapp
             mockSession[_loggedIn] = socialSecurityNumber;
             mockHttpContext.Setup(k => k.Session).Returns(mockSession);
             _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
-            
+
             //Act
             var result = await _stockController.DeleteTransaction(id) as BadRequestObjectResult;
 

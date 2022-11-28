@@ -98,6 +98,22 @@ export const API = {
                 return error;
             }
         },
+        UPDATE_CUSTOMER: async (userData: UserData): Promise<boolean | unknown> => {
+            try {
+                const response = await fetch(`${stockURL}UpdateCustomer`, {
+                    method: "POST",
+                    credentials: 'include',
+                    headers: {
+                        "Content-Type": "application/json",
+                        'Access-Control-Allow-Headers': 'Content-Type, Authorization, Set-Cookie',
+                    },
+                    body: JSON.stringify(userData)
+                });
+                return response.status === 200;
+            } catch (error: unknown) {
+                return error;
+            }
+        },
         AUTHENTICATE_USER: async (): Promise<boolean> => {
             try {
                 const response = await fetch(`${stockURL}IsLoggedIn`, {

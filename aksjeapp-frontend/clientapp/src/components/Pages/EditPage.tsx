@@ -4,8 +4,11 @@ import Card from "../UI/Card/Card";
 import InputField from "../UI/Input/InputField";
 import Button from "../UI/Input/Button";
 import {UserData} from "../models";
+import {API} from "../../Constants";
+import {useNavigate} from "react-router-dom";
 
 const EditPage = () => {
+    const navigate = useNavigate();
     const firstNameRef = React.createRef<HTMLInputElement>()
     const lastNameRef = React.createRef<HTMLInputElement>()
     const ssnRef = React.createRef<HTMLInputElement>()
@@ -14,6 +17,16 @@ const EditPage = () => {
     const pAddressRef = React.createRef<HTMLInputElement>()
     const passwordRef = React.createRef<HTMLInputElement>()
     const handleOnClick = () => {
+
+        if (String(firstNameRef.current?.value) === "" ||
+            String(lastNameRef.current?.value) === "" ||
+            String(addressRef.current?.value) === "" ||
+            String(pCodeRef.current?.value) === "" ||
+            String(pAddressRef.current?.value) === "" ||
+            String(passwordRef.current?.value) === "") {
+            return;
+        }
+
         const userData: UserData = {
             firstname: String(firstNameRef.current?.value),
             lastname: String(lastNameRef.current?.value),
@@ -23,7 +36,12 @@ const EditPage = () => {
             postcity: String(pAddressRef.current?.value),
             password: String(passwordRef.current?.value)
         }
-        console.log(userData)
+
+        API.CLIENT.UPDATE_CUSTOMER(userData).then(response => {
+            if (response) {
+                navigate("/profile")
+            }
+        })
     }
     return (
         <>

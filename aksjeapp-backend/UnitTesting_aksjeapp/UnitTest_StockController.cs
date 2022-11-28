@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System.Net;
-using System.Net.Sockets;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Results = aksjeapp_backend.Models.Results;
 
 namespace UnitTesting_aksjeapp
@@ -78,7 +78,6 @@ namespace UnitTesting_aksjeapp
             Assert.Equal("Not found", result.Value);
         }
 
-        // GetStockPrices
         [Fact]
         public async Task GetStockPrices_Ok()
         {
@@ -120,11 +119,21 @@ namespace UnitTesting_aksjeapp
         }
 
         [Fact]
+        public async Task GetStockPrices_Empty()
+        {
+
+            MockRep.Setup(k => k.GetStockPrices(It.IsAny<string>(),It.IsAny<string>())).ReturnsAsync( () => null );
+
+            //Act
+            var result = await _stockController.GetStockPrices("AAPL", "2022-05-11") as BadRequestObjectResult;
+
+            //Assert
+            Assert.Equal("Not found", result.Value);
+        }
+
+        [Fact]
         public async Task GetStockPrices_EmptySymbol()
         {
-            //Arrange
-            
-
             //Act
             var result = await _stockController.GetStockPrices("", "2022-10-24") as BadRequestObjectResult;
 
@@ -136,8 +145,6 @@ namespace UnitTesting_aksjeapp
         [Fact]
         public async Task GetStockPrices_EmptyDate()
         {
-            //Arrange
-            //MockRep.Setup(k => k.GetStockPrices("AAPL", "")).ReturnsAsync(() => null);
 
             //Act
             var result = await _stockController.GetStockPrices("AAPL", "") as BadRequestObjectResult;
@@ -189,6 +196,30 @@ namespace UnitTesting_aksjeapp
             Assert.Equal((int)HttpStatusCode.BadRequest, result.StatusCode);
             Assert.Equal("Cannot buy negative amount of stock", result.Value);
         }
+
+        [Fact]
+        public async Task BuyStockLoggedInWrongInput()
+        {
+            //Arrange
+            var socialSecurityNumber = "12345678910";
+            var symbol = "A";
+            var amount = 10;
+
+
+            //MockRep.Setup(k => k.BuyStock(socialSecurityNumber, symbol.ToUpper(), amount)).ReturnsAsync(true);
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(s => s.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+
+            //Act
+            var result = await _stockController.BuyStock(symbol, amount) as BadRequestObjectResult;
+
+            //Assert
+            Assert.Equal((int)HttpStatusCode.BadRequest, result.StatusCode);
+            Assert.Equal("Fault in input", result.Value);
+        }
+
 
         [Fact]
         public async Task BuyStockNotLoggedIn()
@@ -244,6 +275,25 @@ namespace UnitTesting_aksjeapp
             
             //Assert
             Assert.Equal("Stock sold", result.Value);
+        }
+        [Fact]
+        public async Task SellStockLoggedInWrongInput()
+        {
+            //Arrange
+            var socialSecurityNumber = "12345678910";
+            var symbol = "A";
+            var amount = 10;
+
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            var result = await _stockController.SellStock(symbol, amount) as BadRequestObjectResult;
+
+            //Assert
+            Assert.Equal((int) HttpStatusCode.BadRequest, result.StatusCode);
+            Assert.Equal("Fault in input", result.Value);
         }
 
         [Fact]
@@ -348,14 +398,15 @@ namespace UnitTesting_aksjeapp
         [Fact]
         public async Task SearchResult_EmptyKeyPhrase()
         {
+            var stockList = new List<Stock>();
             //Arrange
-            MockRep.Setup(k => k.ReturnSearchResults("")).ReturnsAsync(() => null);
+            //MockRep.Setup(k => k.ReturnSearchResults("")).ReturnsAsync(() => null);
 
             //Act
-            var result = await _stockController.SearchResults("") as BadRequestObjectResult;
+            var result = await _stockController.SearchResults("") as OkObjectResult;
 
             //Assert
-            Assert.Equal("KeyPhrase is empty", result.Value);
+            Assert.Equal(stockList, result.Value);
         }
 
         [Fact]
@@ -524,6 +575,20 @@ namespace UnitTesting_aksjeapp
         }
 
         [Fact]
+        public async Task GetSpecificTransactions_WrongInput()
+        {
+            //Arrange
+            var symbol = "A";
+
+            //Act
+            var result = await _stockController.GetSpecificTransactions(symbol) as BadRequestObjectResult;
+
+            //Assert
+            Assert.Equal((int) HttpStatusCode.BadRequest, result.StatusCode);
+            Assert.Equal("Fault in input", result.Value);
+        }
+
+        [Fact]
         public async Task GetSpecificTransactions_Empty()
         {
             //Arrange
@@ -532,10 +597,10 @@ namespace UnitTesting_aksjeapp
             MockRep.Setup(k => k.GetSpecificTransactions(symbol)).ReturnsAsync(new List<Transaction>());
 
             //Act
-            var result = await _stockController.GetSpecificTransactions(symbol) as BadRequestObjectResult;
+            var result = await _stockController.GetSpecificTransactions(symbol) as OkObjectResult;
 
             //Assert
-            Assert.Equal("No transactions", result.Value);
+            Assert.Null(result.Value);
         }
 
 
@@ -603,10 +668,6 @@ namespace UnitTesting_aksjeapp
             Assert.Equal("Transaction does not exist", result.Value);
         }
 
-        //UpdateTransaction
-
-        //DeleteTransaction
-
         [Fact]
         public async Task StockChange_Ok()
         {
@@ -629,6 +690,19 @@ namespace UnitTesting_aksjeapp
 
             //Assert
             Assert.Equal(myStockChangeValue, result.Value);
+        }
+
+        [Fact]
+        public async Task StockChange_WrongInput()
+        {
+            //Arrange
+            var symbol = "A";
+
+            //Act
+            var result = await _stockController.StockChange(symbol) as BadRequestObjectResult;
+
+            //Assert
+            Assert.Equal("Fault in input", result.Value);
         }
 
         [Fact]
@@ -960,10 +1034,23 @@ namespace UnitTesting_aksjeapp
             var stockController = new StockController(MockRep.Object, MockLog.Object);
 
             //Act
-            var res = await stockController.GetNews("AAPL") as OkObjectResult;
+            var result = await stockController.GetNews("AAPL") as OkObjectResult;
 
             //Assert
-            Assert.Equal(myNewsList, res.Value);
+            Assert.Equal(myNewsList, result.Value);
+        }
+
+        [Fact]
+        public async Task GetNews_WrongInput()
+        {
+            //Arrange
+            var stockController = new StockController(MockRep.Object, MockLog.Object);
+
+            //Act
+            var result = await stockController.GetNews("A") as BadRequestObjectResult;
+
+            //Assert
+            Assert.Equal("Fault in input", result.Value);
         }
 
         [Fact]
@@ -1096,6 +1183,117 @@ namespace UnitTesting_aksjeapp
             //Assert
             Assert.Equal("Transaction not updated", result.Value);
         }
+
+
+        [Fact]
+        public async Task DeleteTransactionLoggedIn()
+        {
+            //Arrange
+            var socialSecurityNumber = "12345678910";
+            var id = 10;
+
+            MockRep.Setup(k => k.DeleteTransaction(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(true);
+
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            var result = await _stockController.DeleteTransaction(id) as OkObjectResult;
+
+            //Assert
+            Assert.Equal("Transaction deleted", result.Value);
+        }
+        [Fact]
+        public async Task DeleteTransactionNotLoggedIn()
+        {
+            //Arrange
+
+            MockRep.Setup(k => k.DeleteTransaction(It.IsAny<string>(), It.IsAny<int>())).ReturnsAsync(true);
+
+            mockSession[_loggedIn] = _notLoggedIn;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            var result = await _stockController.DeleteTransaction(It.IsAny<int>()) as UnauthorizedResult;
+
+            //Assert
+            Assert.Equal((int) HttpStatusCode.Unauthorized, result.StatusCode);
+        }
+
+        [Fact]
+        public async Task DeleteTransaction_Empty()
+        {
+            //Arrange
+            var socialSecurityNumber = "12345678910";
+            var id = 10;
+
+            MockRep.Setup(k => k.DeleteTransaction(socialSecurityNumber, id)).ReturnsAsync(false);
+
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            var result = await _stockController.DeleteTransaction(id) as BadRequestObjectResult;
+
+            //Assert
+            Assert.Equal("Transaction not deleted", result.Value);
+        }
+
+        [Fact]
+        public async Task RegisterCustomer_Ok()
+        {
+            var customer = new Customer
+            {
+                SocialSecurityNumber = "12345678910",
+                FirstName = "Jorgen",
+                LastName = "Berntsen",
+                Address = "Osloveien 47a",
+                Balance = 0,
+                PostalCode = "1234",
+                PostCity = "Oslo",
+
+            };
+
+            MockRep.Setup(k => k.RegisterCustomer(customer)).ReturnsAsync(true);
+            var results = await _stockController.RegisterCustomer(customer) as OkObjectResult;
+            Assert.Equal("Customer registered", results.Value);
+        }
+
+        [Fact]
+        public async Task RegisterCustomer_WrongInput()
+        {
+            //Arrange
+            _stockController.ModelState.AddModelError("SocialSecurityNumber","Fault in input");
+
+            //Act
+            var results = await _stockController.RegisterCustomer(It.IsAny<Customer>()) as BadRequestObjectResult;
+
+            //Assert
+            Assert.Equal("Fault in input", results.Value);
+        }
+
+        [Fact]
+        public async Task RegisterCustomer_Empty()
+        {
+            var customer = new Customer
+            {
+                SocialSecurityNumber = "12345678910",
+                FirstName = "Jorgen",
+                LastName = "Berntsen",
+                Address = "Osloveien 47a",
+                Balance = 0,
+                PostalCode = "1234",
+                PostCity = "Oslo",
+            };
+
+            MockRep.Setup(k => k.RegisterCustomer(customer)).ReturnsAsync(false);
+            var results = await _stockController.RegisterCustomer(customer) as BadRequestObjectResult;
+            Assert.Equal("Fault in registerCustomer", results.Value);
+        }
+
 
         [Fact]
         public async Task logIn_Ok()
@@ -1249,7 +1447,7 @@ namespace UnitTesting_aksjeapp
             //Assert
             Assert.Equal("Transaction not deleted", result.Value);
         }
-        
+
         [Fact]
         public async Task RegisterCustomer_Ok()
         {

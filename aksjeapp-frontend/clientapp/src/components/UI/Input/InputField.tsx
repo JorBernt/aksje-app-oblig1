@@ -1,3 +1,5 @@
+import {IconButton} from "@material-ui/core";
+import {Visibility, VisibilityOff} from "@material-ui/icons";
 import React, {useEffect, useState} from "react";
 
 type Props = {
@@ -8,6 +10,7 @@ type Props = {
     onKeyDown?: (key: string) => void
     initVal?: string | number
 }
+
 let checkPW = "";
 const InputField: React.FC<Props> = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
     const [message, setMessage] = useState('');
@@ -18,7 +21,12 @@ const InputField: React.FC<Props> = React.forwardRef<HTMLInputElement, Props>((p
     }, [props.initVal])
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+
         setMessage(event.target.value);
+        console.log(event.target.value);
+        console.log(props.label)
+        setValues({password: event.target.value, showPassword: values.showPassword});
+
         setValue(event.target.value);
         const regExName = /^[a-z ,.'-]+$/i;
         const regExSSN = /^[0-9]{11}$/;
@@ -47,16 +55,40 @@ const InputField: React.FC<Props> = React.forwardRef<HTMLInputElement, Props>((p
             setMessage(props.label + " is not valid")
         }
     };
+    const [values, setValues] = useState({
+        password: "",
+        showPassword: false,
+    });
+    const handleClickShowPassword = () => {
+        setValues({...values, showPassword: !values.showPassword});
+    };
     return (
         <>
-            <div className="flex flex-col justify-between my-2 text-l mx-5">
+            <div className="flex flex-col justify-between my-2 text-l mx-8">
                 <p>{props.label}</p>
-                <input type={props.type} className="bg-transparent border focus:border-pink-500 rounded-2xl pl-4 py-2"
-                       style={{outline: "none"}} ref={ref}
-                       onKeyDown={(event => props.onKeyDown && props.onKeyDown(event.key))}
-                       onChange={handleChange} value={value}
-                />
+                <div className="flex flex-row ">
+                    <input type={props.type === "password" ? values.showPassword ? "text" : "password" : props.type}
+                           className="bg-transparent border focus:border-pink-500 rounded-2xl pl-4 py-2"
+                           style={{outline: "none"}} ref={ref}
+                           onKeyDown={(event => props.onKeyDown && props.onKeyDown(event.key))}
+                           onChange={handleChange}
+                           value={values.password}>
+                    </input>
+
+                    {
+
+                        props.label === "Password" &&
+                        <div className="-mr-12">
+                            <IconButton
+                                onClick={handleClickShowPassword}
+                            >
+                                {values.showPassword ? <Visibility/> : <VisibilityOff/>}
+                            </IconButton>
+                        </div>
+                    }
+                </div>
                 <p style={{color: 'red'}}>{message}</p>
+
             </div>
         </>
     )

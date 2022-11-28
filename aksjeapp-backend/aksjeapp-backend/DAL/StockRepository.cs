@@ -863,6 +863,33 @@ namespace aksjeapp_backend.DAL
             return true;
         }
 
+        public async Task<Customer> GetCustomerData(string socialSecurityNumber)
+        {
+            try
+            {
+                var customerFromDb = await _db.Customers.FindAsync(socialSecurityNumber);
+                
+                var customer = new Customer()
+                {
+                    SocialSecurityNumber = customerFromDb.SocialSecurityNumber,
+                    FirstName = customerFromDb.FirstName,
+                    LastName = customerFromDb.LastName,
+                    Address = customerFromDb.Address,
+                    Balance = customerFromDb.Balance,
+                    Transactions = new List<Transaction>(),
+                    PostalCode = customerFromDb.PostalArea.PostalCode,
+                    PostCity = customerFromDb.PostalArea.PostCity,
+                    Portfolio = new Portfolio()
+                };
+                return customer;
+            }
+            catch (Exception exception)
+            {
+                return null;
+            }
+            
+        }
+
         public static DateTime GetTodaysDate()
         {
             //DateTime date1 = DateTime.Now;

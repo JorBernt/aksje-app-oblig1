@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.ComponentModel;
+using System.Security.Cryptography;
 using aksjeapp_backend.Models;
 using aksjeapp_backend.Models.News;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
@@ -133,11 +134,9 @@ namespace aksjeapp_backend.DAL
                     TotalPrice = totalPrice
                 };
                 customer.TransactionsBought.Add(stockTransaction);
-                //await _db.TransactionsBought.AddAsync(stockTransaction);
                 customer.Balance -= stockTransaction.TotalPrice - 5; //5 dollars in brokerage 
                 await _db.SaveChangesAsync();
-
-                //await UpdatePortfolio(socialSecurityNumber);
+                
                 return true;
             }
             catch (Exception e)
@@ -519,14 +518,19 @@ namespace aksjeapp_backend.DAL
         {
             try
             {
-                var list = new List<StockOverview>();
+
+            var list = new List<StockOverview>();
 
                 var stocks = await _db.Stocks.ToListAsync();
 
                 foreach (var stock in stocks)
                 {
                     var myStock = await StockChange(stock.Symbol);
-                    var stockObject = new StockOverview()
+                    if (myStock == null)
+                    {
+                        continue;
+                    }
+                    var stockObject = new StockOverview
                     {
                         Symbol = stock.Symbol,
                         Name = stock.Name,
@@ -537,6 +541,7 @@ namespace aksjeapp_backend.DAL
                 }
 
                 return list;
+                                
             }
             catch (Exception e)
             {
@@ -878,6 +883,14 @@ namespace aksjeapp_backend.DAL
                 customerFromDb.FirstName = customer.FirstName;
                 customerFromDb.LastName = customer.LastName;
                 customerFromDb.Address = customer.Address;
+
+                var userFromDb = await _db.Users.FindAsync(customer.SocialSecurityNumber);
+                byte[] salt = GenSalt();
+                byte[] password = GenHash(customer.User.Password, salt);
+
+                userFromDb.Password = password;
+                userFromDb.Salt = salt;
+                
 
                 await _db.SaveChangesAsync();
                 return true;

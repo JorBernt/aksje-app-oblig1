@@ -75,7 +75,7 @@ const InputField: React.FC<Props> = React.forwardRef<HTMLInputElement, Props>((p
                            onChange={handleChange}
                            value={props.type === "password" ? values.password : value}/>
 
-                    {
+                    {props.type === "password" &&
                         <div className="-mr-12">
                             <IconButton
                                 onClick={handleClickShowPassword}

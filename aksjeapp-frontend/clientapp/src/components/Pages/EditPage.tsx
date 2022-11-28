@@ -4,8 +4,11 @@ import Card from "../UI/Card/Card";
 import InputField from "../UI/Input/InputField";
 import Button from "../UI/Input/Button";
 import {UserData} from "../models";
+import {API} from "../../Constants";
+import {useNavigate} from "react-router-dom";
 
 const EditPage = () => {
+    const navigate = useNavigate();
     const firstNameRef = React.createRef<HTMLInputElement>()
     const lastNameRef = React.createRef<HTMLInputElement>()
     const ssnRef = React.createRef<HTMLInputElement>()
@@ -23,7 +26,11 @@ const EditPage = () => {
             postcity: String(pAddressRef.current?.value),
             password: String(passwordRef.current?.value)
         }
-        console.log(userData)
+        API.CLIENT.UPDATE_CUSTOMER(userData).then(response => {
+            if (response) {
+                navigate("/profile")
+            }
+        })
     }
     return (
         <>

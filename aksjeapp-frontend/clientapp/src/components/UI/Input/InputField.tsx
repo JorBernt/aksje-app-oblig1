@@ -1,6 +1,6 @@
-import {IconButton} from "@mui/material";
+import {IconButton} from "@material-ui/core";
+import React, {useEffect, useState} from "react";
 
-import React, {useState} from "react";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import VisibilityOffIcon from '@mui/icons-material/VisibilityOff';
 
@@ -11,15 +11,23 @@ type Props = {
     setValue?: any
     ref?: any
     onKeyDown?: (key: string) => void
+    initVal?: string | number
 }
 
 let checkPW = "";
 const InputField: React.FC<Props> = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
     const [message, setMessage] = useState('');
+    const [value, setValue] = useState(props.initVal);
+
+    useEffect(() => {
+        setValue(props.initVal)
+    }, [props.initVal])
+
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setMessage(event.target.value);
         setValues({password: event.target.value, showPassword: values.showPassword});
 
+        setValue(event.target.value);
         const regExName = /^[a-z ,.'-]+$/i;
         const regExSSN = /^[0-9]{11}$/;
         const regExPaswd = /(?=.*[a-zA-ZæøåÆØÅ])(?=.*\d)[a-zA-ZæøåÆØÅ\d]{8,}/;
@@ -65,13 +73,9 @@ const InputField: React.FC<Props> = React.forwardRef<HTMLInputElement, Props>((p
                            style={{outline: "none"}} ref={ref}
                            onKeyDown={(event => props.onKeyDown && props.onKeyDown(event.key))}
                            onChange={handleChange}
-                           value={values.password}
-
-                    >
-                    </input>
+                           value={props.type === "password" ? values.password : value}/>
 
                     {
-                        props.label === "Password" &&
                         <div className="-mr-12">
                             <IconButton
                                 onClick={handleClickShowPassword}
@@ -82,7 +86,6 @@ const InputField: React.FC<Props> = React.forwardRef<HTMLInputElement, Props>((p
                     }
                 </div>
                 <p style={{color: 'red'}}>{message}</p>
-
             </div>
         </>
     )

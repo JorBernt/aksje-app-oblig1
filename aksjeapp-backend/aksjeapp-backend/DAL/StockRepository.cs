@@ -136,7 +136,7 @@ namespace aksjeapp_backend.DAL
                 customer.TransactionsBought.Add(stockTransaction);
                 customer.Balance -= stockTransaction.TotalPrice - 5; //5 dollars in brokerage 
                 await _db.SaveChangesAsync();
-                
+
                 return true;
             }
             catch (Exception e)
@@ -541,7 +541,7 @@ namespace aksjeapp_backend.DAL
                 }
 
                 return list;
-                                
+
             }
             catch (Exception e)
             {
@@ -794,8 +794,8 @@ namespace aksjeapp_backend.DAL
                 return false;
             }
         }
-        
-        
+
+
         public async Task<bool> RegisterCustomer(Customer customer)
         {
             try
@@ -816,7 +816,7 @@ namespace aksjeapp_backend.DAL
                     Password = hash
                 };
 
-                
+
 
                 var c = new Customers
                 {
@@ -826,9 +826,9 @@ namespace aksjeapp_backend.DAL
                     Address = customer.Address,
                     Balance = 0,
                 };
-                
+
                 var checkPostalArea = await _db.PostalAreas.FindAsync(customer.PostalCode);
-                
+
                 if (checkPostalArea == null)
                 {
                     var postalArea = new PostalAreas
@@ -842,7 +842,7 @@ namespace aksjeapp_backend.DAL
                 {
                     c.PostalArea = checkPostalArea;
                 }
-                
+
                 await _db.Users.AddAsync(user);
                 await _db.Customers.AddAsync(c);
                 await _db.SaveChangesAsync();
@@ -890,7 +890,7 @@ namespace aksjeapp_backend.DAL
 
                 userFromDb.Password = password;
                 userFromDb.Salt = salt;
-                
+
 
                 await _db.SaveChangesAsync();
                 return true;
@@ -924,7 +924,7 @@ namespace aksjeapp_backend.DAL
                 return false;
             }
         }
-        
+
         public async Task<bool> Withdraw(string socialSecurityNumber ,double amount)
         {
             try
@@ -940,7 +940,7 @@ namespace aksjeapp_backend.DAL
                 {
                     return false;
                 }
-                
+
                 customer.Balance -= amount;
                 await _db.SaveChangesAsync();
 
@@ -952,8 +952,8 @@ namespace aksjeapp_backend.DAL
                 return false;
             }
         }
-        
-        
+
+
 
         public static byte[] GenHash(string password, byte[] salt)
         {
@@ -991,7 +991,7 @@ namespace aksjeapp_backend.DAL
                 {
                     return true;
                 }
-                
+
                 return false;
             }
             catch (Exception e)
@@ -1001,6 +1001,62 @@ namespace aksjeapp_backend.DAL
             }
         }
         
+        public async Task<bool> RegisterCustomer(Customer customer)
+        {
+            try
+            {
+                var c = new Customers
+                {
+                    SocialSecurityNumber = customer.SocialSecurityNumber,
+                    FirstName = customer.FirstName,
+                    LastName = customer.LastName,
+                    Address = customer.Address,
+                    Balance = 0,
+                    TransactionsBought = null,
+                    TransactionsSold = null,
+                    Portfolio = customer.Portfolio,
+                    PostalArea = new PostalAreas
+                    {
+                        PostalCode = customer.PostalCode,
+                        PostCity = customer.PostCity
+                    }
+                };
+                await _db.Customers.AddAsync(c);
+            }
+            catch (Exception exception)
+            {
+                return false;
+            }
+            return true;
+        }
+
+        public async Task<Customer> GetCustomerData(string socialSecurityNumber)
+        {
+            try
+            {
+                var customerFromDb = await _db.Customers.FindAsync(socialSecurityNumber);
+
+                var customer = new Customer()
+                {
+                    SocialSecurityNumber = customerFromDb.SocialSecurityNumber,
+                    FirstName = customerFromDb.FirstName,
+                    LastName = customerFromDb.LastName,
+                    Address = customerFromDb.Address,
+                    Balance = customerFromDb.Balance,
+                    Transactions = new List<Transaction>(),
+                    PostalCode = customerFromDb.PostalArea.PostalCode,
+                    PostCity = customerFromDb.PostalArea.PostCity,
+                    Portfolio = new Portfolio()
+                };
+                return customer;
+            }
+            catch (Exception exception)
+            {
+                return null;
+            }
+
+        }
+
         public static DateTime GetTodaysDate()
         {
             //DateTime date1 = DateTime.Now;

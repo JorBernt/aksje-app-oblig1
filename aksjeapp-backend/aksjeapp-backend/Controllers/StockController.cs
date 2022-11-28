@@ -449,6 +449,22 @@ public class StockController : ControllerBase
         _logger.LogInformation("Fault in regular expression in logIn");
         return BadRequest("Fault in input");
     }
+
+    public async Task<ActionResult> GetCustomerData()
+    {
+        if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn))) return Unauthorized();
+        
+        var socialSecurityNumber = HttpContext.Session.GetString(_loggedIn);
+        var myCustomer = await _db.GetCustomerData(socialSecurityNumber);
+        if (myCustomer == null)
+        {
+            _logger.LogInformation("Fault in GetCustomerData");
+            return Ok("Failed");
+        }
+
+        return Ok(myCustomer);
+
+    }
     
     
     public ActionResult LogOut()

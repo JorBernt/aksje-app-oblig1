@@ -83,11 +83,11 @@ export interface News {
 }
 
 export interface UserData {
-    firstname: string;
-    lastname: string;
-    socialsecuritynumber: string;
-    address?: string;
-    postalcode: number;
-    postcity: string;
-    password: string;
+    firstName: string;
+    lastName: string;
+    socialSecurityNumber: string;
+    address: string;
+    postalCode: number;
+    postCity: string;
+    password?: string;
 }

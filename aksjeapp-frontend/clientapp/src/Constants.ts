@@ -64,6 +64,7 @@ export const API = {
             },
 
         GET_CUSTOMER_PORTFOLIO: stockURL + "GetCustomerPortfolio",
+        GET_CUSTOMER_DATA: stockURL + "GetCustomerData",
     },
     CLIENT: {
         LOGIN: async (user: User): Promise<boolean | unknown> => {

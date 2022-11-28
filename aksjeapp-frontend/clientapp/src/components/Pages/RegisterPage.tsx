@@ -23,23 +23,25 @@ const LoginPage = () => {
             console.log("Passwords don't match!")
             return;
         }
-        if (String(firstNameRef.current?.value) === "" ||
-            String(lastNameRef.current?.value) === "" ||
-            String(addressRef.current?.value) === "" ||
-            String(pCodeRef.current?.value) === "" ||
-            String(pAddressRef.current?.value) === "" ||
-            String(passwordRef.current?.value) === "") {
-            return;
-        }
-        console.log(pCodeRef.current?.value)
+
         const userData: UserData = {
-            firstname: String(firstNameRef.current?.value),
-            lastname: String(lastNameRef.current?.value),
-            socialsecuritynumber: String(ssnRef.current?.value),
+            firstName: String(firstNameRef.current?.value),
+            lastName: String(lastNameRef.current?.value),
+            socialSecurityNumber: String(ssnRef.current?.value),
             address: String(addressRef.current?.value),
-            postalcode: Number(pCodeRef.current?.value),
-            postcity: String(pAddressRef.current?.value),
+            postalCode: Number(pCodeRef.current?.value),
+            postCity: String(pAddressRef.current?.value),
             password: String(passwordRef.current?.value)
+        }
+
+        if (userData.firstName === "" ||
+            userData.lastName === "" ||
+            userData.socialSecurityNumber === "" ||
+            userData.address === "" ||
+            userData.postalCode === 0 ||
+            userData.postCity === "" ||
+            userData.password === "") {
+            return;
         }
 
         API.CLIENT.REGISTER_CUSTOMER(userData).then(response => {

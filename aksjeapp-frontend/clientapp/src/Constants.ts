@@ -157,7 +157,18 @@ export const API = {
                 console.log("Deposit", error)
                 return false
             }
+        },
+        DELETE_ACCOUNT: async (): Promise<boolean> => {
+            try {
+                const response = await fetch(`${stockURL}Delete_Account`, {
+                    credentials: 'include',
+                });
+                return response.status === 200;
+            } catch (error) {
+                return false;
+            }
         }
+
     }
 }
 

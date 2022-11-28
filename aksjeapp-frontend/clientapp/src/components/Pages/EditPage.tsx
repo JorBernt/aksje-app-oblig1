@@ -92,8 +92,17 @@ const EditPage = () => {
                                 <InputField type={"password"} label={"Password"} ref={passwordRef}
                                             initVal={customerData?.password}/>
                             </div>
-                            <div className="mt-4">
-                                <Button text={"Save"} onClick={handleOnClick}/>
+                            <div className="flex flex-row gap-3">
+                                <div className="mt-4">
+                                    <Button text={"Save"} onClick={handleOnClick}/>
+                                </div>
+                                <div className="mt-4">
+                                    <button
+                                        className="rounded-2xl w-fit bg-red-500 text-white font-semibold py-2 px-4 hover:shadow-red-500 hover:shadow-xl transition duration-300 ease-in-out hoved:scale-105"
+                                        onClick={handleOnClick}>
+                                        Delete
+                                    </button>
+                                </div>
                             </div>
                         </div>
                     </Card>

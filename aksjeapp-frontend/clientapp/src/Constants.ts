@@ -67,7 +67,7 @@ export const API = {
         GET_CUSTOMER_DATA: stockURL + "GetCustomerData",
     },
     CLIENT: {
-        LOGIN: async (user: User): Promise<boolean | unknown> => {
+        LOGIN: async (user: User): Promise<boolean> => {
             try {
                 const response = await fetch(`${stockURL}LogIn`, {
                     method: "POST",
@@ -78,9 +78,9 @@ export const API = {
                     },
                     body: JSON.stringify(user)
                 });
-                return response.status === 200;
+                return response.text().then(response => response === "Ok")
             } catch (error: unknown) {
-                return error;
+                return false;
             }
         },
         REGISTER_CUSTOMER: async (userData: UserData): Promise<boolean | unknown> => {

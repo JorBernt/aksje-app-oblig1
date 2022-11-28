@@ -12,6 +12,7 @@ type Props = {
     ref?: any
     onKeyDown?: (key: string) => void
     initVal?: string | number
+    validate?: boolean
 }
 
 let checkPW = "";
@@ -24,10 +25,12 @@ const InputField: React.FC<Props> = React.forwardRef<HTMLInputElement, Props>((p
     }, [props.initVal])
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setMessage(event.target.value);
-        setValues({password: event.target.value, showPassword: values.showPassword});
 
+        setValues({password: event.target.value, showPassword: values.showPassword});
         setValue(event.target.value);
+        if (typeof props.validate !== "undefined" && !props.validate) {
+            return
+        }
         const regExName = /^[a-z ,.'-]+$/i;
         const regExSSN = /^[0-9]{11}$/;
         const regExPaswd = /(?=.*[a-zA-ZæøåÆØÅ])(?=.*\d)[a-zA-ZæøåÆØÅ\d]{8,}/;
@@ -52,6 +55,7 @@ const InputField: React.FC<Props> = React.forwardRef<HTMLInputElement, Props>((p
         } else if ((props.label === "Address" || props.label === "Postal Address") && regExAdr.test(event.target.value)) {
             setMessage("")
         } else {
+
             setMessage(props.label + " is not valid")
         }
     };

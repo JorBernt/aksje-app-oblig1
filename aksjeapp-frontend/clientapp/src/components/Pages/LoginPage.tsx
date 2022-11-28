@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import Navbar from "../Navbar/Navbar";
 import Card from "../UI/Card/Card";
 import InputField from "../UI/Input/InputField";
@@ -13,6 +13,7 @@ const LoginPage = () => {
     const usernameRef = React.createRef<HTMLInputElement>()
     const passwordRef = React.createRef<HTMLInputElement>()
     const loggedInContext = useLoggedInContext()
+    const [wrongLogin, setWrongLogin] = useState(false)
     const handleOnClick = () => {
         if (!usernameRef.current || !passwordRef.current)
             return
@@ -24,6 +25,8 @@ const LoginPage = () => {
             if (response) {
                 navigate("/profile")
                 loggedInContext.setLoggedIn(true)
+            } else {
+                setWrongLogin(true)
             }
         })
     }
@@ -44,7 +47,11 @@ const LoginPage = () => {
                     <div className="flex flex-col h-fit items-center w-72">
                         <h1 className={"text-center text-2xl mb-4"}>Login</h1>
                         <InputField type={"text"} label={"SSN"} ref={usernameRef} onKeyDown={handleOnKeyDown}/>
-                        <InputField type={"password"} label={"Password"} ref={passwordRef} onKeyDown={handleOnKeyDown}/>
+                        <InputField type={"password"} label={"Password"} ref={passwordRef} onKeyDown={handleOnKeyDown}
+                                    validate={false}/>
+                        {wrongLogin &&
+                            <p className="text-red-500">Wrong username or password</p>
+                        }
                         <div className="mt-4">
                             <Button text={"Log in"} onClick={handleOnClick}/>
                         </div>

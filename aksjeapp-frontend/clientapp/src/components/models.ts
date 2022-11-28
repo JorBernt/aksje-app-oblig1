@@ -87,7 +87,19 @@ export interface UserData {
     lastName: string;
     socialSecurityNumber: string;
     address: string;
+    balance?: number;
     postalCode: number;
     postCity: string;
     password?: string;
+}
+
+export interface UserDataSubmit {
+    FirstName: string;
+    LastName: string;
+    SocialSecurityNumber: string;
+    Address: string;
+    Balance?: number;
+    PostalCode: string;
+    PostCity: string;
+    Password?: string;
 }

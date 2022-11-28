@@ -1,4 +1,4 @@
-import {StockData, User, UserData} from "./components/models";
+import {StockData, User, UserData, UserDataSubmit} from "./components/models";
 
 export const DATE_TODAY = new Date().toLocaleDateString("nb-NO").replace("/", "-");
 
@@ -83,14 +83,13 @@ export const API = {
                 return false;
             }
         },
-        REGISTER_CUSTOMER: async (userData: UserData): Promise<boolean | unknown> => {
+        REGISTER_CUSTOMER: async (userData: UserDataSubmit): Promise<boolean | unknown> => {
             try {
+                console.log(userData)
                 const response = await fetch(`${stockURL}RegisterCustomer`, {
                     method: "POST",
-                    credentials: 'include',
                     headers: {
                         "Content-Type": "application/json",
-                        'Access-Control-Allow-Headers': 'Content-Type, Authorization, Set-Cookie',
                     },
                     body: JSON.stringify(userData)
                 });

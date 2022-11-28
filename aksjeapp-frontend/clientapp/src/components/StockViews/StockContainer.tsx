@@ -34,9 +34,10 @@ const StockContainer = (props: Props) => {
                         if (props.setName) {
                             props.setName(response[0].symbol)
                         }
-                    }).catch(e => {
+                    }).catch((error: Error) => {
                         setShowLoading(false)
                         setError(true)
+                        console.log(error)
                     }))
     }, [props.data, props.API])
     let counter: number = 0;
@@ -80,14 +81,14 @@ const StockContainer = (props: Props) => {
                                     {stockView.map((val) => {
                                             counter++;
                                             return counter % 2 === 0 ?
-                                                <div
-                                                    className="cursor-pointer hover:scale-105 hover:bg-gradient-to-br hover:from-white hover:to-gray-200 hover:rounded-lg rounded-lg transition duration-150 ease-in-out text-stock-preview-text-1 font-semibold"
-                                                    ref={view}>
+                                                <div key={counter}
+                                                     className="cursor-pointer hover:scale-105 hover:bg-gradient-to-br hover:from-white hover:to-gray-200 hover:rounded-lg rounded-lg transition duration-150 ease-in-out text-stock-preview-text-1 font-semibold"
+                                                     ref={view}>
                                                     <StockPreview key={val.symbol} items={val}
                                                                   showAmount={props.showAmount}/>
                                                 </div> :
-                                                <div
-                                                    className="cursor-pointer hover:scale-105 transition duration-150 ease-in-out bg-gradient-to-tl rounded-lg from-green-500 to-blue-700 text-stock-preview-text-2 font-semibold">
+                                                <div key={counter}
+                                                     className="cursor-pointer hover:scale-105 transition duration-150 ease-in-out bg-gradient-to-tl rounded-lg from-green-500 to-blue-700 text-stock-preview-text-2 font-semibold">
                                                     <StockPreview key={val.symbol} items={val}
                                                                   showAmount={props.showAmount}/>
                                                 </div>

@@ -1,9 +1,7 @@
 import React, {useEffect, useRef, useState} from "react";
 import {API} from "../../Constants";
 import {Transaction} from "../models";
-import {Simulate} from "react-dom/test-utils";
 import Card from "../UI/Card/Card";
-import input = Simulate.input;
 
 type Props = {
     callBack: any;
@@ -21,14 +19,19 @@ const TransactionsView: React.FC<Props> = (props) => {
         fetch(API.STOCK.GET_ALL_TRANSACTIONS, {credentials: 'include',})
             .then(response => response.json()
                 .then(response => {
+                    if (!response.ok)
+                        throw new Error("Could not load transactions")
+                    return response
+                })
+                .then(response => {
                     setTransactionView(p => [...response])
                     for (let i = 0; i < transactionView.length; i++) {
                         editTransactionArray[transactionView[i].id] = false;
                     }
                     setEditTransactionArray(editTransactionArray)
-                }).catch(e => {
+                }).catch((error: Error) => {
+                    console.log(error.message)
                     setTransactionView([])
-                    console.log(e.message)
                 })
             )
     }
@@ -37,9 +40,16 @@ const TransactionsView: React.FC<Props> = (props) => {
     }, [])
     const handleOnClickDelete = (id: number) => {
         fetch(API.STOCK.DELETE_TRANSACTION(id), {'credentials': "include"})
+            .then(response => {
+                if (!response.ok)
+                    throw new Error("Could not delete transaction")
+            })
             .then(result => {
                 loadAllTransactions()
                 props.callBack();
+            })
+            .catch((error: Error) => {
+                console.log(error)
             })
     }
     const handleOnClickUpdate = (transaction: Transaction) => {
@@ -92,12 +102,10 @@ const TransactionsView: React.FC<Props> = (props) => {
                                                 <th className="px-6 py-2 text-xl text-black-500">Amount</th>
                                             </tr>
                                             </thead>
-
-                                            {transactionView.map((val) => {
+                                            <tbody>
+                                            {transactionView.map((val, index) => {
                                                 return (
-
-                                                    <tbody>
-                                                    <tr className={"text-center"} key={val.id}>
+                                                    <tr className={"text-center"} key={index}>
                                                         <td className="px-6 py-4 whitespace-nowrap">{val.date}</td>
                                                         <td className="px-6 py-4 whitespace-nowrap ">{val.symbol}</td>
                                                         <td className="px-6 py-4 whitespace-nowrap">{val.totalPrice}</td>
@@ -141,9 +149,9 @@ const TransactionsView: React.FC<Props> = (props) => {
                                                             </>
                                                         }
                                                     </tr>
-                                                    </tbody>
                                                 )
                                             })}
+                                            </tbody>
                                         </table>
                                     </div>
                                 </div>

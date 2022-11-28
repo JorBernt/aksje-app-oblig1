@@ -26,9 +26,10 @@ const NewsDisplay = (props: Props) => {
                 </div>
                 <div className="w-44 col-span-1">
                     <div className="flex flex-row flex-wrap">
-                        {props.affectedStocks.map(stock => {
+                        {props.affectedStocks.map((stock, index) => {
                             return <p className="hover:underline cursor-pointer"
-                                      onClick={() => handleOnClick(stock)}>{stock + (items++ < props.affectedStocks.length - 1 ? "," : "")}</p>
+                                      onClick={() => handleOnClick(stock)}
+                                      key={index}>{stock + (items++ < props.affectedStocks.length - 1 ? "," : "")}</p>
                         })}
                     </div>
                 </div>

@@ -40,9 +40,9 @@ const NewsContainer = () => {
                         <hr className="border-text-display mb-3"/>
                         <div
                             className="scroll h-[28.5rem] overflow-y-auto pr-0.5 scrollbar scrollbar-track-white scrollbar-thumb-rounded-3xl scrollbar-thin scrollbar-thumb-gray-300 scrollbar drop-shadow-lg pr-2">
-                            {news.map((val) => {
+                            {news.map((val, index) => {
                                 return <NewsDisplay title={val.author} content={val.title} date={val.date}
-                                                    affectedStocks={val.stocks} url={val.url}/>
+                                                    affectedStocks={val.stocks} url={val.url} key={index}/>
                             })}
                         </div>
                     </>

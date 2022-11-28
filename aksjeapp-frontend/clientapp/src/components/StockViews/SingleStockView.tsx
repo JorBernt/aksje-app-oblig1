@@ -4,34 +4,7 @@ import Card from "../UI/Card/Card";
 import DataDisplay from "../UI/TextDisplay/DataDisplay";
 import {API} from "../../Constants";
 import LoadingSpinner from "../UI/LoadingSpinner";
-
-
-interface Results {
-    closePrice: number;
-    openPrice: number;
-    highestPrice: number;
-    lowestPrice: number;
-    date: string;
-}
-
-export interface MappableData {
-    name: string;
-    uv: number;
-}
-
-interface StockData {
-    name: string
-    last: number,
-    change: number,
-    todayDifference: number,
-    buy: number,
-    sell: number,
-    high: number,
-    low: number,
-    turnover: number,
-    symbol: string
-    results: Array<Results>
-}
+import {MappableData, StockData} from "../models";
 
 type Props = {
     symbol: string,
@@ -56,23 +29,33 @@ const SingleStockView: React.FC<Props> = (props) => {
     const mappableStockPriceData: Array<MappableData> = []
     useEffect(() => {
         setLoading(true)
-        fetch(API.STOCK.GET_STOCK_PRICES(props.symbol, props.fromDate, props.toDate))
-            .then(response => response.json()
-                .then((response: StockData) => {
-                    response.results.forEach(r => mappableStockPriceData.push({
-                        name: r.date,
-                        uv: r.closePrice
-                    }))
-                    setStockPrices(mappableStockPriceData)
-                    if (props.setStockPrice)
-                        props.setStockPrice(response.last)
-                    setMax(Math.max(...mappableStockPriceData.map(d => d.uv)))
-                    setMin(Math.min(...mappableStockPriceData.map(d => d.uv)))
-                    console.log(response)
-                    setStockData(response)
-                    setLoading(false)
+        if (props.symbol === "")
+            return
+        API.STOCK.GET_STOCK_PRICES(props.symbol, props.fromDate, props.toDate)
+            .then((response) => {
+                response.results.forEach(r => mappableStockPriceData.push({
+                    name: r.date,
+                    uv: r.closePrice
                 }))
-        fetch(API.STOCK.GET_STOCK_NAME(props.symbol)).then(response => response.text().then(text => setName(text)))
+                setStockPrices(mappableStockPriceData)
+                if (props.setStockPrice)
+                    props.setStockPrice(response.last)
+                setMax(Math.max(...mappableStockPriceData.map(d => d.uv)))
+                setMin(Math.min(...mappableStockPriceData.map(d => d.uv)))
+                setStockData(response)
+                setLoading(false)
+            })
+            .catch((error: Error) => {
+                console.log(error.message)
+            })
+
+        fetch(API.STOCK.GET_STOCK_NAME(props.symbol))
+            .then(response => response.text()
+                .then(text => setName(text)))
+            .catch((error: Error) => {
+                console.log(error.message)
+                setName("Could not fetch name")
+            })
 
     }, [props.symbol])
 

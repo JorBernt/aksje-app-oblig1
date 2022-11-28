@@ -53,6 +53,7 @@ function App() {
                     <Route path="/login" element={<LoginPage/>}/>
                     <Route path="/register" element={<RegisterPage/>}/>
                     <Route path="/edit" element={<EditPage/>}/>
+                    <Route path="/logout" element={<EditPage/>}/>
                 </Routes>
             </LoggedInContextProvider>
         </Router>

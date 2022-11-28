@@ -355,6 +355,99 @@ public class StockController : ControllerBase
         _logger.LogInformation("Username or password does not correspond with regex");
         return BadRequest("Fault in input");
     }
+    [HttpPost]
+    public async Task<ActionResult> RegisterCustomer([FromBody] Customer customer)
+    {
+        if (ModelState.IsValid)
+        {
+            var returnOk = await _db.RegisterCustomer(customer);
+            if (!returnOk)
+            {
+                _logger.LogInformation("Fault in registerCustomer");
+                return BadRequest("Fault in registerCustomer");
+            }
+            return Ok("Customer registered");
+        }
+        
+        _logger.LogInformation("Fault in input validation");
+        return BadRequest("Fault in input");
+    }
+
+    [HttpPost]
+    public async Task<ActionResult> UpdateCustomer([FromBody] Customer customer)
+    {
+        var socialSecurityNumber = HttpContext.Session.GetString(_loggedIn);
+        if (string.IsNullOrEmpty(socialSecurityNumber) || !customer.SocialSecurityNumber.Equals(socialSecurityNumber))
+        {
+            return Unauthorized();
+        }
+        
+        if (ModelState.IsValid)
+        {
+            bool returOk = await _db.UpdateCustomer(customer);
+            if (!returOk)
+            {
+                _logger.LogInformation("Customer not updated");
+                return BadRequest("Customer not updated");
+            }
+
+            return Ok("Customer updated");
+        }
+        Console.WriteLine(customer.SocialSecurityNumber + customer.FirstName + customer.LastName + customer.Address + customer.PostalCode + customer.PostCity);
+        _logger.LogInformation("Input not valid in Update customer");
+        return BadRequest("Fault in input");
+    }
+
+    public async Task<ActionResult> Deposit(double amount)
+    {
+        var socialSecurityNumber = HttpContext.Session.GetString(_loggedIn);
+        if (string.IsNullOrEmpty(socialSecurityNumber))
+        {
+            return Unauthorized();
+        }
+
+        if (amount <= 0)
+        {
+            _logger.LogInformation("Depositet negatice amount");
+            return BadRequest("Cannot deposit negative or 0");
+        }
+
+        var returnOk = await _db.Deposit(socialSecurityNumber,amount);
+        if (!returnOk)
+        {
+            _logger.LogInformation("Amount not deposited");
+            return BadRequest("Amount not deposited");
+        }
+
+        return Ok("Amount deposited");
+
+    }
+    
+    public async Task<ActionResult> Withdraw(double amount)
+    {
+        var socialSecurityNumber = HttpContext.Session.GetString(_loggedIn);
+        if (string.IsNullOrEmpty(socialSecurityNumber))
+        {
+            return Unauthorized();
+        }
+
+        if (amount <= 0)
+        {
+            _logger.LogInformation("Withdrawn negative amount");
+            return BadRequest("Cannot withdraw negative or 0");
+        }
+
+        var returnOk = await _db.Withdraw(socialSecurityNumber,amount);
+        if (!returnOk)
+        {
+            _logger.LogInformation("Amount not withdrawn");
+            return BadRequest("Amount not withdrawn");
+        }
+
+        return Ok("Amount withdrawn");
+
+    }
+
 
     [HttpPost]
     public async Task<ActionResult> LogIn([FromBody] User user)
@@ -377,18 +470,7 @@ public class StockController : ControllerBase
         return BadRequest("Fault in input");
     }
     
-    [HttpPost]
-    public async Task<ActionResult> RegisterCustomer([FromBody] Customer customer)
-    {
-        var returnOk = await _db.RegisterCustomer(customer);
-        if (!returnOk)
-        {
-            _logger.LogInformation("Fault in registerCustomer");
-            return BadRequest("Fault in registerCustomer");
-        }
-        return Ok("Customer registered");
-    }
-
+    
     public ActionResult LogOut()
     {
         HttpContext.Session.SetString(_loggedIn, "");

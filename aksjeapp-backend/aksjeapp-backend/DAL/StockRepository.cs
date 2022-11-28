@@ -1,4 +1,5 @@
-﻿using System.Security.Cryptography;
+﻿using System.ComponentModel;
+using System.Security.Cryptography;
 using aksjeapp_backend.Models;
 using aksjeapp_backend.Models.News;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
@@ -23,18 +24,19 @@ namespace aksjeapp_backend.DAL
             return aksjeListe;
         }
 
-        public async Task<StockPrices?> GetStockPrices(string symbol, string fromDate) // dato skal skrives som "YYYY-MM-DD"
+        public async Task<StockPrices?>
+            GetStockPrices(string symbol, string fromDate) // dato skal skrives som "YYYY-MM-DD"
         {
             try
             {
-                
                 //DateTime date;
                 var date = DateTime.Parse(fromDate);
                 //Goes back to friday if it is a saturday or sunday
                 date = BackToFriday(date);
-                
 
-                var stock = await PolygonAPI.GetStockPrices(symbol, date.ToString("yyyy-MM-dd"), GetTodaysDate().ToString("yyyy-MM-dd"), 1);
+
+                var stock = await PolygonAPI.GetStockPrices(symbol, date.ToString("yyyy-MM-dd"),
+                    GetTodaysDate().ToString("yyyy-MM-dd"), 1);
 
                 var results = stock.results;
 
@@ -45,13 +47,13 @@ namespace aksjeapp_backend.DAL
                 }
 
 
-                    //Skips saturdays and sunday since we does not receive any data from those days
-                    foreach (var stocks in results)
-                    {
-                        date = GoToMonday(date);
+                //Skips saturdays and sunday since we does not receive any data from those days
+                foreach (var stocks in results)
+                {
+                    date = GoToMonday(date);
 
-                        stocks.Date = date.ToString("yyyy-MM-dd");
-                        date = date.AddDays(1);
+                    stocks.Date = date.ToString("yyyy-MM-dd");
+                    date = date.AddDays(1);
 
                     stock.results = results;
                 }
@@ -61,7 +63,7 @@ namespace aksjeapp_backend.DAL
                 double resDiff = res1 - res2;
                 double resAvg = (res1 + res2) / 2;
                 double resPercent = (resDiff / ((resAvg) / 2) * 100) / 2;
-                
+
                 // Getting buy and sell numbers
                 var boughtList = await _db.TransactionsBought.Where(k => k.Symbol == symbol).ToListAsync();
                 int bought = 0;
@@ -69,14 +71,14 @@ namespace aksjeapp_backend.DAL
                 {
                     bought += transaction.Amount;
                 }
-                
+
                 var soldList = await _db.TransactionsSold.Where(k => k.Symbol == symbol).ToListAsync();
                 int sold = 0;
                 foreach (var transaction in soldList)
                 {
                     bought += transaction.Amount;
                 }
-                
+
 
                 stock.Name = symbol;
                 stock.Last = results[^1].ClosePrice;
@@ -93,7 +95,6 @@ namespace aksjeapp_backend.DAL
                 _logger.LogInformation(e.Message);
                 return null;
             }
-            
         }
 
         public async Task<bool> BuyStock(string socialSecurityNumber, string symbol, int number)
@@ -133,11 +134,9 @@ namespace aksjeapp_backend.DAL
                     TotalPrice = totalPrice
                 };
                 customer.TransactionsBought.Add(stockTransaction);
-                //await _db.TransactionsBought.AddAsync(stockTransaction);
                 customer.Balance -= stockTransaction.TotalPrice - 5; //5 dollars in brokerage 
                 await _db.SaveChangesAsync();
-
-                //await UpdatePortfolio(socialSecurityNumber);
+                
                 return true;
             }
             catch (Exception e)
@@ -165,7 +164,8 @@ namespace aksjeapp_backend.DAL
                 }
 
                 // Finds the stock we want to sell
-                var portfolio = await _db.Portfolios.FirstOrDefaultAsync(k => k.SocialSecurityNumber == socialSecurityNumber);
+                var portfolio =
+                    await _db.Portfolios.FirstOrDefaultAsync(k => k.SocialSecurityNumber == socialSecurityNumber);
                 if (portfolio == null)
                 {
                     _logger.LogInformation("Customer does not hava a portfolio");
@@ -250,9 +250,9 @@ namespace aksjeapp_backend.DAL
             if (customer == null)
             {
                 _logger.LogInformation("Customer does not exist");
-                return null;  
+                return null;
             }
-            
+
             if ((customer.TransactionsBought == null || customer.TransactionsSold == null))
             {
                 return null;
@@ -355,7 +355,7 @@ namespace aksjeapp_backend.DAL
             }
 
             var transactionfromDB = customer.TransactionsBought.Find(k => k.BoughtId == id);
-            
+
             //Builds transaction object
             var transaction = new Transaction
             {
@@ -385,6 +385,7 @@ namespace aksjeapp_backend.DAL
                 {
                     return false;
                 }
+
                 //Removes transaction price from customers balance
                 customer.Balance += transaction.TotalPrice;
 
@@ -399,7 +400,6 @@ namespace aksjeapp_backend.DAL
                 customer.Balance -= transaction.TotalPrice;
                 await _db.SaveChangesAsync();
                 return true;
-
             }
             catch (Exception e)
             {
@@ -420,7 +420,7 @@ namespace aksjeapp_backend.DAL
                 }
 
                 var transaction = await _db.TransactionsBought.FindAsync(id);
-                
+
                 // Deletes transaction that is still active
                 if (transaction.Date.Equals(GetTodaysDate().ToString("yyyy-MM-dd")))
                 {
@@ -430,15 +430,16 @@ namespace aksjeapp_backend.DAL
                     await _db.SaveChangesAsync();
                     return true;
                 }
+
                 return false;
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 _logger.LogInformation(e.Message);
                 return false;
             }
         }
-        
+
         public async Task<StockChangeValue> StockChange(string symbol)
         {
             try
@@ -517,14 +518,19 @@ namespace aksjeapp_backend.DAL
         {
             try
             {
-                var list = new List<StockOverview>();
+
+            var list = new List<StockOverview>();
 
                 var stocks = await _db.Stocks.ToListAsync();
 
                 foreach (var stock in stocks)
                 {
                     var myStock = await StockChange(stock.Symbol);
-                    var stockObject = new StockOverview()
+                    if (myStock == null)
+                    {
+                        continue;
+                    }
+                    var stockObject = new StockOverview
                     {
                         Symbol = stock.Symbol,
                         Name = stock.Name,
@@ -535,6 +541,7 @@ namespace aksjeapp_backend.DAL
                 }
 
                 return list;
+                                
             }
             catch (Exception e)
             {
@@ -613,7 +620,8 @@ namespace aksjeapp_backend.DAL
                             Value = transaction.Amount * stockChange.Value,
                             PortfolioId = portfolio.PortfolioId,
                         };
-                        portfolioList.Add(portfolioItem); // Adds the new portfolio item to the portfolio list. It will be added to the DB when we save later
+                        portfolioList.Add(
+                            portfolioItem); // Adds the new portfolio item to the portfolio list. It will be added to the DB when we save later
                     }
                 }
 
@@ -786,6 +794,166 @@ namespace aksjeapp_backend.DAL
                 return false;
             }
         }
+        
+        
+        public async Task<bool> RegisterCustomer(Customer customer)
+        {
+            try
+            {
+                var customerFromDb = await _db.Customers.FindAsync(customer.SocialSecurityNumber);
+                if (customerFromDb != null)
+                {
+                    _logger.LogInformation("Customer already exists in database");
+                    return false;
+                }
+
+                byte[] salt = GenSalt();
+                byte[] hash = GenHash("12345678", salt);
+                var user = new Users
+                {
+                    Username = customer.SocialSecurityNumber,
+                    Salt = salt,
+                    Password = hash
+                };
+
+                
+
+                var c = new Customers
+                {
+                    SocialSecurityNumber = customer.SocialSecurityNumber,
+                    FirstName = customer.FirstName,
+                    LastName = customer.LastName,
+                    Address = customer.Address,
+                    Balance = 0,
+                };
+                
+                var checkPostalArea = await _db.PostalAreas.FindAsync(customer.PostalCode);
+                
+                if (checkPostalArea == null)
+                {
+                    var postalArea = new PostalAreas
+                    {
+                        PostalCode = customer.PostalCode,
+                        PostCity = customer.PostCity
+                    };
+                    c.PostalArea = postalArea;
+                }
+                else
+                {
+                    c.PostalArea = checkPostalArea;
+                }
+                
+                await _db.Users.AddAsync(user);
+                await _db.Customers.AddAsync(c);
+                await _db.SaveChangesAsync();
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation(e.Message);
+                return false;
+            }
+
+            return true;
+        }
+
+        public async Task<bool> UpdateCustomer(Customer customer)
+        {
+            try
+            {
+                var customerFromDb = await _db.Customers.FindAsync(customer.SocialSecurityNumber);
+                //Checks if customer exits
+                if (customerFromDb == null)
+                {
+                    return false;
+                }
+
+                var checkPostalArea = customerFromDb.PostalArea;
+
+                // If postal code is changed
+                if (!checkPostalArea.PostalCode.Equals(customer.PostalCode))
+                {
+                    var postalArea = new PostalAreas
+                    {
+                        PostalCode = customer.PostalCode,
+                        PostCity = customer.PostCity
+                    };
+                    customerFromDb.PostalArea = postalArea;
+                }
+
+                customerFromDb.FirstName = customer.FirstName;
+                customerFromDb.LastName = customer.LastName;
+                customerFromDb.Address = customer.Address;
+
+                var userFromDb = await _db.Users.FindAsync(customer.SocialSecurityNumber);
+                byte[] salt = GenSalt();
+                byte[] password = GenHash(customer.User.Password, salt);
+
+                userFromDb.Password = password;
+                userFromDb.Salt = salt;
+                
+
+                await _db.SaveChangesAsync();
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation(e.Message);
+                return false;
+            }
+        }
+
+        public async Task<bool> Deposit(string socialSecurityNumber ,double amount)
+        {
+            try
+            {
+                var customer = await _db.Customers.FindAsync(socialSecurityNumber);
+
+                if (customer == null)
+                {
+                    return false;
+                }
+
+                customer.Balance += amount;
+                await _db.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation(e.Message);
+                return false;
+            }
+        }
+        
+        public async Task<bool> Withdraw(string socialSecurityNumber ,double amount)
+        {
+            try
+            {
+                var customer = await _db.Customers.FindAsync(socialSecurityNumber);
+
+                if (customer == null)
+                {
+                    return false;
+                }
+
+                if (customer.Balance < amount)
+                {
+                    return false;
+                }
+                
+                customer.Balance -= amount;
+                await _db.SaveChangesAsync();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation(e.Message);
+                return false;
+            }
+        }
+        
+        
 
         public static byte[] GenHash(string password, byte[] salt)
         {
@@ -823,8 +991,7 @@ namespace aksjeapp_backend.DAL
                 {
                     return true;
                 }
-
-                Console.WriteLine("return false");
+                
                 return false;
             }
             catch (Exception e)
@@ -834,35 +1001,6 @@ namespace aksjeapp_backend.DAL
             }
         }
         
-        public async Task<bool> RegisterCustomer(Customer customer)
-        {
-            try
-            {
-                var c = new Customers
-                {
-                    SocialSecurityNumber = customer.SocialSecurityNumber,
-                    FirstName = customer.FirstName,
-                    LastName = customer.LastName,
-                    Address = customer.Address,
-                    Balance = 0,
-                    TransactionsBought = null,
-                    TransactionsSold = null,
-                    Portfolio = customer.Portfolio,
-                    PostalArea = new PostalAreas
-                    {
-                        PostalCode = customer.PostalCode,
-                        PostCity = customer.PostCity
-                    }
-                };
-                await _db.Customers.AddAsync(c);
-            }
-            catch (Exception exception)
-            {
-                return false;
-            }
-            return true;
-        }
-
         public static DateTime GetTodaysDate()
         {
             //DateTime date1 = DateTime.Now;
@@ -892,6 +1030,7 @@ namespace aksjeapp_backend.DAL
 
             return date;
         }
+
         private static DateTime GoToMonday(DateTime date)
         {
             if (date.DayOfWeek.Equals(DayOfWeek.Saturday))

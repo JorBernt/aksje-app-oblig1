@@ -26,6 +26,5 @@ public interface IStockRepository
     Task<bool> UpdateCustomer(Customer customer);
     Task<bool> Deposit(string socialSecurityNumber, double amount);
     Task<bool> Withdraw(string socialSecurityNumber, double amount);
-    Task<bool> ChangePassword(User user);
     Task<bool> LogIn(User user);
 }

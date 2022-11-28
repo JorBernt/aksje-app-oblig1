@@ -71,7 +71,7 @@ public class StockController : ControllerBase
             return BadRequest("Fault in input");
         }
 
-        if (number < 0)
+        if (number <= 0)
         {
             _logger.LogInformation("Inserted negative number in amount");
             return BadRequest("Cannot buy negative amount of stock");
@@ -122,7 +122,7 @@ public class StockController : ControllerBase
 
     public async Task<ActionResult> SearchResults(string keyPhrase)
     {
-        if (keyPhrase.IsNullOrEmpty())
+        if (string.IsNullOrEmpty(keyPhrase))
         {
             return Ok(new List<Stock>());
         }
@@ -334,27 +334,7 @@ public class StockController : ControllerBase
         return Ok(name);
 
     }
-
-    [HttpPost]
-    public async Task<ActionResult> ChangePassword([FromBody] User user)
-    {
-        if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn))) return Unauthorized();
-
-        if (ModelState.IsValid)
-        {
-            bool returOk = await _db.ChangePassword(user);
-            if (!returOk)
-            {
-                _logger.LogInformation($"Password for {user.Username} not updated");
-                return BadRequest("Password not updated");
-            }
-
-            return Ok("Password updated");
-        }
-
-        _logger.LogInformation("Username or password does not correspond with regex");
-        return BadRequest("Fault in input");
-    }
+    
     [HttpPost]
     public async Task<ActionResult> RegisterCustomer([FromBody] Customer customer)
     {

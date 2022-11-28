@@ -373,7 +373,6 @@ public class StockController : ControllerBase
 
             return Ok("Customer updated");
         }
-        Console.WriteLine(customer.SocialSecurityNumber + customer.FirstName + customer.LastName + customer.Address + customer.PostalCode + customer.PostCity);
         _logger.LogInformation("Input not valid in Update customer");
         return BadRequest("Fault in input");
     }

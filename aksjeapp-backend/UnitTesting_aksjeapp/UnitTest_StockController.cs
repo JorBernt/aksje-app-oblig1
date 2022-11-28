@@ -1294,6 +1294,103 @@ namespace UnitTesting_aksjeapp
             Assert.Equal("Fault in registerCustomer", results.Value);
         }
 
+        [Fact]
+        public async Task UpdateCustomer_LoggedIn()
+        {
+            //Arrange
+            var customer = new Customer
+            {
+                SocialSecurityNumber = "12345678910",
+                FirstName = "Ola",
+                LastName = "Nordmann",
+                Address = "Parkveien 3",
+                PostalCode = "0245",
+                PostCity = "Oslo"
+            };
+            
+            mockSession[_loggedIn] = customer.SocialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            MockRep.Setup(k => k.UpdateCustomer(customer)).ReturnsAsync(true);
+            //Act
+            var result = await _stockController.UpdateCustomer(customer) as OkObjectResult;
+
+            //Assert
+            Assert.Equal("Customer updated", result.Value);
+        }
+        
+        [Fact]
+        public async Task UpdateCustomer_LoggedInWrongInput()
+        {
+            //Arrange
+            var customer = new Customer
+            {
+                SocialSecurityNumber = "1234567891",
+                FirstName = "Ola",
+                LastName = "Nordmann",
+                Address = "Parkveien 3",
+                PostalCode = "0245",
+                PostCity = "Oslo"
+            };
+            
+            mockSession[_loggedIn] = customer.SocialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+            
+            _stockController.ModelState.AddModelError("SocialSecurityNumber", "Fault in input");
+            
+            
+            //Act
+            var result = await _stockController.UpdateCustomer(customer) as BadRequestObjectResult;
+
+            //Assert
+            Assert.Equal("Fault in input", result.Value);
+        }
+        
+        [Fact]
+        public async Task UpdateCustomer_LoggedInFault()
+        {
+            //Arrange
+            var customer = new Customer
+            {
+                SocialSecurityNumber = "12345678910",
+                FirstName = "Ola",
+                LastName = "Nordmann",
+                Address = "Parkveien 3",
+                PostalCode = "0245",
+                PostCity = "Oslo"
+            };
+            
+            mockSession[_loggedIn] = customer.SocialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            MockRep.Setup(k => k.UpdateCustomer(It.IsAny<Customer>())).ReturnsAsync(false);
+            
+            //Act
+            var result = await _stockController.UpdateCustomer(customer) as BadRequestObjectResult;
+
+            //Assert
+            Assert.Equal("Customer not updated", result.Value);
+        }
+        
+        [Fact]
+        public async Task UpdateCustomer_NotLoggedIn()
+        {
+            //Arrange
+            mockSession[_loggedIn] = "";
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            var result = await _stockController.UpdateCustomer(It.IsAny<Customer>()) as UnauthorizedResult;
+
+            //Assert
+            Assert.Equal((int) HttpStatusCode.Unauthorized, result.StatusCode);
+
+        }
+
 
         [Fact]
         public async Task logIn_Ok()
@@ -1518,6 +1615,107 @@ namespace UnitTesting_aksjeapp
 
             //Act
             var result = await _stockController.Deposit(It.IsAny<double>()) as UnauthorizedResult;
+            
+            //Assert
+            Assert.Equal((int) HttpStatusCode.Unauthorized, result.StatusCode);
+
+        }
+        
+        [Fact]
+        public async Task Withdraw_LoggedIn()
+        {
+            //Arrange
+            double amount = 10000;
+            string socialSecurityNumber = "12345678910";
+            
+            
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            MockRep.Setup(k => k.Withdraw(socialSecurityNumber, amount)).ReturnsAsync(true);
+            
+            //Act
+            var result = await _stockController.Withdraw(amount) as OkObjectResult;
+            
+            //Assert
+            Assert.Equal("Amount withdrawn", result.Value);
+
+        }
+        
+        [Fact]
+        public async Task Withdraw_Fault_LoggedIn()
+        {
+            //Arrange
+            string socialSecurityNumber = "12345678910";
+            double amount = 10000;
+            
+            
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            MockRep.Setup(k => k.Withdraw(It.IsAny<string>(), It.IsAny<double>())).ReturnsAsync(false);
+            
+            //Act
+            var result = await _stockController.Withdraw(amount) as BadRequestObjectResult;
+            
+            //Assert
+            Assert.Equal("Amount not withdrawn", result.Value);
+
+        }
+        
+        [Fact]
+        public async Task Withdraw_NegativeAmount_LoggedIn()
+        {
+            //Arrange
+            string socialSecurityNumber = "12345678910";
+            double amount = -10000;
+            
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            var result = await _stockController.Withdraw(amount) as BadRequestObjectResult;
+            
+            //Assert
+            Assert.Equal("Cannot withdraw negative or 0", result.Value);
+
+        }
+        
+        [Fact]
+        public async Task Withdraw_Zero_LoggedIn()
+        {
+            //Arrange
+            string socialSecurityNumber = "12345678910";
+            double amount = 0;
+            
+            
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            var result = await _stockController.Withdraw(amount) as BadRequestObjectResult;
+            
+            //Assert
+            Assert.Equal("Cannot withdraw negative or 0", result.Value);
+
+        }
+        
+        [Fact]
+        public async Task Withdraw_NotLoggedIn()
+        {
+            //Arrange
+
+
+            mockSession[_loggedIn] = "";
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            var result = await _stockController.Withdraw(It.IsAny<double>()) as UnauthorizedResult;
             
             //Assert
             Assert.Equal((int) HttpStatusCode.Unauthorized, result.StatusCode);

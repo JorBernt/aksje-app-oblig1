@@ -35,7 +35,6 @@ const EditPage = () => {
             userData.postalcode === 0 ||
             userData.postcity === "" ||
             userData.password === "") {
-            console.log("ww")
             return;
         }
 

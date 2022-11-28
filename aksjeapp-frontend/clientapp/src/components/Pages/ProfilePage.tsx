@@ -6,16 +6,27 @@ import StockContainer from "../StockViews/StockContainer";
 import {API} from "../../Constants";
 import {ProfileInfo} from "../models";
 import TransactionsView from "../StockViews/TransactionsView";
+import {useLoggedInContext} from "../../App";
+import {useNavigate} from "react-router-dom";
 
 const ProfilePage = () => {
     const [profileInfo, setProfileInfo] = useState<ProfileInfo>();
-
+    const logInContext = useLoggedInContext()
+    const navigate = useNavigate()
     const [reload, setReload] = useState(false)
+
+    useEffect(() => {
+        if (!logInContext.loggedIn) {
+            navigate("/login")
+        }
+    })
+
     const handleCallback = () => {
         setReload(val => !val)
     }
 
     useEffect(() => {
+
         fetch(API.STOCK.GET_CUSTOMER_PORTFOLIO, {credentials: 'include',})
             .then(response => response.json()
                 .then(res => {

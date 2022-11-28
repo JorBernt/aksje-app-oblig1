@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useEffect, useState} from "react";
 import Navbar from "../Navbar/Navbar";
 import Card from "../UI/Card/Card";
 import InputField from "../UI/Input/InputField";
@@ -16,24 +16,38 @@ const EditPage = () => {
     const pCodeRef = React.createRef<HTMLInputElement>()
     const pAddressRef = React.createRef<HTMLInputElement>()
     const passwordRef = React.createRef<HTMLInputElement>()
-    const handleOnClick = () => {
 
+    const [customerData, setCustomerData] = useState<UserData>();
+
+    useEffect(() => {
+        fetch(API.STOCK.GET_CUSTOMER_DATA, {credentials: 'include',})
+            .then(res => res.json()
+                .then(res => {
+                    setCustomerData(res)
+                    console.log(res)
+                }).catch(e => {
+                    console.log(e.message)
+                })
+            )
+    }, [])
+
+    const handleOnClick = () => {
         const userData: UserData = {
-            firstname: String(firstNameRef.current?.value),
-            lastname: String(lastNameRef.current?.value),
-            socialsecuritynumber: String(ssnRef.current?.value),
+            firstName: String(firstNameRef.current?.value),
+            lastName: String(lastNameRef.current?.value),
+            socialSecurityNumber: String(ssnRef.current?.value),
             address: String(addressRef.current?.value),
-            postalcode: Number(pCodeRef.current?.value),
-            postcity: String(pAddressRef.current?.value),
+            postalCode: Number(pCodeRef.current?.value),
+            postCity: String(pAddressRef.current?.value),
             password: String(passwordRef.current?.value)
         }
 
-        if (userData.firstname === "" ||
-            userData.lastname === "" ||
-            userData.socialsecuritynumber === "" ||
+        if (userData.firstName === "" ||
+            userData.lastName === "" ||
+            userData.socialSecurityNumber === "" ||
             userData.address === "" ||
-            userData.postalcode === 0 ||
-            userData.postcity === "" ||
+            userData.postalCode === 0 ||
+            userData.postCity === "" ||
             userData.password === "") {
             return;
         }
@@ -50,15 +64,22 @@ const EditPage = () => {
             <div className="flex justify-center ">
                 <Card>
                     <div className="flex flex-col h-fit items-center">
-                        <h1 className={"text-center text-2xl mb-4"}>Edit</h1>
+                        <h1 className={"text-center text-2xl mb-4"}>Edit account</h1>
                         <div className="grid grid-cols-2">
-                            <InputField type={"text"} label={"First Name"} ref={firstNameRef}/>
-                            <InputField type={"text"} label={"Last Name"} ref={lastNameRef}/>
-                            <InputField type={"text"} label={"SSN"} ref={ssnRef}/>
-                            <InputField type={"text"} label={"Address"} ref={addressRef}/>
-                            <InputField type={"number"} label={"Postal Code"} ref={pCodeRef}/>
-                            <InputField type={"text"} label={"Postal Address"} ref={pAddressRef}/>
-                            <InputField type={"password"} label={"Password"} ref={passwordRef}/>
+                            <InputField type={"text"} label={"First Name"} ref={firstNameRef}
+                                        initVal={customerData?.firstName}/>
+                            <InputField type={"text"} label={"Last Name"} ref={lastNameRef}
+                                        initVal={customerData?.lastName}/>
+                            <InputField type={"text"} label={"SSN"} ref={ssnRef}
+                                        initVal={customerData?.socialSecurityNumber}/>
+                            <InputField type={"text"} label={"Address"} ref={addressRef}
+                                        initVal={customerData?.address}/>
+                            <InputField type={"text"} label={"Postal Code"} ref={pCodeRef}
+                                        initVal={customerData?.postalCode}/>
+                            <InputField type={"text"} label={"Postal Address"} ref={pAddressRef}
+                                        initVal={customerData?.postCity}/>
+                            <InputField type={"password"} label={"Password"} ref={passwordRef}
+                                        initVal={customerData?.password}/>
                         </div>
                         <div className="mt-4">
                             <Button text={"Save"} onClick={handleOnClick}/>

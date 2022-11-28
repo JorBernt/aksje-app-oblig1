@@ -25,21 +25,21 @@ const LoginPage = () => {
         }
 
         const userData: UserData = {
-            firstname: String(firstNameRef.current?.value),
-            lastname: String(lastNameRef.current?.value),
-            socialsecuritynumber: String(ssnRef.current?.value),
+            firstName: String(firstNameRef.current?.value),
+            lastName: String(lastNameRef.current?.value),
+            socialSecurityNumber: String(ssnRef.current?.value),
             address: String(addressRef.current?.value),
-            postalcode: Number(pCodeRef.current?.value),
-            postcity: String(pAddressRef.current?.value),
+            postalCode: Number(pCodeRef.current?.value),
+            postCity: String(pAddressRef.current?.value),
             password: String(passwordRef.current?.value)
         }
 
-        if (userData.firstname === "" ||
-            userData.lastname === "" ||
-            userData.socialsecuritynumber === "" ||
+        if (userData.firstName === "" ||
+            userData.lastName === "" ||
+            userData.socialSecurityNumber === "" ||
             userData.address === "" ||
-            userData.postalcode === 0 ||
-            userData.postcity === "" ||
+            userData.postalCode === 0 ||
+            userData.postCity === "" ||
             userData.password === "") {
             return;
         }

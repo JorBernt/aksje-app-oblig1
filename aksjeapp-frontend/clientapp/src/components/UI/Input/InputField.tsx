@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 
 type Props = {
     type: string,
@@ -6,14 +6,20 @@ type Props = {
     setValue?: any
     ref?: any
     onKeyDown?: (key: string) => void
+    initVal?: string | number
 }
 let checkPW = "";
 const InputField: React.FC<Props> = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
     const [message, setMessage] = useState('');
+    const [value, setValue] = useState(props.initVal);
+
+    useEffect(() => {
+        setValue(props.initVal)
+    }, [props.initVal])
+
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setMessage(event.target.value);
-        console.log(event.target.value);
-        console.log(props.label)
+        setValue(event.target.value);
         const regExName = /^[a-z ,.'-]+$/i;
         const regExSSN = /^[0-9]{11}$/;
         const regExPaswd = /(?=.*[a-zA-ZæøåÆØÅ])(?=.*\d)[a-zA-ZæøåÆØÅ\d]{8,}/;
@@ -48,7 +54,7 @@ const InputField: React.FC<Props> = React.forwardRef<HTMLInputElement, Props>((p
                 <input type={props.type} className="bg-transparent border focus:border-pink-500 rounded-2xl pl-4 py-2"
                        style={{outline: "none"}} ref={ref}
                        onKeyDown={(event => props.onKeyDown && props.onKeyDown(event.key))}
-                       onChange={handleChange}
+                       onChange={handleChange} value={value}
                 />
                 <p style={{color: 'red'}}>{message}</p>
             </div>

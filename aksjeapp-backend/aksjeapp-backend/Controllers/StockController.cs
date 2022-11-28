@@ -377,10 +377,11 @@ public class StockController : ControllerBase
         return BadRequest("Fault in input");
     }
 
-    public async Task<ActionResult> GetCustomerData(string socialSecurityNumber)
+    public async Task<ActionResult> GetCustomerData()
     {
         if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn))) return Unauthorized();
         
+        var socialSecurityNumber = HttpContext.Session.GetString(_loggedIn);
         var myCustomer = await _db.GetCustomerData(socialSecurityNumber);
         if (myCustomer == null)
         {

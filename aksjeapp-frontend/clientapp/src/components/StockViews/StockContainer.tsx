@@ -62,7 +62,7 @@ const StockContainer = (props: Props) => {
                 <div className={className}>
                     {!showLoading && stockView.length === 0 ?
                         <>
-                            <div className="ml-28">
+                            <div className="flex justify-center w-full">
                                 <p>No stocks to show.</p>
                             </div>
                         </>

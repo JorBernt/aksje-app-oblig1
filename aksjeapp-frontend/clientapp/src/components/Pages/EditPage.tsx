@@ -39,7 +39,6 @@ const EditPage = () => {
                         <InputField type={"number"} label={"Postal Code"} ref={pCodeRef}/>
                         <InputField type={"text"} label={"Postal Address"} ref={pAddressRef}/>
                         <InputField type={"password"} label={"Password"} ref={passwordRef}/>
-
                         <div className="mt-4">
                             <Button text={"Save"} onClick={handleOnClick}/>
                         </div>

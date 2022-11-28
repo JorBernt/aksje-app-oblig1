@@ -18,15 +18,6 @@ const EditPage = () => {
     const passwordRef = React.createRef<HTMLInputElement>()
     const handleOnClick = () => {
 
-        if (String(firstNameRef.current?.value) === "" ||
-            String(lastNameRef.current?.value) === "" ||
-            String(addressRef.current?.value) === "" ||
-            String(pCodeRef.current?.value) === "" ||
-            String(pAddressRef.current?.value) === "" ||
-            String(passwordRef.current?.value) === "") {
-            return;
-        }
-
         const userData: UserData = {
             firstname: String(firstNameRef.current?.value),
             lastname: String(lastNameRef.current?.value),
@@ -35,6 +26,17 @@ const EditPage = () => {
             postalcode: Number(pCodeRef.current?.value),
             postcity: String(pAddressRef.current?.value),
             password: String(passwordRef.current?.value)
+        }
+
+        if (userData.firstname === "" ||
+            userData.lastname === "" ||
+            userData.socialsecuritynumber === "" ||
+            userData.address === "" ||
+            userData.postalcode === 0 ||
+            userData.postcity === "" ||
+            userData.password === "") {
+            console.log("ww")
+            return;
         }
 
         API.CLIENT.UPDATE_CUSTOMER(userData).then(response => {

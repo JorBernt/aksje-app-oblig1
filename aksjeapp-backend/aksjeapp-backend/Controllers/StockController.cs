@@ -338,7 +338,7 @@ public class StockController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> RegisterCustomer([FromBody] Customer customer)
     {
-        if (ModelState.IsValid)
+        if (ModelState.IsValid && !customer.User.Password.IsNullOrEmpty())
         {
             var returnOk = await _db.RegisterCustomer(customer);
             if (!returnOk)
@@ -454,7 +454,7 @@ public class StockController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> LogIn([FromBody] User user)
     {
-        if (ModelState.IsValid)
+        if (ModelState.IsValid && !user.Password.IsNullOrEmpty())
         {
             bool returnOk = await _db.LogIn(user);
             if (!returnOk)

@@ -15,6 +15,7 @@ type Props = {
     validate?: boolean
     password?: string
     setPassword?: any
+    field?: { [key: string]: boolean }
 }
 
 const InputField: React.FC<Props> = React.forwardRef<HTMLInputElement, Props>((props, ref) => {
@@ -48,26 +49,30 @@ const InputField: React.FC<Props> = React.forwardRef<HTMLInputElement, Props>((p
         const regExPaswd = /(?=.*[a-zA-ZæøåÆØÅ])(?=.*\d)[a-zA-ZæøåÆØÅ\d]{8,}/;
         const regExPost = /^[0-9]{4}$/;
         const regExAdr = /^[a-zA-ZæøåÆØÅ. -]+([0-9]*){2,20}$/;
+        let ok = true;
         if (props.setPassword)
             props.setPassword(event.target.value)
 
-        if ((props.label === "First Name" || props.label === "Last Name") && regExName.test(event.target.value)) {
-            setMessage("")
-        } else if (props.label === "Password" && regExPaswd.test(event.target.value)) {
-            setMessage("")
-        } else if (props.label === "SSN" && regExSSN.test(event.target.value)) {
-            setMessage("")
-        } else if (props.label === "Postal Code" && regExPost.test(event.target.value)) {
-            setMessage("")
-        } else if (props.label === "Retype Password") {
-            if (event.target.value === props.password) {
-                setMessage("")
-            } else {
-                setMessage("Password do not match")
-            }
-        } else if ((props.label === "Address" || props.label === "City") && regExAdr.test(event.target.value)) {
+        if ((props.label === "First Name" || props.label === "Last Name") && !regExName.test(event.target.value)) {
+            ok = false;
+        } else if (props.label === "Password" && !regExPaswd.test(event.target.value)) {
+            ok = false;
+        } else if (props.label === "SSN" && !regExSSN.test(event.target.value)) {
+            ok = false;
+        } else if (props.label === "Postal Code" && !regExPost.test(event.target.value)) {
+            ok = false;
+        } else if (props.label === "Retype Password" && event.target.value !== props.password) {
+            ok = false;
+        } else if ((props.label === "Address" || props.label === "City") && !regExAdr.test(event.target.value)) {
+            ok = false;
+        }
+        if (ok) {
+            if (props.field)
+                props.field[props.label] = true
             setMessage("")
         } else {
+            if (props.field)
+                props.field[props.label] = false
             if (event.target.value === "") {
                 setMessage("")
                 return;

@@ -7,6 +7,7 @@ import {User, UserDataSubmit} from "../models";
 import {API} from "../../Constants";
 import {useNavigate} from "react-router-dom";
 
+const userFields: { [key: string]: boolean } = {};
 
 const LoginPage = () => {
     const navigate = useNavigate();
@@ -19,9 +20,14 @@ const LoginPage = () => {
     const passwordRef = React.createRef<HTMLInputElement>()
     const retypedPasswordRef = React.createRef<HTMLInputElement>()
 
+
     const [password, setPassword] = useState("")
+    const [editMessage, setEditMessage] = useState("")
+    const [showEditMessage, setShowEditMessage] = useState(false)
+    const [editMessageColor, setEditMessageColor] = useState("")
 
     const handleOnClick = () => {
+        setShowEditMessage(false)
         if (String(passwordRef.current?.value) !== String(retypedPasswordRef.current?.value)) {
             console.log("Passwords don't match!")
             return;
@@ -41,7 +47,16 @@ const LoginPage = () => {
             PostCity: String(pAddressRef.current?.value),
             User: user
         }
-
+        let ok = true
+        if (!userFields["First Name"] ||
+            !userFields["Last Name"] ||
+            !userFields["SSN"] ||
+            !userFields["Address"] ||
+            !userFields["Postal Code"] ||
+            !userFields["City"] ||
+            !userFields["Password"]) {
+            ok = false;
+        }
 
         if (userData.FirstName === "" ||
             userData.LastName === "" ||
@@ -50,8 +65,13 @@ const LoginPage = () => {
             userData.PostalCode === "" ||
             userData.PostCity === "" ||
             userData.User?.password === "") {
-            return;
+            setEditMessage("No empty fields!")
+            setEditMessageColor("text-red-500")
+            setShowEditMessage(true)
+            ok = false
         }
+        if (!ok)
+            return;
 
         API.CLIENT.REGISTER_CUSTOMER(userData).then(response => {
             if (response) {
@@ -67,17 +87,20 @@ const LoginPage = () => {
                     <div className="flex flex-col h-fit items-center">
                         <h1 className={"text-center text-2xl mb-4"}>Register</h1>
                         <div className="grid grid-cols-2">
-                            <InputField type={"text"} label={"First Name"} ref={firstNameRef}/>
-                            <InputField type={"text"} label={"Last Name"} ref={lastNameRef}/>
-                            <InputField type={"text"} label={"SSN"} ref={ssnRef}/>
-                            <InputField type={"text"} label={"Address"} ref={addressRef}/>
-                            <InputField type={"text"} label={"Postal Code"} ref={pCodeRef}/>
-                            <InputField type={"text"} label={"City"} ref={pAddressRef}/>
+                            <InputField type={"text"} label={"First Name"} ref={firstNameRef} field={userFields}/>
+                            <InputField type={"text"} label={"Last Name"} ref={lastNameRef} field={userFields}/>
+                            <InputField type={"text"} label={"SSN"} ref={ssnRef} field={userFields}/>
+                            <InputField type={"text"} label={"Address"} ref={addressRef} field={userFields}/>
+                            <InputField type={"text"} label={"Postal Code"} ref={pCodeRef} field={userFields}/>
+                            <InputField type={"text"} label={"City"} ref={pAddressRef} field={userFields}/>
                             <InputField type={"password"} label={"Password"} ref={passwordRef}
-                                        setPassword={setPassword}/>
+                                        setPassword={setPassword} field={userFields}/>
                             <InputField type={"password"} label={"Retype Password"} ref={retypedPasswordRef}
-                                        password={password}/>
+                                        password={password} field={userFields}/>
                         </div>
+                        {showEditMessage &&
+                            <p className={editMessageColor}>{editMessage}</p>
+                        }
                         <div className="mt-4">
                             <Button text={"Create account"} onClick={handleOnClick}/>
                         </div>

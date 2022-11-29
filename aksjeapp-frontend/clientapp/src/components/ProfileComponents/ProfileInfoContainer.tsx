@@ -10,8 +10,6 @@ type Props = {
 }
 
 const ProfileInfoContainer: React.FC<Props> = (props) => {
-    let number: number = 8200.80
-    let diff: number = -0.09
     const profileInfo = props.profileInfo;
     const [inputValue, setInputValue] = useState(0)
     const [animate, setAnimate] = useState(false)

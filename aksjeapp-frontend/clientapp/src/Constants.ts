@@ -1,4 +1,4 @@
-import {StockData, User, UserData, UserDataSubmit} from "./components/models";
+import {StockData, User, UserDataSubmit} from "./components/models";
 
 const baseURL = "https://localhost:7187/"
 const stockURL = baseURL + "Stock/"
@@ -87,7 +87,7 @@ export const API = {
                 return error;
             }
         },
-        UPDATE_CUSTOMER: async (userData: UserData): Promise<boolean | unknown> => {
+        UPDATE_CUSTOMER: async (userData: UserDataSubmit): Promise<boolean | unknown> => {
             try {
                 const response = await fetch(`${stockURL}UpdateCustomer`, {
                     method: "POST",

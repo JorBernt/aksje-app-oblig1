@@ -885,15 +885,7 @@ namespace aksjeapp_backend.DAL
                 customerFromDb.FirstName = customer.FirstName;
                 customerFromDb.LastName = customer.LastName;
                 customerFromDb.Address = customer.Address;
-
-                var userFromDb = await _db.Users.FindAsync(customer.SocialSecurityNumber);
-                byte[] salt = GenSalt();
-                byte[] password = GenHash(customer.User.Password, salt);
-
-                userFromDb.Password = password;
-                userFromDb.Salt = salt;
-
-
+                
                 await _db.SaveChangesAsync();
                 return true;
             }

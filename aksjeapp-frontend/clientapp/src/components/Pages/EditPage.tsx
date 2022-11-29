@@ -30,6 +30,7 @@ const EditPage = () => {
     const [editMessageColor, setEditMessageColor] = useState("")
     const [passworChangeColor, setPasswordChangeColor] = useState("")
     const [password, setPassword] = useState("")
+    const [deleteButton, setDeleteButton] = useState("Delete")
 
     const logInContext = useLoggedInContext()
 
@@ -133,6 +134,21 @@ const EditPage = () => {
             }
         })
     }
+
+    const handleDeleteAccountOnClick = () => {
+        if (window.confirm("Are you sure you want to delete your account?")) {
+            API.CLIENT.DELETE_COSTUMER()
+                .then(response => {
+                    if (response) {
+                        logInContext.setLoggedIn(false)
+                        navigate("/")
+                    } else {
+                        setDeleteButton("Something went wrong, try again!")
+                    }
+                })
+        }
+    }
+
     return (
         <>
             <Navbar/>
@@ -203,8 +219,8 @@ const EditPage = () => {
                         <div className="flex justify-center mt-12">
                             <button
                                 className="rounded-2xl w-fit bg-red-500 text-white font-semibold py-2 px-4 hover:shadow-red-500 hover:shadow-xl transition-all duration-300 ease-in-out hover:scale-105"
-                                onClick={handleOnClick}>
-                                Delete Account
+                                onClick={handleDeleteAccountOnClick}>
+                                {deleteButton}
                             </button>
                         </div>
                     </div>

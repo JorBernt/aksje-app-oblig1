@@ -146,9 +146,9 @@ export const API = {
                 return false
             }
         },
-        DELETE_ACCOUNT: async (): Promise<boolean> => {
+        DELETE_COSTUMER: async (): Promise<boolean> => {
             try {
-                const response = await fetch(`${stockURL}Delete_Account`, {
+                const response = await fetch(`${stockURL}DeleteCustomer`, {
                     credentials: 'include',
                 });
                 return response.status === 200;

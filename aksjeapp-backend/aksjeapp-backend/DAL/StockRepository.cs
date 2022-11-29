@@ -125,6 +125,11 @@ namespace aksjeapp_backend.DAL
 
                 double totalPrice = stockPrice.ClosePrice * number;
 
+
+                if (customer.Balance < totalPrice)
+                {
+                    return false;
+                }
                 //Creates transaction
                 var stockTransaction = new TransactionBought
                 {
@@ -584,20 +589,10 @@ namespace aksjeapp_backend.DAL
                 var portfolioList = await _db.PortfolioList.Where(k => k.PortfolioId == portfolio.PortfolioId)
                     .ToListAsync();
 
-                // Initilizes a portfoliolist object if it does not exist
-                if (portfolioList == null)
-                {
-                    portfolioList = new List<PortfolioList>();
-                }
+                // Initilizes a portfoliolist object 
+                portfolioList = new List<PortfolioList>();
 
-                // Sets amount and value to 0
-                foreach (var portfolioListItem in portfolioList)
-                {
-                    portfolioListItem.Value = 0;
-                    portfolioListItem.Amount = 0;
-                }
-
-                // Adds the transactions from TransactionsBought
+                    // Adds the transactions from TransactionsBought
                 foreach (var transaction in transactionsBought)
                 {
                     stockChange = await StockChange(transaction.Symbol);

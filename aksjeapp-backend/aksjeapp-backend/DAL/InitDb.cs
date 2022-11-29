@@ -53,7 +53,7 @@ namespace aksjeapp_backend.DAL
                     Balance = 100_000,
                     PostalArea = postalArea1
                 };
-                string passwordLine = "123";
+                string passwordLine = "Password1";
 
                 byte[] salt = StockRepository.GenSalt();
                 byte[] hash = StockRepository.GenHash(passwordLine, salt);
@@ -73,7 +73,7 @@ namespace aksjeapp_backend.DAL
                     Balance = 350_000,
                     PostalArea = postalArea2
                 };
-                string passwordJohn = "1234";
+                string passwordJohn = "Password2";
 
                 byte[] saltJohn = StockRepository.GenSalt();
                 byte[] hashJohn = StockRepository.GenHash(passwordJohn, saltJohn);

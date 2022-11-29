@@ -430,10 +430,12 @@ public class StockController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> ChangePassword([FromBody] User user)
     {
-        if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn))) return Unauthorized();
+        var socialSecurityNumber = HttpContext.Session.GetString(_loggedIn);
+        if (string.IsNullOrEmpty(socialSecurityNumber)) return Unauthorized();
 
         if (ModelState.IsValid)
         {
+            user.Username = socialSecurityNumber;
             bool returOk = await _db.ChangePassword(user);
             if (!returOk)
             {

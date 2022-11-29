@@ -3,7 +3,7 @@ import Navbar from "../Navbar/Navbar";
 import Card from "../UI/Card/Card";
 import InputField from "../UI/Input/InputField";
 import Button from "../UI/Input/Button";
-import {User, UserData} from "../models";
+import {User, UserData, UserDataSubmit} from "../models";
 import {API} from "../../Constants";
 import {useNavigate} from "react-router-dom";
 import {useLoggedInContext} from "../../App";
@@ -67,23 +67,21 @@ const EditPage = () => {
     }
 
     const handleOnClick = () => {
-        const userData: UserData = {
-            firstName: String(firstNameRef.current?.value),
-            lastName: String(lastNameRef.current?.value),
-            socialSecurityNumber: String(ssnRef.current?.value),
-            address: String(addressRef.current?.value),
-            postalCode: Number(pCodeRef.current?.value),
-            postCity: String(pAddressRef.current?.value),
-            password: String(passwordRef.current?.value)
+        const userData: UserDataSubmit = {
+            FirstName: String(firstNameRef.current?.value),
+            LastName: String(lastNameRef.current?.value),
+            SocialSecurityNumber: String(ssnRef.current?.value),
+            Address: String(addressRef.current?.value),
+            PostalCode: String(pCodeRef.current?.value),
+            PostCity: String(pAddressRef.current?.value)
         }
 
-        if (userData.firstName === "" ||
-            userData.lastName === "" ||
-            userData.socialSecurityNumber === "" ||
-            userData.address === "" ||
-            userData.postalCode === 0 ||
-            userData.postCity === "" ||
-            userData.password === "") {
+        if (userData.FirstName === "" ||
+            userData.LastName === "" ||
+            userData.SocialSecurityNumber === "" ||
+            userData.Address === "" ||
+            userData.PostalCode === "" ||
+            userData.PostCity === "") {
             return;
         }
 

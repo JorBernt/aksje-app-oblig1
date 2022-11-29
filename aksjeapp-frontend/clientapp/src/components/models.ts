@@ -88,7 +88,7 @@ export interface UserData {
     socialSecurityNumber: string;
     address: string;
     balance?: number;
-    postalCode: number;
+    postalCode: string;
     postCity: string;
     password?: string;
 }

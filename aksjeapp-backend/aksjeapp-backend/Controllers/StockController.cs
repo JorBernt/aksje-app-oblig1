@@ -338,7 +338,7 @@ public class StockController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> RegisterCustomer([FromBody] Customer customer)
     {
-        if (ModelState.IsValid && !customer.User.Password.IsNullOrEmpty())
+        if (ModelState.IsValid && !string.IsNullOrEmpty(customer.User.Password))
         {
             var returnOk = await _db.RegisterCustomer(customer);
             if (!returnOk)
@@ -433,7 +433,7 @@ public class StockController : ControllerBase
         var socialSecurityNumber = HttpContext.Session.GetString(_loggedIn);
         if (string.IsNullOrEmpty(socialSecurityNumber)) return Unauthorized();
 
-        if (ModelState.IsValid && !user.Password.IsNullOrEmpty())
+        if (ModelState.IsValid && !string.IsNullOrEmpty(user.Password))
         {
             user.Username = socialSecurityNumber;
             bool returOk = await _db.ChangePassword(user);
@@ -454,14 +454,14 @@ public class StockController : ControllerBase
     [HttpPost]
     public async Task<ActionResult> LogIn([FromBody] User user)
     {
-        if (ModelState.IsValid && !user.Password.IsNullOrEmpty())
+        if (ModelState.IsValid && !string.IsNullOrEmpty(user.Password))
         {
             bool returnOk = await _db.LogIn(user);
             if (!returnOk)
             {
                 _logger.LogInformation("Error in StockController/LogIn (Login failed)");
                 HttpContext.Session.SetString(_loggedIn, "");
-                return Ok("Failed");
+                return BadRequest("Failed");
             }
 
             HttpContext.Session.SetString(_loggedIn, user.Username);

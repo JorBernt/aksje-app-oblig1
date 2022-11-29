@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Moq;
 using System.Net;
-using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Results = aksjeapp_backend.Models.Results;
 
 namespace UnitTesting_aksjeapp
@@ -1435,7 +1434,7 @@ namespace UnitTesting_aksjeapp
                 .LogIn(line) as OkObjectResult; // We are not using It.Any<User> since we use the username as session key.
 
             //Assert
-            Assert.Equal((int)HttpStatusCode.OK, res.StatusCode);
+            Assert.Equal((int) HttpStatusCode.OK, res.StatusCode);
             Assert.Equal("Ok", res.Value);
         }
 
@@ -1446,7 +1445,7 @@ namespace UnitTesting_aksjeapp
             var line = new User
             {
                 Username = "12345678910",
-                Password = "123"
+                Password = "Password2"
             };
 
             MockRep.Setup(k => k.LogIn(It.IsAny<User>())).ReturnsAsync(false);
@@ -1456,10 +1455,10 @@ namespace UnitTesting_aksjeapp
             _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
 
             //Act
-            var result = await _stockController.LogIn(line) as OkObjectResult; // We are not using It.Any<User> since we use the username as session key.
+            var result = await _stockController.LogIn(line) as BadRequestObjectResult; // We are not using It.Any<User> since we use the username as session key.
 
             //Assert
-            Assert.Equal((int)HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal((int)HttpStatusCode.BadRequest, result.StatusCode);
             Assert.Equal("Failed", result.Value);
         }
 
@@ -1732,8 +1731,234 @@ namespace UnitTesting_aksjeapp
             Assert.Equal((int) HttpStatusCode.Unauthorized, result.StatusCode);
 
         }
+
+        [Fact]
+        public async Task GetCustomerData_LoggedIn()
+        {
+            //Arrange
+            var customer = new Customer
+            {
+                SocialSecurityNumber = "12345678910",
+                FirstName = "Line",
+                LastName = "Jensen",
+                Address = "Karl Johansgate 3",
+                Balance = 1000,
+                PostalCode = "0245",
+                PostCity = "Oslo"
+            };
+
+            mockSession[_loggedIn] = customer.SocialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            MockRep.Setup(k => k.GetCustomerData(It.IsAny<string>())).ReturnsAsync(customer);
+
+            //Act
+            var result = await _stockController.GetCustomerData() as OkObjectResult;
+
+            //Assert
+            Assert.Equal((int) HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal(customer,result.Value);
+        }
         
+        [Fact]
+        public async Task GetCustomerData_LoggedInNotFound()
+        {
+            //Arrange
+            var customer = new Customer
+            {
+                SocialSecurityNumber = "12345678910",
+                FirstName = "Line",
+                LastName = "Jensen",
+                Address = "Karl Johansgate 3",
+                Balance = 1000,
+                PostalCode = "0245",
+                PostCity = "Oslo"
+            };
+
+            mockSession[_loggedIn] = customer.SocialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            MockRep.Setup(k => k.GetCustomerData(It.IsAny<string>())).ReturnsAsync(() => null);
+
+            //Act
+            var result = await _stockController.GetCustomerData() as BadRequestObjectResult;
+
+            //Assert
+            Assert.Equal((int) HttpStatusCode.BadRequest, result.StatusCode);
+            Assert.Equal("Failed",result.Value);
+        }
         
+        [Fact]
+        public async Task GetCustomerData_NotLoggedIn()
+        {
+            //Arrange
+            var customer = new Customer
+            {
+                SocialSecurityNumber = "12345678910",
+                FirstName = "Line",
+                LastName = "Jensen",
+                Address = "Karl Johansgate 3",
+                Balance = 1000,
+                PostalCode = "0245",
+                PostCity = "Oslo"
+            };
+
+            mockSession[_loggedIn] = _notLoggedIn;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            var result = await _stockController.GetCustomerData() as UnauthorizedResult;
+
+            //Assert
+            Assert.Equal((int) HttpStatusCode.Unauthorized, result.StatusCode);
+        }
+
+        [Fact]
+        public async Task DeleteCustomer_LoggedIn()
+        {
+            //Arrange
+            var socialSecurityNumber = "12345678910";
+
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            MockRep.Setup(k => k.DeleteCustomer(socialSecurityNumber)).ReturnsAsync(true);
+
+            //Act
+            var result = await _stockController.DeleteCustomer() as OkObjectResult;
+
+            //Assert
+            Assert.Equal((int) HttpStatusCode.OK, result.StatusCode);
+            Assert.Equal("Customer deleted", result.Value);
+        }
+        
+        [Fact]
+        public async Task DeleteCustomer_LoggedInFault()
+        {
+            //Arrange
+            var socialSecurityNumber = "12345678910";
+
+            mockSession[_loggedIn] = socialSecurityNumber;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            MockRep.Setup(k => k.DeleteCustomer(socialSecurityNumber)).ReturnsAsync(false);
+
+            //Act
+            var result = await _stockController.DeleteCustomer() as BadRequestObjectResult;
+
+            //Assert
+            Assert.Equal((int) HttpStatusCode.BadRequest, result.StatusCode);
+            Assert.Equal("Balance and portfolio must be empty", result.Value);
+        }
+        [Fact]
+        public async Task DeleteCustomer_NotLoggedIn()
+        {
+            //Arrange
+            mockSession[_loggedIn] = _notLoggedIn;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+            
+
+            //Act
+            var result = await _stockController.DeleteCustomer() as UnauthorizedResult;
+
+            //Assert
+            Assert.Equal((int) HttpStatusCode.Unauthorized, result.StatusCode);
+        }
+
+        [Fact]
+        public async Task ChangePassword_LoggedIn()
+        {
+            //Arrange
+            var user = new User
+                {
+                    Username = "12345678910",
+                    Password = "Password2"
+                };
+                
+                
+                mockSession[_loggedIn] = user.Username;
+                mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+                _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+                MockRep.Setup(k => k.ChangePassword(user)).ReturnsAsync(true);
+                
+                //Act
+                var result = await _stockController.ChangePassword(user) as OkObjectResult;
+
+                //Assert
+                Assert.Equal((int) HttpStatusCode.OK, result.StatusCode);
+                Assert.Equal("Password updated", result.Value);
+        }
+        [Fact]
+        public async Task ChangePassword_LoggedInFault()
+        {
+            //Arrange
+            var user = new User
+            {
+                Username = "12345678910",
+                Password = "Password2"
+            };
+                
+                
+            mockSession[_loggedIn] = user.Username;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            MockRep.Setup(k => k.ChangePassword(user)).ReturnsAsync(false);
+                
+            //Act
+            var result = await _stockController.ChangePassword(user) as BadRequestObjectResult;
+
+            //Assert
+            Assert.Equal((int) HttpStatusCode.BadRequest, result.StatusCode);
+            Assert.Equal("Password not updated", result.Value);
+        }
+        [Fact]
+        public async Task ChangePassword_LoggedWrongInput()
+        {
+            //Arrange
+            var user = new User
+            {
+                Username = "12345678910",
+                Password = "Password2"
+            };
+                
+                
+            mockSession[_loggedIn] = user.Username;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            MockRep.Setup(k => k.ChangePassword(user)).ReturnsAsync(false);
+            _stockController.ModelState.AddModelError("Username", "Fault in input");
+            //Act
+            var result = await _stockController.ChangePassword(It.IsAny<User>()) as BadRequestObjectResult;
+
+            //Assert
+            Assert.Equal((int) HttpStatusCode.BadRequest, result.StatusCode);
+            Assert.Equal("Fault in input", result.Value);
+        }
+        
+        [Fact]
+        public async Task ChangePassword_NotLoggedIn()
+        {
+            //Arrange
+
+            mockSession[_loggedIn] = _notLoggedIn;
+            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
+            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
+
+            //Act
+            var result = await _stockController.ChangePassword(It.IsAny<User>()) as UnauthorizedResult;
+
+            //Assert
+            Assert.Equal((int) HttpStatusCode.Unauthorized, result.StatusCode);
+        }
 
     }
 }

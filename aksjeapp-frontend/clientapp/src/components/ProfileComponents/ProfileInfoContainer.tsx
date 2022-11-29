@@ -44,6 +44,7 @@ const ProfileInfoContainer: React.FC<Props> = (props) => {
                 .then(response => {
                     if (response) {
                         setTransactionType("Success")
+                        props.callback()
                     } else {
                         setTransactionType("Failed")
                     }
@@ -53,13 +54,13 @@ const ProfileInfoContainer: React.FC<Props> = (props) => {
                 .then(response => {
                     if (response) {
                         setTransactionType("Success")
+                        props.callback()
                     } else {
                         setTransactionType("Failed")
                     }
                 })
         }
         setHideInput(true)
-        props.callback()
     }
 
     const handleUserInput = (e: any) => {

@@ -23,6 +23,9 @@ const EditPage = () => {
     const [matchingPasswords, setMatchingPasswords] = useState(true)
     const [passwordChanged, setPasswordChange] = useState(false)
     const [passwordChangeResponse, setPasswordChangeResponse] = useState("")
+    const [editMessage, setEditMessage] = useState("")
+    const [showEditMessage, setShowEditMessage] = useState(false)
+    const [editMessageColor, setEditMessageColor] = useState("")
 
     const [password, setPassword] = useState("")
 
@@ -43,12 +46,15 @@ const EditPage = () => {
     const handleSavePasswordOnClick = () => {
         setPasswordChangeResponse("")
         setPasswordChange(false)
+        setShowEditMessage(false)
+        setEditMessage("")
         let password = String(passwordRef.current?.value)
         let reTypedPassword = String(passwordRef.current?.value)
-        if (password !== reTypedPassword) {
-            setMatchingPasswords(false)
-            return;
-        }
+        if (password)
+            if (password !== reTypedPassword) {
+                setMatchingPasswords(false)
+                return;
+            }
         setMatchingPasswords(true)
         const user: User = {
             username: "",
@@ -82,12 +88,21 @@ const EditPage = () => {
             userData.Address === "" ||
             userData.PostalCode === "" ||
             userData.PostCity === "") {
+            setEditMessage("No fields can be empty!")
+            setEditMessageColor("text-red-500")
+            setShowEditMessage(true)
             return;
         }
 
         API.CLIENT.UPDATE_CUSTOMER(userData).then(response => {
             if (response) {
-                navigate("/profile")
+                setEditMessage("Changes saved!")
+                setEditMessageColor("text-green-400")
+                setShowEditMessage(true)
+            } else {
+                setEditMessage("Something went wrong!")
+                setEditMessageColor("text-red-500")
+                setShowEditMessage(true)
             }
         })
     }
@@ -122,6 +137,9 @@ const EditPage = () => {
                                                 initVal={customerData?.postCity}/>
 
                                 </div>
+                                {showEditMessage &&
+                                    <p className={editMessageColor}>{editMessage}</p>
+                                }
                                 <div className="flex flex-row gap-3">
                                     <div className="mt-4">
                                         <Button text={"Save"} onClick={handleOnClick}/>

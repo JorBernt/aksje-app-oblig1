@@ -8,6 +8,8 @@ import {API} from "../../Constants";
 import {useNavigate} from "react-router-dom";
 import {useLoggedInContext} from "../../App";
 
+const userFields: { [key: string]: boolean } = {};
+
 const EditPage = () => {
     const navigate = useNavigate();
     const firstNameRef = React.createRef<HTMLInputElement>()
@@ -26,7 +28,7 @@ const EditPage = () => {
     const [editMessage, setEditMessage] = useState("")
     const [showEditMessage, setShowEditMessage] = useState(false)
     const [editMessageColor, setEditMessageColor] = useState("")
-
+    const [passworChangeColor, setPasswordChangeColor] = useState("")
     const [password, setPassword] = useState("")
 
     const logInContext = useLoggedInContext()
@@ -56,6 +58,13 @@ const EditPage = () => {
                 return;
             }
         setMatchingPasswords(true)
+        const regExPaswd = /(?=.*[a-zA-ZæøåÆØÅ])(?=.*\d)[a-zA-ZæøåÆØÅ\d]{8,}/;
+        if (!regExPaswd.test(password)) {
+            setPasswordChange(true)
+            setPasswordChangeResponse("Not a valid password!")
+            setPasswordChangeColor("text-red-500")
+            return;
+        }
         const user: User = {
             username: "",
             password: password
@@ -64,10 +73,13 @@ const EditPage = () => {
             .then(response => {
                 if (response) {
                     setPasswordChangeResponse("Password has been changed successfully!")
+                    setPasswordChangeColor("text-green-400")
                     setPasswordChange(true)
                 } else {
                     setPasswordChange(true)
+                    setPasswordChangeColor("text-red-500")
                     setPasswordChangeResponse("Something went wrong.")
+
                 }
             })
     }
@@ -82,17 +94,32 @@ const EditPage = () => {
             PostCity: String(pAddressRef.current?.value)
         }
 
+        let ok = true
+        if (!userFields["First Name"] ||
+            !userFields["Last Name"] ||
+            !userFields["SSN"] ||
+            !userFields["Address"] ||
+            !userFields["Postal Code"] ||
+            !userFields["City"]) {
+            setEditMessage("Some field(s) are not valid!")
+            setEditMessageColor("text-red-500")
+            setShowEditMessage(true)
+            ok = false;
+        }
+
         if (userData.FirstName === "" ||
             userData.LastName === "" ||
             userData.SocialSecurityNumber === "" ||
             userData.Address === "" ||
             userData.PostalCode === "" ||
             userData.PostCity === "") {
-            setEditMessage("No fields can be empty!")
+            setEditMessage("No empty fields!")
             setEditMessageColor("text-red-500")
             setShowEditMessage(true)
-            return;
+            ok = false
         }
+        if (!ok)
+            return;
 
         API.CLIENT.UPDATE_CUSTOMER(userData).then(response => {
             if (response) {
@@ -124,17 +151,17 @@ const EditPage = () => {
                                 <h1 className={"text-center text-2xl mb-4"}>Edit account</h1>
                                 <div className="grid grid-cols-2">
                                     <InputField type={"text"} label={"First Name"} ref={firstNameRef}
-                                                initVal={customerData?.firstName}/>
+                                                initVal={customerData?.firstName} field={userFields}/>
                                     <InputField type={"text"} label={"Last Name"} ref={lastNameRef}
-                                                initVal={customerData?.lastName}/>
+                                                initVal={customerData?.lastName} field={userFields}/>
                                     <InputField type={"text"} label={"SSN"} ref={ssnRef}
-                                                initVal={customerData?.socialSecurityNumber}/>
+                                                initVal={customerData?.socialSecurityNumber} field={userFields}/>
                                     <InputField type={"text"} label={"Address"} ref={addressRef}
-                                                initVal={customerData?.address}/>
+                                                initVal={customerData?.address} field={userFields}/>
                                     <InputField type={"text"} label={"Postal Code"} ref={pCodeRef}
-                                                initVal={customerData?.postalCode}/>
+                                                initVal={customerData?.postalCode} field={userFields}/>
                                     <InputField type={"text"} label={"City"} ref={pAddressRef}
-                                                initVal={customerData?.postCity}/>
+                                                initVal={customerData?.postCity} field={userFields}/>
 
                                 </div>
                                 {showEditMessage &&
@@ -165,7 +192,7 @@ const EditPage = () => {
                                         <p className={"text-sm text-red-500"}>Passwords is not matching</p>
                                     }
                                     {passwordChanged &&
-                                        <p className={"text-sm "}>{passwordChangeResponse}</p>
+                                        <p className={`${passworChangeColor} text-sm`}>{passwordChangeResponse}</p>
                                     }
                                 </div>
                                 <div className="flex justify-center">

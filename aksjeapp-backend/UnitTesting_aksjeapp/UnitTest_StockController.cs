@@ -1245,6 +1245,11 @@ namespace UnitTesting_aksjeapp
         [Fact]
         public async Task RegisterCustomer_Ok()
         {
+            var user = new User
+            {
+                Password = "hemmelig"
+            };
+            
             var customer = new Customer
             {
                 SocialSecurityNumber = "12345678910",
@@ -1254,7 +1259,7 @@ namespace UnitTesting_aksjeapp
                 Balance = 0,
                 PostalCode = "1234",
                 PostCity = "Oslo",
-
+                User = user
             };
 
             MockRep.Setup(k => k.RegisterCustomer(customer)).ReturnsAsync(true);
@@ -1278,6 +1283,12 @@ namespace UnitTesting_aksjeapp
         [Fact]
         public async Task RegisterCustomer_Empty()
         {
+            //Arrange
+            var user = new User
+            {
+                Password = "hemmelig"
+            };
+            
             var customer = new Customer
             {
                 SocialSecurityNumber = "12345678910",
@@ -1287,10 +1298,15 @@ namespace UnitTesting_aksjeapp
                 Balance = 0,
                 PostalCode = "1234",
                 PostCity = "Oslo",
+                User = user
             };
 
             MockRep.Setup(k => k.RegisterCustomer(customer)).ReturnsAsync(false);
+            
+            //Act
             var results = await _stockController.RegisterCustomer(customer) as BadRequestObjectResult;
+            
+            //Assert
             Assert.Equal("Fault in registerCustomer", results.Value);
         }
 
@@ -1298,6 +1314,11 @@ namespace UnitTesting_aksjeapp
         public async Task UpdateCustomer_LoggedIn()
         {
             //Arrange
+            var user = new User
+            {
+                Password = "hemmelig"
+            };
+            
             var customer = new Customer
             {
                 SocialSecurityNumber = "12345678910",
@@ -1306,6 +1327,7 @@ namespace UnitTesting_aksjeapp
                 Address = "Parkveien 3",
                 PostalCode = "0245",
                 PostCity = "Oslo"
+                User = user
             };
             
             mockSession[_loggedIn] = customer.SocialSecurityNumber;

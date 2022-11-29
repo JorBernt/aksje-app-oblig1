@@ -816,7 +816,7 @@ namespace aksjeapp_backend.DAL
                 }
 
                 byte[] salt = GenSalt();
-                byte[] hash = GenHash("12345678", salt);
+                byte[] hash = GenHash(customer.User.Password, salt);
                 var user = new Users
                 {
                     Username = customer.SocialSecurityNumber,

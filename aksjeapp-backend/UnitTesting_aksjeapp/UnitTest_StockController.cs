@@ -1421,7 +1421,7 @@ namespace UnitTesting_aksjeapp
             var line = new User
             {
                 Username = "12345678910",
-                Password = "123"
+                Password = "Password1"
             };
 
             MockRep.Setup(k => k.LogIn(It.IsAny<User>())).ReturnsAsync(true);
@@ -1456,9 +1456,7 @@ namespace UnitTesting_aksjeapp
             _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
 
             //Act
-            var result =
-                await _stockController
-                    .LogIn(line) as OkObjectResult; // We are not using It.Any<User> since we use the username as session key.
+            var result = await _stockController.LogIn(line) as OkObjectResult; // We are not using It.Any<User> since we use the username as session key.
 
             //Assert
             Assert.Equal((int)HttpStatusCode.OK, result.StatusCode);
@@ -1469,22 +1467,13 @@ namespace UnitTesting_aksjeapp
         public async Task logIn_WrongInput()
         {
             //Arrange
-            var line = new User
-            {
-                Username = "12345678910",
-                Password = "123"
-            };
 
             MockRep.Setup(k => k.LogIn(It.IsAny<User>())).ReturnsAsync(true);
 
             _stockController.ModelState.AddModelError("Username", "Fault in input");
-
-            mockSession[_loggedIn] = line.Username;
-            mockHttpContext.Setup(k => k.Session).Returns(mockSession);
-            _stockController.ControllerContext.HttpContext = mockHttpContext.Object;
-
+            
             //Act
-            var result = await _stockController.LogIn(line) as BadRequestObjectResult;
+            var result = await _stockController.LogIn(It.IsAny<User>()) as BadRequestObjectResult;
 
             //Assert
             Assert.Equal((int)HttpStatusCode.BadRequest, result.StatusCode);

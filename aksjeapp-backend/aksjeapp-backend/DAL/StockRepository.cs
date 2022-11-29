@@ -391,13 +391,19 @@ namespace aksjeapp_backend.DAL
                     return false;
                 }
 
+                if (transaction.Amount <= 0)
+                {
+                    await DeleteTransaction(customer.SocialSecurityNumber, changeTransaction.Id);
+                    return true;
+                }
+
                 //Removes transaction price from customers balance
                 customer.Balance += transaction.TotalPrice;
 
                 // Gets todays price for the new stock
                 var stockPrice = await PolygonAPI.GetOpenClosePrice(changeTransaction.Symbol,
                     GetTodaysDate().ToString("yyyy-MM-dd"));
-
+                
                 transaction.Symbol = changeTransaction.Symbol;
                 transaction.Amount = changeTransaction.Amount;
                 transaction.TotalPrice = stockPrice.ClosePrice * changeTransaction.Amount;

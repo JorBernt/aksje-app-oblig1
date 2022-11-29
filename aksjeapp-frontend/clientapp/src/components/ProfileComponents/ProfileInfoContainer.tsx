@@ -79,10 +79,8 @@ const ProfileInfoContainer: React.FC<Props> = (props) => {
                                      content={`${profileInfo.firstName} ${profileInfo.lastName}`}/>
                         <DataDisplay title="Account balance" content={`${profileInfo.balance}$`}/>
                         <DataDisplay title="Portfolio Value" content={`${profileInfo.portfolio.value}$`}/>
-                        <DataDisplay title="Today  %" content={(diff > 0 ? "+" : "") + diff + "%"}
-                                     color={+diff < 0 ? "text-red-500" : "text-green-500"}/>
-                        <DataDisplay title="Today +/-" content={(number > 0 ? "+" : "") + number + "$"}
-                                     color={+number < 0 ? "text-red-500" : "text-green-500"}/>
+                        <DataDisplay title="Address" content={`${profileInfo.address}`}/>
+                        <DataDisplay title="City" content={`${profileInfo.postalCode}, ${profileInfo.postCity}`}/>
                         <div className="overflow-hidden flex justify-center">
                             <div className={`${animate && "-translate-y-16"} transition-all duration-700 ease-in-out`}>
                                 <div className="w-fill flex justify-center mt-4 gap-4">

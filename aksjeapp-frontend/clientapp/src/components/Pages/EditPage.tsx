@@ -139,11 +139,13 @@ const EditPage = () => {
         if (window.confirm("Are you sure you want to delete your account?")) {
             API.CLIENT.DELETE_COSTUMER()
                 .then(response => {
-                    if (response) {
+                    if (response === "Costumer deleted") {
                         logInContext.setLoggedIn(false)
                         navigate("/")
-                    } else {
+                    } else if (response === "false") {
                         setDeleteButton("Something went wrong, try again!")
+                    } else {
+                        window.alert(response)
                     }
                 })
         }

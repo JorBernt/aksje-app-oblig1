@@ -146,14 +146,14 @@ export const API = {
                 return false
             }
         },
-        DELETE_COSTUMER: async (): Promise<boolean> => {
+        DELETE_COSTUMER: async (): Promise<string> => {
             try {
                 const response = await fetch(`${stockURL}DeleteCustomer`, {
                     credentials: 'include',
                 });
-                return response.status === 200;
+                return response.text()
             } catch (error) {
-                return false;
+                return "false";
             }
         },
         CHANGE_PASSWORD: async (user: User): Promise<boolean> => {

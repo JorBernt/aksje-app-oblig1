@@ -1326,7 +1326,7 @@ namespace UnitTesting_aksjeapp
                 LastName = "Nordmann",
                 Address = "Parkveien 3",
                 PostalCode = "0245",
-                PostCity = "Oslo"
+                PostCity = "Oslo",
                 User = user
             };
             

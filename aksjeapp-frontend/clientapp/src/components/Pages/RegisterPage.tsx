@@ -45,8 +45,8 @@ const LoginPage = () => {
             userData.SocialSecurityNumber === "" ||
             userData.Address === "" ||
             userData.PostalCode === "" ||
-            userData.PostCity === "" /*||
-            userData.Password === ""*/) {
+            userData.PostCity === "" ||
+            userData.User?.password === "") {
             return;
         }
 

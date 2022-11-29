@@ -1068,10 +1068,10 @@ namespace aksjeapp_backend.DAL
 
         public static DateTime GetTodaysDate()
         {
+            //Gets todays date if you want it to run with live data
             //DateTime date1 = DateTime.Now;
             //date1 = date.AddDays(-1)
-
-
+            
             var date = new DateTime(2022, 09,
                 20); // Using fixed date since it takes a couple of minutes to get the stock change
 

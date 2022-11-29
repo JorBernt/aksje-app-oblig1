@@ -67,7 +67,7 @@ export const API = {
                     },
                     body: JSON.stringify(user)
                 });
-                return response.text().then(response => response === "Ok")
+                return response.status === 200
             } catch (error: unknown) {
                 return false;
             }
@@ -150,22 +150,6 @@ export const API = {
             try {
                 const response = await fetch(`${stockURL}Delete_Account`, {
                     credentials: 'include',
-                });
-                return response.status === 200;
-            } catch (error) {
-                return false;
-            }
-        },
-        CHANGE_PASSWORD: async (user: User): Promise<boolean> => {
-            try {
-                const response = await fetch(`${stockURL}ChangePassword`, {
-                    method: "POST",
-                    credentials: 'include',
-                    headers: {
-                        "Content-Type": "application/json",
-                        'Access-Control-Allow-Headers': 'Content-Type, Authorization, Set-Cookie',
-                    },
-                    body: JSON.stringify(user)
                 });
                 return response.status === 200;
             } catch (error) {

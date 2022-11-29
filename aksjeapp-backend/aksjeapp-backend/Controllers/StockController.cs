@@ -433,7 +433,7 @@ public class StockController : ControllerBase
         var socialSecurityNumber = HttpContext.Session.GetString(_loggedIn);
         if (string.IsNullOrEmpty(socialSecurityNumber)) return Unauthorized();
 
-        if (ModelState.IsValid)
+        if (ModelState.IsValid && !user.Password.IsNullOrEmpty())
         {
             user.Username = socialSecurityNumber;
             bool returOk = await _db.ChangePassword(user);
@@ -481,7 +481,7 @@ public class StockController : ControllerBase
         if (myCustomer == null)
         {
             _logger.LogInformation("Fault in GetCustomerData");
-            return Ok("Failed");
+            return BadRequest("Failed");
         }
 
         return Ok(myCustomer);

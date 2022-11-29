@@ -503,6 +503,7 @@ public class StockController : ControllerBase
             return BadRequest("Balance and portfolio must be empty");
         }
 
+        LogOut();
         return Ok("Customer deleted");
     }
     

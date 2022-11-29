@@ -101,5 +101,5 @@ export interface UserDataSubmit {
     Balance?: number;
     PostalCode: string;
     PostCity: string;
-    Password?: string;
+    User?: User;
 }

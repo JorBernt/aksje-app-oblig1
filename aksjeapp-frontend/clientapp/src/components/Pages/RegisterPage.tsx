@@ -3,7 +3,7 @@ import Navbar from "../Navbar/Navbar";
 import Card from "../UI/Card/Card";
 import InputField from "../UI/Input/InputField";
 import Button from "../UI/Input/Button";
-import {UserDataSubmit} from "../models";
+import {User, UserDataSubmit} from "../models";
 import {API} from "../../Constants";
 import {useNavigate} from "react-router-dom";
 
@@ -24,14 +24,21 @@ const LoginPage = () => {
             return;
         }
 
+        const user: User = {
+            username: "",
+            password: String(passwordRef.current?.value)
+        }
+
         const userData: UserDataSubmit = {
             FirstName: String(firstNameRef.current?.value),
             LastName: String(lastNameRef.current?.value),
             SocialSecurityNumber: String(ssnRef.current?.value),
             Address: String(addressRef.current?.value),
             PostalCode: String(pCodeRef.current?.value),
-            PostCity: String(pAddressRef.current?.value)
+            PostCity: String(pAddressRef.current?.value),
+            User: user
         }
+
 
         if (userData.FirstName === "" ||
             userData.LastName === "" ||

@@ -23,7 +23,7 @@ const TransactionsView: React.FC<Props> = (props) => {
         })
             .then(response => response.json()
                 .then(response => {
-                    setTransactionView(p => [...response])
+                    setTransactionView([...response])
                     for (let i = 0; i < transactionView.length; i++) {
                         editTransactionArray[transactionView[i].id] = false;
                     }
@@ -43,7 +43,7 @@ const TransactionsView: React.FC<Props> = (props) => {
                 if (!response.ok)
                     throw new Error("Could not delete transaction")
             })
-            .then(result => {
+            .then(() => {
                 loadAllTransactions()
                 props.callBack();
             })
@@ -74,7 +74,7 @@ const TransactionsView: React.FC<Props> = (props) => {
                 },
                 body: JSON.stringify(transaction)
 
-            }).then(result => props.callBack())
+            }).then(props.callBack())
         }
     }
 

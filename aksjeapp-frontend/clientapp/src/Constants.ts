@@ -1,10 +1,7 @@
 import {StockData, User, UserData, UserDataSubmit} from "./components/models";
 
-export const DATE_TODAY = new Date().toLocaleDateString("nb-NO").replace("/", "-");
-
 const baseURL = "https://localhost:7187/"
 const stockURL = baseURL + "Stock/"
-const clientURL = baseURL + "Client/"
 
 export const SSN = "12345678910";
 
@@ -41,17 +38,9 @@ export const API = {
             (symbol: string): string => {
                 return `${stockURL}GetSpecificTransactions?symbol=${symbol}`
             },
-        GET_TRANSACTION:
-            (id: number): string => {
-                return `${stockURL}GetTransaction?id=${id}`
-            },
         DELETE_TRANSACTION:
             (id: number): string => {
                 return `${stockURL}DeleteTransaction?id=${id}`
-            },
-        STOCK_CHANGE:
-            (symbol: string): string => {
-                return `${stockURL}StockChange?symbol=${symbol}`
             },
         UPDATE_TRANSACTION: stockURL + "UpdateTransaction",
         GET_STOCK_OVERVIEW: stockURL + "GetStockOverview",

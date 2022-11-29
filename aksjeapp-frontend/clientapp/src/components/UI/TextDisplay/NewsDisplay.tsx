@@ -20,7 +20,7 @@ const NewsDisplay = (props: Props) => {
             <div className={className}>
                 <div className="pr-5 col-span-2">
                     <p className="text-xs">{props.date}</p>
-                    <a className="text-left font-semibold text-xl hover:underline" target="_blank"
+                    <a className="text-left font-semibold text-xl hover:underline" target="_blank" rel="noreferrer"
                        href={props.url}>{props.content}</a>
                     <p className="text-left">{props.title}</p>
                 </div>

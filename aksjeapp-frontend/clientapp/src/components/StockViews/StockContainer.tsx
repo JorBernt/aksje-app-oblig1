@@ -29,7 +29,7 @@ const StockContainer = (props: Props) => {
             fetch(props.API)
                 .then(response => response.json()
                     .then(response => {
-                        setStockView(p => [...response])
+                        setStockView([...response])
                         setShowLoading(false)
                         if (props.setName) {
                             props.setName(response[0].symbol)

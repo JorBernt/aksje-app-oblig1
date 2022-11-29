@@ -46,7 +46,7 @@ const NavbarLinkDropDown: React.FC<Props> = (props) => {
                 </button>
                 <div>
                     <button
-                        className={`z-20 group-hover:delay-200 absolute opacity-0 group/2 group-hover:opacity-100 pt-0 group-hover:pt-6 z-0 transition-all  bg-gradient-to-t from-gray-${props.links.length > 2 ? '200' : '300'} hover:to-transparent to-transparent ease-in-out p-5 mx-5  hover:text-white hover:rounded-xl rounded-xl  w-40 transition duration-300 ease-in-out ` + (`hover:from-${props.color}-200 hover:shadow-${props.color}-200`)}
+                        className={`z-20 group-hover:delay-200 absolute opacity-0 group/2 group-hover:opacity-100 pt-0 group-hover:pt-6 z-0 transition-all  bg-gradient-to-t from-gray-${props.links.length > 2 ? '200' : '300'} hover:to-transparent to-transparent ease-in-out p-5 mx-5  hover:text-white hover:rounded-xl rounded-xl  w-40 transition duration-300 ease-in-out hover:from-${props.color}-200 hover:shadow-${props.color}-200`}
                         onClick={() => handleOnClick(props.links[1])}>
                         <p className="group-hover/2:text-green-400 opacity-0 group-hover:opacity-100 group-hover/2:scale-110 text-xl text-center text-black transition-all ease-in-out">
                             {props.texts[1]}
@@ -57,7 +57,7 @@ const NavbarLinkDropDown: React.FC<Props> = (props) => {
                 {props.texts.length > 2 &&
                     <div>
                         <button
-                            className={"z-10 absolute group-hover:delay-200 opacity-0 group-hover:opacity-100 pt-0 group/2 group-hover:pt-[5.2rem] z-0 transition-all  bg-gradient-to-t from-gray-300 hover:to-transparent to-transparent ease-in-out p-5 mx-5  hover:text-white hover:rounded-xl rounded-xl shadow-xl w-40 transition duration-300 ease-in-out " + (`hover:from-${props.color}-200 hover:shadow-${props.color}-200`)}
+                            className={`z-10 absolute group-hover:delay-200 opacity-0 group-hover:opacity-100 pt-0 group/2 group-hover:pt-[5.2rem] z-0 transition-all  bg-gradient-to-t from-gray-300 hover:to-transparent to-transparent ease-in-out p-5 mx-5  hover:text-white hover:rounded-xl rounded-xl shadow-xl w-40 transition duration-300 ease-in-out hover:from-${props.color}-200 hover:shadow-${props.color}-200`}
                             onClick={() => handleOnClick(props.links[2])}>
                             <div className={"w-fill flex justify-center"}>
                                 <div

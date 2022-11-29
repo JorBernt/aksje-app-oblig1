@@ -5,12 +5,6 @@ import StockContainer from "../StockViews/StockContainer";
 import SingleStockView from "../StockViews/SingleStockView";
 import {API} from "../../Constants";
 
-interface SingeStockViewData {
-    symbol: string,
-    fromDate: string,
-    toDate: string;
-}
-
 const LandingPage = () => {
 
     const [stockName, setStockName] = useState("")

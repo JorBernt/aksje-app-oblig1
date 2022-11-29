@@ -13,7 +13,7 @@ const NewsContainer = () => {
         fetch(API.STOCK.GET_NEWS)
             .then(response => response.json()
                 .then((res) => {
-                    setNews(p => [...res.results])
+                    setNews([...res.results])
                     setLoading(false)
                 }).catch(e => {
                     console.log(e.message)

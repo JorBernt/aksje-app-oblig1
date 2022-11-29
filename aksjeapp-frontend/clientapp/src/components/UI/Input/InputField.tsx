@@ -35,7 +35,7 @@ const InputField: React.FC<Props> = React.forwardRef<HTMLInputElement, Props>((p
         const regExSSN = /^[0-9]{11}$/;
         const regExPaswd = /(?=.*[a-zA-ZæøåÆØÅ])(?=.*\d)[a-zA-ZæøåÆØÅ\d]{8,}/;
         const regExPost = /^[0-9]{4}$/;
-        const regExAdr = /^[a-zA-ZæøåÆØÅ. \-]{2,20}$/;
+        const regExAdr = /^[a-zA-ZæøåÆØÅ. -]{2,20}$/;
 
         if ((props.label === "First Name" || props.label === "Last Name") && regExName.test(event.target.value)) {
             setMessage("")

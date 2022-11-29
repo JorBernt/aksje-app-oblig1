@@ -61,10 +61,10 @@ const SearchBar: React.FC<Props> = () => {
                                              role="menuitem"
                                              id="menu-item-0">{data.name}
                                         </div>
-                                        <a href="#"
-                                           className=" block px-4 py-2 text-sm text-green-500 font-bold group-hover:text-blue-700 group-hover:animate-spin"
-                                           role="menuitem"
-                                           id="menu-item-0">{data.symbol}</a>
+                                        <span
+                                            className="cursor-pointer block px-4 py-2 text-sm text-green-500 font-bold group-hover:text-blue-700 group-hover:animate-spin"
+                                            role="menuitem"
+                                            id="menu-item-0">{data.symbol}</span>
                                     </div>
                                 )
                             })}

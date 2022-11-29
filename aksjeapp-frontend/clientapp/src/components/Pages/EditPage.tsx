@@ -3,7 +3,7 @@ import Navbar from "../Navbar/Navbar";
 import Card from "../UI/Card/Card";
 import InputField from "../UI/Input/InputField";
 import Button from "../UI/Input/Button";
-import {UserData} from "../models";
+import {User, UserData} from "../models";
 import {API} from "../../Constants";
 import {useNavigate} from "react-router-dom";
 import {useLoggedInContext} from "../../App";
@@ -17,8 +17,14 @@ const EditPage = () => {
     const pCodeRef = React.createRef<HTMLInputElement>()
     const pAddressRef = React.createRef<HTMLInputElement>()
     const passwordRef = React.createRef<HTMLInputElement>()
+    const retypePasswordRef = React.createRef<HTMLInputElement>()
 
     const [customerData, setCustomerData] = useState<UserData>();
+    const [matchingPasswords, setMatchingPasswords] = useState(true)
+    const [passwordChanged, setPasswordChange] = useState(false)
+    const [passwordChangeResponse, setPasswordChangeResponse] = useState("")
+
+    const [password, setPassword] = useState("")
 
     const logInContext = useLoggedInContext()
 
@@ -33,6 +39,32 @@ const EditPage = () => {
                 })
             )
     }, [])
+
+    const handleSavePasswordOnClick = () => {
+        setPasswordChangeResponse("")
+        setPasswordChange(false)
+        let password = String(passwordRef.current?.value)
+        let reTypedPassword = String(passwordRef.current?.value)
+        if (password !== reTypedPassword) {
+            setMatchingPasswords(false)
+            return;
+        }
+        setMatchingPasswords(true)
+        const user: User = {
+            username: "",
+            password: password
+        }
+        API.CLIENT.CHANGE_PASSWORD(user)
+            .then(response => {
+                if (response) {
+                    setPasswordChangeResponse("Password has been changed successfully!")
+                    setPasswordChange(true)
+                } else {
+                    setPasswordChange(true)
+                    setPasswordChangeResponse("Something went wrong.")
+                }
+            })
+    }
 
     const handleOnClick = () => {
         const userData: UserData = {
@@ -72,40 +104,67 @@ const EditPage = () => {
                     </div>
                 </>
                 :
-                <div className="flex justify-center ">
-                    <Card>
-                        <div className="flex flex-col h-fit items-center">
-                            <h1 className={"text-center text-2xl mb-4"}>Edit account</h1>
-                            <div className="grid grid-cols-2">
-                                <InputField type={"text"} label={"First Name"} ref={firstNameRef}
-                                            initVal={customerData?.firstName}/>
-                                <InputField type={"text"} label={"Last Name"} ref={lastNameRef}
-                                            initVal={customerData?.lastName}/>
-                                <InputField type={"text"} label={"SSN"} ref={ssnRef}
-                                            initVal={customerData?.socialSecurityNumber}/>
-                                <InputField type={"text"} label={"Address"} ref={addressRef}
-                                            initVal={customerData?.address}/>
-                                <InputField type={"text"} label={"Postal Code"} ref={pCodeRef}
-                                            initVal={customerData?.postalCode}/>
-                                <InputField type={"text"} label={"Postal Address"} ref={pAddressRef}
-                                            initVal={customerData?.postCity}/>
-                                <InputField type={"password"} label={"Password"} ref={passwordRef}
-                                            initVal={customerData?.password}/>
-                            </div>
-                            <div className="flex flex-row gap-3">
-                                <div className="mt-4">
-                                    <Button text={"Save"} onClick={handleOnClick}/>
+                <div className="flex justify-center mt-24">
+                    <div className="w-fit">
+                        <Card>
+                            <div className="flex flex-col h-fit items-center">
+                                <h1 className={"text-center text-2xl mb-4"}>Edit account</h1>
+                                <div className="grid grid-cols-2">
+                                    <InputField type={"text"} label={"First Name"} ref={firstNameRef}
+                                                initVal={customerData?.firstName}/>
+                                    <InputField type={"text"} label={"Last Name"} ref={lastNameRef}
+                                                initVal={customerData?.lastName}/>
+                                    <InputField type={"text"} label={"SSN"} ref={ssnRef}
+                                                initVal={customerData?.socialSecurityNumber}/>
+                                    <InputField type={"text"} label={"Address"} ref={addressRef}
+                                                initVal={customerData?.address}/>
+                                    <InputField type={"text"} label={"Postal Code"} ref={pCodeRef}
+                                                initVal={customerData?.postalCode}/>
+                                    <InputField type={"text"} label={"City"} ref={pAddressRef}
+                                                initVal={customerData?.postCity}/>
+
                                 </div>
-                                <div className="mt-4">
-                                    <button
-                                        className="rounded-2xl w-fit bg-red-500 text-white font-semibold py-2 px-4 hover:shadow-red-500 hover:shadow-xl transition duration-300 ease-in-out hoved:scale-105"
-                                        onClick={handleOnClick}>
-                                        Delete
-                                    </button>
+                                <div className="flex flex-row gap-3">
+                                    <div className="mt-4">
+                                        <Button text={"Save"} onClick={handleOnClick}/>
+                                    </div>
+                                    <div className="mt-4">
+
+                                    </div>
                                 </div>
                             </div>
+                        </Card>
+                        <Card>
+                            <div className="flex justify-center gap-4 flex-col">
+                                <p className="text-2xl text-center">Change password</p>
+                                <div className="flex flex-row">
+                                    <InputField type={"password"} label={"Password"} ref={passwordRef}
+                                                initVal={customerData?.password} setPassword={setPassword}/>
+                                    <InputField type={"password"} label={"Retype Password"} ref={retypePasswordRef}
+                                                initVal={customerData?.password} password={password}/>
+
+                                </div>
+                                <div className="flex justify-center">
+                                    {!matchingPasswords &&
+                                        <p className={"text-sm text-red-500"}>Passwords is not matching</p>
+                                    }
+                                    {passwordChanged &&
+                                        <p className={"text-sm "}>{passwordChangeResponse}</p>
+                                    }
+                                </div>
+                                <div className="flex justify-center">
+                                    <Button text={"Save"} onClick={handleSavePasswordOnClick}/>
+                                </div>
+                            </div>
+                        </Card>
+                        <div className="flex justify-center mt-12">
+                            <button
+                                className="rounded-2xl w-fit bg-red-500 text-white font-semibold py-2 px-4 hover:shadow-red-500 hover:shadow-xl transition-all duration-300 ease-in-out hover:scale-105"
+                                onClick={handleOnClick}>
+                                Delete Account
+                            </button>
                         </div>
-                    </Card>
+                    </div>
                 </div>
             }
         </>

@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import Navbar from "../Navbar/Navbar";
 import Card from "../UI/Card/Card";
 import InputField from "../UI/Input/InputField";
@@ -18,6 +18,9 @@ const LoginPage = () => {
     const pAddressRef = React.createRef<HTMLInputElement>()
     const passwordRef = React.createRef<HTMLInputElement>()
     const retypedPasswordRef = React.createRef<HTMLInputElement>()
+
+    const [password, setPassword] = useState("")
+
     const handleOnClick = () => {
         if (String(passwordRef.current?.value) !== String(retypedPasswordRef.current?.value)) {
             console.log("Passwords don't match!")
@@ -69,9 +72,11 @@ const LoginPage = () => {
                             <InputField type={"text"} label={"SSN"} ref={ssnRef}/>
                             <InputField type={"text"} label={"Address"} ref={addressRef}/>
                             <InputField type={"text"} label={"Postal Code"} ref={pCodeRef}/>
-                            <InputField type={"text"} label={"Postal Address"} ref={pAddressRef}/>
-                            <InputField type={"password"} label={"Password"} ref={passwordRef}/>
-                            <InputField type={"password"} label={"Retype password"} ref={retypedPasswordRef}/>
+                            <InputField type={"text"} label={"City"} ref={pAddressRef}/>
+                            <InputField type={"password"} label={"Password"} ref={passwordRef}
+                                        setPassword={setPassword}/>
+                            <InputField type={"password"} label={"Retype Password"} ref={retypedPasswordRef}
+                                        password={password}/>
                         </div>
                         <div className="mt-4">
                             <Button text={"Create account"} onClick={handleOnClick}/>

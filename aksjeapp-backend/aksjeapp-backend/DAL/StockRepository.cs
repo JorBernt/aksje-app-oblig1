@@ -134,7 +134,7 @@ namespace aksjeapp_backend.DAL
                     TotalPrice = totalPrice
                 };
                 customer.TransactionsBought.Add(stockTransaction);
-                customer.Balance -= stockTransaction.TotalPrice - 5; //5 dollars in brokerage 
+                customer.Balance -= stockTransaction.TotalPrice + 5; //5 dollars in brokerage 
                 await _db.SaveChangesAsync();
 
                 return true;
@@ -425,8 +425,7 @@ namespace aksjeapp_backend.DAL
                 if (transaction.Date.Equals(GetTodaysDate().ToString("yyyy-MM-dd")))
                 {
                     _db.TransactionsBought.Remove(transaction);
-                    customer.Balance +=
-                        transaction.TotalPrice + 5; //Updates balance for customer and refunds brokerage fee
+                    customer.Balance += transaction.TotalPrice + 5; //Updates balance for customer and refunds brokerage fee
                     await _db.SaveChangesAsync();
                     return true;
                 }
@@ -910,6 +909,45 @@ namespace aksjeapp_backend.DAL
             }
         }
 
+        public async Task<bool> DeleteCustomer(string socialSecurityNumber)
+        {
+            try
+            {
+                var customer = await _db.Customers.FindAsync(socialSecurityNumber);
+
+                if (customer.Balance != 0)
+                {
+                    _logger.LogInformation("Customer balance is not 0");
+                    return false;
+                }
+
+                if (customer.Portfolio.StockPortfolio.Count != 0)
+                {
+                    _logger.LogInformation("Portfolio is not empty");
+                    return false;
+                }
+
+                // Deletes all transactions and portfolio from db
+                customer.TransactionsBought.Clear();
+                customer.TransactionsSold.Clear();
+
+                _db.Customers.Remove(customer);
+
+                var user = await _db.Users.FindAsync(socialSecurityNumber);
+                _db.Users.Remove(user);
+
+                
+                await _db.SaveChangesAsync();
+                return true;
+
+            }
+            catch (Exception e)
+            {
+                _logger.LogInformation(e.Message);
+                return false;
+            }
+        }
+
         public async Task<bool> Deposit(string socialSecurityNumber ,double amount)
         {
             try
@@ -944,9 +982,10 @@ namespace aksjeapp_backend.DAL
                     return false;
                 }
 
+                //Empties account balance if amount is larger than balance
                 if (customer.Balance < amount)
                 {
-                    return false;
+                    amount = customer.Balance;
                 }
 
                 customer.Balance -= amount;
@@ -960,8 +999,6 @@ namespace aksjeapp_backend.DAL
                 return false;
             }
         }
-
-
 
         public static byte[] GenHash(string password, byte[] salt)
         {

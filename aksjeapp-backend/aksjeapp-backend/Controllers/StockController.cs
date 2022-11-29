@@ -426,6 +426,27 @@ public class StockController : ControllerBase
         return Ok("Amount withdrawn");
 
     }
+    
+    [HttpPost]
+    public async Task<ActionResult> ChangePassword([FromBody] User user)
+    {
+        if (string.IsNullOrEmpty(HttpContext.Session.GetString(_loggedIn))) return Unauthorized();
+
+        if (ModelState.IsValid)
+        {
+            bool returOk = await _db.ChangePassword(user);
+            if (!returOk)
+            {
+                _logger.LogInformation("Password for {UserUsername} not updated", user.Username);
+                return BadRequest("Password not updated");
+            }
+
+            return Ok("Password updated");
+        }
+
+        _logger.LogInformation("Username or password does not correspond with regex");
+        return BadRequest("Fault in input");
+    }
 
 
     [HttpPost]
@@ -463,6 +484,24 @@ public class StockController : ControllerBase
 
         return Ok(myCustomer);
 
+    }
+
+    public async Task<ActionResult> DeleteCustomer()
+    {
+        var socialSecurityNumber = HttpContext.Session.GetString(_loggedIn);
+        if (string.IsNullOrEmpty(socialSecurityNumber))
+        {
+            return Unauthorized();
+        }
+
+        bool returOk = await _db.DeleteCustomer(socialSecurityNumber);
+        if (!returOk)
+        {
+            _logger.LogInformation("Customer not deleted");
+            return BadRequest("Balance and portfolio must be empty");
+        }
+
+        return Ok("Customer deleted");
     }
     
     

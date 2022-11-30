@@ -82,7 +82,10 @@ const InputField: React.FC<Props> = React.forwardRef<HTMLInputElement, Props>((p
             if (props.label === "Password") {
                 setMessage("Password must be at least 8 characters long, and contain at least 1 uppercase and digit.")
             } else {
-                setMessage(`${props.label} is invalid`)
+                if (props.label === "Retype Password")
+                    setMessage(`Passwords do not match!`)
+                else
+                    setMessage(`${props.label} is invalid`)
             }
         }
     };

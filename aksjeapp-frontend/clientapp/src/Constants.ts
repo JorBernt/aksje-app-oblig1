@@ -74,7 +74,6 @@ export const API = {
         },
         REGISTER_CUSTOMER: async (userData: UserDataSubmit): Promise<boolean | unknown> => {
             try {
-                console.log(userData)
                 const response = await fetch(`${stockURL}RegisterCustomer`, {
                     method: "POST",
                     headers: {
@@ -146,7 +145,7 @@ export const API = {
                 return false
             }
         },
-        DELETE_COSTUMER: async (): Promise<string> => {
+        DELETE_CUSTOMER: async (): Promise<string> => {
             try {
                 const response = await fetch(`${stockURL}DeleteCustomer`, {
                     credentials: 'include',

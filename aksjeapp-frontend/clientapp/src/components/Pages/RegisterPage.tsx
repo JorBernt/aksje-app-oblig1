@@ -28,10 +28,7 @@ const LoginPage = () => {
 
     const handleOnClick = () => {
         setShowEditMessage(false)
-        if (String(passwordRef.current?.value) !== String(retypedPasswordRef.current?.value)) {
-            console.log("Passwords don't match!")
-            return;
-        }
+
 
         const user: User = {
             username: "",
@@ -54,7 +51,8 @@ const LoginPage = () => {
             !userFields["Address"] ||
             !userFields["Postal Code"] ||
             !userFields["City"] ||
-            !userFields["Password"]) {
+            !userFields["Password"] ||
+            !userFields["Retype Password"]) {
             ok = false;
         }
 

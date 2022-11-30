@@ -39,10 +39,7 @@ const EditPage = () => {
             .then(res => res.json()
                 .then(res => {
                     setCustomerData(res)
-                    console.log(res)
-                }).catch(e => {
-                    console.log(e.message)
-                })
+                }).catch(ignore => ignore)
             )
     }, [])
 
@@ -137,9 +134,10 @@ const EditPage = () => {
 
     const handleDeleteAccountOnClick = () => {
         if (window.confirm("Are you sure you want to delete your account?")) {
-            API.CLIENT.DELETE_COSTUMER()
+            API.CLIENT.DELETE_CUSTOMER()
                 .then(response => {
-                    if (response === "Costumer deleted") {
+                    if (response === "Customer deleted") {
+                        window.alert(response)
                         logInContext.setLoggedIn(false)
                         navigate("/")
                     } else if (response === "false") {

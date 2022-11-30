@@ -63,7 +63,6 @@ namespace aksjeapp_backend.DAL
 
                     }
 
-                    Console.WriteLine(json);
                     // Checks if the API returns a bad response
                     if (json.Contains("error"))
                     {

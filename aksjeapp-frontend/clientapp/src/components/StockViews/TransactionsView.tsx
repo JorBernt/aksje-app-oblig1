@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from "react";
+import React, {useCallback, useEffect, useRef, useState} from "react";
 import {API} from "../../Constants";
 import {Transaction} from "../models";
 import Card from "../UI/Card/Card";
@@ -15,7 +15,7 @@ const TransactionsView: React.FC<Props> = (props) => {
     const [editTransactionArray, setEditTransactionArray] = useState<boolean[]>([])
     //const isVisible = true;
 
-    const loadAllTransactions = () => {
+    const loadAllTransactions = useCallback(() => {
         fetch(API.STOCK.GET_ALL_TRANSACTIONS, {credentials: 'include',}).then(response => {
             if (!response.ok)
                 throw new Error("Could not load transactions")
@@ -24,19 +24,25 @@ const TransactionsView: React.FC<Props> = (props) => {
             .then(response => response.json()
                 .then(response => {
                     setTransactionView([...response])
-                    for (let i = 0; i < transactionView.length; i++) {
-                        editTransactionArray[transactionView[i].id] = false;
-                    }
-                    setEditTransactionArray(editTransactionArray)
                 }).catch((error: Error) => {
                     console.log(error.message)
                     setTransactionView([])
                 })
             )
-    }
+    }, [])
+
+    useEffect(() => {
+        let newArray: boolean[] = []
+        for (let i = 0; i < transactionView.length; i++) {
+            newArray[transactionView[i].id] = false;
+        }
+        setEditTransactionArray(newArray)
+    }, [transactionView])
+
     useEffect(() => {
         loadAllTransactions()
-    }, [])
+    }, [loadAllTransactions])
+
     const handleOnClickDelete = (id: number) => {
         fetch(API.STOCK.DELETE_TRANSACTION(id), {'credentials': "include"})
             .then(response => {

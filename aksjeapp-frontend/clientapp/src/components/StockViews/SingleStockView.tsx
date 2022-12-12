@@ -26,20 +26,24 @@ const SingleStockView: React.FC<Props> = (props) => {
     const [min, setMin] = useState(0)
     const [loading, setLoading] = useState(true)
     const [name, setName] = useState("")
-    const mappableStockPriceData: Array<MappableData> = []
+    const symbol = props.symbol
+    const fromDate = props.fromDate
+    const toDate = props.toDate
+    const setStockPrice = props.setStockPrice
     useEffect(() => {
         setLoading(true)
-        if (props.symbol === "")
+        if (symbol === "")
             return
-        API.STOCK.GET_STOCK_PRICES(props.symbol, props.fromDate, props.toDate)
+        const mappableStockPriceData: Array<MappableData> = []
+        API.STOCK.GET_STOCK_PRICES(symbol, fromDate, toDate)
             .then((response) => {
                 response.results.forEach(r => mappableStockPriceData.push({
                     name: r.date,
                     uv: r.closePrice
                 }))
                 setStockPrices(mappableStockPriceData)
-                if (props.setStockPrice)
-                    props.setStockPrice(response.last)
+                if (setStockPrice)
+                    setStockPrice(response.last)
                 setMax(Math.max(...mappableStockPriceData.map(d => d.uv)))
                 setMin(Math.min(...mappableStockPriceData.map(d => d.uv)))
                 setStockData(response)
@@ -49,7 +53,7 @@ const SingleStockView: React.FC<Props> = (props) => {
                 console.log(error.message)
             })
 
-        fetch(API.STOCK.GET_STOCK_NAME(props.symbol))
+        fetch(API.STOCK.GET_STOCK_NAME(symbol))
             .then(response => response.text()
                 .then(text => setName(text)))
             .catch((error: Error) => {
@@ -57,7 +61,7 @@ const SingleStockView: React.FC<Props> = (props) => {
                 setName("Could not fetch name")
             })
 
-    }, [props.symbol])
+    }, [fromDate, setStockPrice, symbol, toDate])
 
     return (
         <>

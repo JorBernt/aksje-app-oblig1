@@ -37,7 +37,7 @@ const InputField: React.FC<Props> = React.forwardRef<HTMLInputElement, Props>((p
         setValue(props.initVal)
         if (props.field)
             props.field[props.label] = true
-    }, [props.initVal])
+    }, [props.field, props.initVal, props.label])
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 

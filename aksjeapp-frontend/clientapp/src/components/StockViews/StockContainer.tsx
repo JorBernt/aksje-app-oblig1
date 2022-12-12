@@ -19,27 +19,30 @@ const StockContainer = (props: Props) => {
     const [stockView, setStockView] = useState<Stock[]>(data);
     const [showLoading, setShowLoading] = useState(true);
     const [error, setError] = useState(false)
+    const propData = props.data
+    const api = props.API
+    const setName = props.setName
     useEffect(() => {
-        if (props.data) {
-            setStockView(p => [...props.data ? props.data : p])
+        if (propData) {
+            setStockView(p => [...propData ? propData : p])
             setShowLoading(false)
             return;
         }
-        if (typeof props.API !== "undefined")
-            fetch(props.API)
+        if (typeof api !== "undefined")
+            fetch(api)
                 .then(response => response.json()
                     .then(response => {
                         setStockView([...response])
                         setShowLoading(false)
-                        if (props.setName) {
-                            props.setName(response[0].symbol)
+                        if (setName) {
+                            setName(response[0].symbol)
                         }
                     }).catch((error: Error) => {
                         setShowLoading(false)
                         setError(true)
                         console.log(error)
                     }))
-    }, [props.data, props.API])
+    }, [api, propData, setName])
     let counter: number = 0;
     const headers = "text-stock-preview-text-1 grid px-5 " + (props.showAmount ? "grid-cols-5" : "grid-cols-4");
     const className = "w-full px-5 scroll max-h-screen overflow-y-auto scrollbar scrollbar-track-white scrollbar-thumb-rounded-3xl scrollbar-thin scrollbar-thumb-blue-700 " + props.height;
